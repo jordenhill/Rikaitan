@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>DefaultValue</key>
+		<string>blue</string>
+		<key>Key</key>
+		<string>popupcolor</string>
+		<key>Title</key>
+		<string>Popup Color</string>
+		<key>Titles</key>
+		<array>
+			<string>Blue</string>
+			<string>Black</string>
+			<string>Light Blue</string>
+			<string>Yellow</string>
+		</array>
+		<key>Type</key>
+		<string>ListBox</string>
+		<key>Values</key>
+		<array>
+			<string>blue</string>
+			<string>black</string>
+			<string>lightblue</string>
+			<string>yellow</string>
+		</array>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>highlight</string>
+		<key>Title</key>
+		<string>Highlight Text</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>textboxhl</string>
+		<key>Title</key>
+		<string>Highlight text in textboxes</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>onlyreading</string>
+		<key>Title</key>
+		<string>Show only reading</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>Key</key>
+		<string>copySeparator</string>
+		<key>Title</key>
+		<string>Copy to clip separator</string>
+		<key>Titles</key>
+		<array>
+			<string>Tab</string>
+			<string>Comma</string>
+			<string>Space</string>
+		</array>
+		<key>Type</key>
+		<string>ListBox</string>
+		<key>Values</key>
+		<array>
+			<string>tab</string>
+			<string>comma</string>
+			<string>space</string>
+		</array>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>n</string>
+		<key>Key</key>
+		<string>lineEnding</string>
+		<key>Title</key>
+		<string>Line ending</string>
+		<key>Titles</key>
+		<array>
+			<string>Unix (\n)</string>
+			<string>Windows (\r\n)</string>
+			<string>Mac (\r)</string>
+		</array>
+		<key>Type</key>
+		<string>ListBox</string>
+		<key>Values</key>
+		<array>
+			<string>n</string>
+			<string>rn</string>
+			<string>r</string>
+		</array>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>minihelp</string>
+		<key>Title</key>
+		<string>Display mini help on start</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>disablekeys</string>
+		<key>Title</key>
+		<string>Disable keys</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>kanjicomponents</string>
+		<key>Title</key>
+		<string>Display kanji components</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+</array>
+</plist>
