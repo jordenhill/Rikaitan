@@ -128,5 +128,17 @@
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<real>100</real>
+		<key>Key</key>
+		<string>opacity</string>
+		<key>MinimumValue</key>
+		<real>60</real>
+		<key>Title</key>
+		<string>Popup opacity</string>
+		<key>Type</key>
+		<string>Slider</string>
+	</dict>
 </array>
 </plist>

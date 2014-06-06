@@ -54,10 +54,10 @@ var rikaitan = {
 	kanjiN: 1,
 	namesN: 2,
 	showMode: 0,
-	sameDict: '0',
-	forceKanji: '1',
-	defaultDict: '2',
-	nextDict: '3',
+	sameDict: 0,
+	forceKanji: 1,
+	defaultDict: 2,
+	nextDict: 3,
 	miniHelp:
 		'<span style="font-weight:bold">Rikaitan enabled!</span><br><br>' +
 		'<table cellspacing=5>' +
@@ -212,6 +212,9 @@ rikaitan.assignSettings = function(event) {
 	if (event.key == "kanjicomponents") {
 		localStorage["kanjicomponents"] = event.newValue;
 	}
+	if (event.key == "opacity") {
+		localStorage["opacity"] = event.newValue;
+	}
 } // end of assignSettings 
 
 // assignValues - Assigns the setting values before extension should run
@@ -227,6 +230,7 @@ rikaitan.assignValues = function() {
 	rikaitan.config.minihelp = localStorage["minihelp"];
 	rikaitan.config.disablekeys = localStorage["disablekeys"];
 	rikaitan.config.kanjicomponents = localStorage["kanjicomponents"];
+	rikaitan.config.opacity = localStorage["opacity"];
 	rikaitan.config.kanjiinfo = new Array(dictionary.numList.length / 2);
 	numList = dictionary.numList;
 	
@@ -303,23 +307,21 @@ rikaitan.copyToClip = function(entry) {
 }
 
 dictionary.search = function(text, dictOption) {
-	console.log('search');
 	switch(dictOption) {
 	case rikaitan.forceKanji:
-		var e = this.dict.kanjiSearch(text.charAt(0));
+		var e = dictionary.kanjiSearch(text.charAt(0));
 		return e;
 		break;
 	case rikaitan.defaultDict:
 		rikaitan.showMode = 0;
 		break;
 	case rikaitan.nextDict:
-		this.showMode = (this.showMode + 1) % this.dictCount;
+		rikaitan.showMode = (rikaitan.showMode + 1) % rikaitan.dictCount;
 		break;
 	}
 	
 	var m  = rikaitan.showMode;
 	var e = null;
-	
 	do{
 		switch (rikaitan.showMode){
 		case 0:
@@ -581,18 +583,17 @@ dictionary.wordSearch = function(word, doNames, max) {
 
 	if (doNames) {
 		// check: split this
-
 		dict = dictionary.nameDict;
 		index = dictionary.nameIndex;
 		maxTrim = 20;//this.config.namax;
 		entry.names = 1;
 		console.log('doNames');
 	}
-	//else {
+	else {
 		dict = dictionary.wordDict;
 		index = dictionary.wordIndex;
 		maxTrim = 7;//this.config.wmax;
-	//}
+	}
 
 	if (max != null) maxTrim = max;
 
@@ -602,9 +603,13 @@ dictionary.wordSearch = function(word, doNames, max) {
 		var showInf = (count != 0);
 		var trys;
 
-		if (doNames) trys = /{'word': word, 'type': 0xFF, 'reason': null}];
-			else trys = dictionary.deinflect(word);
-
+		if (doNames){ 
+			trys = [{'word': word, 'type': 0xFF, 'reason': null}];
+		}
+		else { 
+			trys = dictionary.deinflect(word);
+		}
+		
         for (i = 0; i < trys.length; i++) {
             u = trys[i];
 

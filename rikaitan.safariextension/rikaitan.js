@@ -525,6 +525,8 @@ rcxContent.isVisible = function() {
 	
 // show
 rcxContent.show = function(tdata, dictOption) {
+	console.log(tdata);
+	console.log(dictOption);
 	var rp = tdata.prevRangeNode;
 	var ro = tdata.prevRangeOfs + tdata.uofs;
 	var u;
@@ -627,6 +629,7 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	popup.style.width = 'auto';
 	popup.style.height = 'auto';
 	popup.style.maxWidth = (looseWidth ? '' : '600px');
+	popup.style.opacity = window.rikaichan.config.opacity / 100;
 		
 	if (rcxContent.getContentType(topdoc) == 'text/plain') {
 		var df = document.createDocumentFragment();
