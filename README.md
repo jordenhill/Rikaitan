@@ -6,7 +6,7 @@ Rikaitan
 	
 	---
 	
-	Rikaikun
+	Originally Rikaikun
 	Copyright (C) 2010 Erek Speed
 	http://code.google.com/p/rikaikun/
 	
