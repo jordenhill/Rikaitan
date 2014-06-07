@@ -123,7 +123,6 @@ rikaitan.performCommand = function(event) {
 
 // shouldEnable - Checks upon opening/changing tabs if it should enable
 rikaitan.shouldEnable = function(event) {
-	console.log(rikaitan.button);
 	if (rikaitan.button == true) {
 		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 			"enable", rikaitan.config);
@@ -416,8 +415,6 @@ dictionary.find = function(data, text) {
 
 dictionary.loadDictionary = function() {
 	console.log('loadDictionary');
-	/* this.wordDict = this.fileRead(rcxWordDict.datURI, rcxWordDict.datCharset);
-	this.wordIndex = this.fileRead(rcxWordDict.idxURI, rcxWordDict.idxCharset); */
 	dictionary.wordDict = this.fileRead(safari.extension.baseURI + "data/dict.dat");
 	dictionary.wordIndex = this.fileRead(safari.extension.baseURI + "data/dict.idx");
 	dictionary.kanjiData = this.fileRead((safari.extension.baseURI + "data/kanji.dat"), 'UTF-8');
@@ -425,7 +422,6 @@ dictionary.loadDictionary = function() {
 	dictionary.nameDict = this.fileRead(safari.extension.baseURI + 'data/names.dat');
 	dictionary.nameIndex = this.fileRead(safari.extension.baseURI + 'data/names.idx');
 	dictionary.loadDIF();
-
 	//	this.test_kanji();
 } // end of loadDictionary
 

@@ -525,8 +525,6 @@ rcxContent.isVisible = function() {
 	
 // show
 rcxContent.show = function(tdata, dictOption) {
-	console.log(tdata);
-	console.log(dictOption);
 	var rp = tdata.prevRangeNode;
 	var ro = tdata.prevRangeOfs + tdata.uofs;
 	var u;
@@ -956,7 +954,7 @@ rcxContent.getFirstTextChild = function(node) {
 	fake.style.position = "absolute";
 	fake.style.zindex = 7777;
 	$(fake).offset({top:$(real).offset().top, left:$(real).offset().left})
-	
+
 	return fake;
 }*/
 

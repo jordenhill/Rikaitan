@@ -15,6 +15,7 @@
 			<string>Black</string>
 			<string>Light Blue</string>
 			<string>Yellow</string>
+			<string>White</string>
 		</array>
 		<key>Type</key>
 		<string>ListBox</string>
@@ -24,6 +25,7 @@
 			<string>black</string>
 			<string>lightblue</string>
 			<string>yellow</string>
+			<string>white</string>
 		</array>
 	</dict>
 	<dict>
@@ -57,6 +59,8 @@
 		<string>CheckBox</string>
 	</dict>
 	<dict>
+		<key>DefaultValue</key>
+		<string>tab</string>
 		<key>Key</key>
 		<string>copySeparator</string>
 		<key>Title</key>
