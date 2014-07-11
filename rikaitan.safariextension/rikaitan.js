@@ -58,6 +58,7 @@ var rcxContent = {
 	mDown: false,
 	kanjiN: 1,
 	namesN: 2,
+	superStickyMode: false,
 	inlineNames: {
 		// text node
 		'#text': true,
@@ -131,40 +132,43 @@ var dictionary = {
 
 // getMessage
 rcxContent.getMessage = function(event) {
-	switch(event.name) {
-	case 'enable':
-		console.log('enabled');
-		rcxContent.enableTab();
-		window.rikaichan.config = event.message;
-		break;
-	case 'disable':
-		rcxContent.disableTab();
-		break;
-	case 'showPopup':
-		rcxContent.showPopup(event.message);
-		break;
-	case 'processentry':
-		rcxContent.processEntry(event.message);
-		break;
-	case 'processhtml':
-		rcxContent.processHtml(event.message);
-		break;
-	case 'processtitle':
-		rcxContent.processTitle(event.message);
-		break;
+	if (window === window.top) {
+		switch(event.name) {
+		case 'enable':
+			console.log('enabled');
+			delete window.rikaichan;
+			rcxContent.enableTab();
+			window.rikaichan.config = event.message;
+			break;
+		case 'disable':
+			rcxContent.disableTab();
+			break;
+		case 'showPopup':
+			rcxContent.showPopup(event.message);
+			break;
+		case 'processentry':
+			rcxContent.processEntry(event.message);
+			break;
+		case 'processhtml':
+			rcxContent.processHtml(event.message);
+			break;
+		case 'processtitle':
+			rcxContent.processTitle(event.message);
+			break;
+		}
 	}
 } // end of getMessage
 
 // enableTab
 rcxContent.enableTab = function() {
-	if(window.rikaichan == null) {
-		window.rikaichan = {};
-		window.addEventListener('mousemove', this.onMouseMove, false);
-		window.addEventListener('keydown', this.onKeyDown, true);
-		window.addEventListener('keyup', this.onKeyUp, true);
-		window.addEventListener('mousedown', this.onMouseDown, false);
-		window.addEventListener('mouseup', this.onMouseUp, false);
-	}
+		if(window.rikaichan == null) {
+			window.rikaichan = {};
+			window.addEventListener('mousemove', this.onMouseMove, false);
+			window.addEventListener('keydown', this.onKeyDown, true);
+			window.addEventListener('keyup', this.onKeyUp, true);
+			window.addEventListener('mousedown', this.onMouseDown, false);
+			window.addEventListener('mouseup', this.onMouseUp, false);
+		}
 } // end of enableTab
 	
 // disableTab
@@ -198,19 +202,11 @@ rcxContent._onMouseMove = function(ev) {
 	if (window === window.top) {
 	var fake;
 	// Put this in a try catch so that an exception here doesn't prevent editing due to div.
-	try {
-		if(ev.target.nodeName == 'TEXTAREA' || ev.target.nodeName == 'INPUT') {
-			fake = rcxContent.makeFake(ev.target);
-			document.body.appendChild(fake);
-			fake.scrollTop = ev.target.scrollTop;
-			fake.scrollLeft = ev.target.scrollLeft;
-		}
-			
-		var tdata = window.rikaichan;	// per-tab data
+	try {			
+		var tdata = window.rikaichan;
 		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
 		var rp = range.startContainer;
 		var ro = range.startOffset;
-			
 		if(fake) {
 			// At the end of a line, don't do anything or you just get beginning of next line
 			if((rp.data) && rp.data.length == ro) {
@@ -220,10 +216,6 @@ rcxContent._onMouseMove = function(ev) {
 			fake.style.display = "none";
 			ro = this.getTotalOffset(rp.parentNode, rp, ro);
 		}
-			
-	/*   		console.log( "offset: " + ro + " parentContainer: " +  rp.nodeName + 
-				" total size: " + (rp.data?rp.data.length:"") + " target: " + ev.target.nodeName + 
-				" parentparent: " + rp.parentNode.nodeName); */
 			
 		if (tdata.timer) {
 			clearTimeout(tdata.timer);
@@ -311,17 +303,18 @@ rcxContent._onMouseMove = function(ev) {
 	tdata.title = null;
 	tdata.uofs = 0;
 	this.uofsNext = 1;
-
-	if ((rp) && (rp.data) && (ro < rp.data.length)) {
+	
+	if ((rp.data) && (ro < rp.data.length)) {
 		this.forceKanji = ev.shiftKey ? 1 : 0;
 		tdata.popX = ev.clientX;
 		tdata.popY = ev.clientY;
 		tdata.timer = setTimeout(
 			function() {
 				rcxContent.show(tdata, rcxContent.forceKanji ? rcxContent.forceKanji : rcxContent.defaultDict);
-			}, 1);
+			}, 0);
 		return;
 	}
+	
 	if (true) {
 		if ((typeof(ev.target.title) == 'string') && (ev.target.title.length)) tdata.title = ev.target.title;
 		else if ((typeof(ev.target.alt) == 'string') && (ev.target.alt.length)) tdata.title = ev.target.alt;
@@ -341,9 +334,10 @@ rcxContent._onMouseMove = function(ev) {
 		var dx = tdata.popX - ev.clientX;
 		var dy = tdata.popY - ev.clientY;
 		var distance = Math.sqrt(dx * dx + dy * dy);
-		if (distance > 4) {
+		if (distance > 3) {
 			this.clearHi();
 			this.hidePopup();
+			delete tdata.popX, tdata.PopY;
 		}
 	}
 }
@@ -351,14 +345,13 @@ rcxContent._onMouseMove = function(ev) {
 	
 // onKeyDown
 rcxContent.onKeyDown = function(ev) {
-	rcxContent._onKeyDown(ev)
+	if (window === window.top) rcxContent._onKeyDown(ev);
 } // end of onKeyDown
 	
 // _onKeyDown
 rcxContent._onKeyDown = function(ev) {
 	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
 	if ((ev.shiftKey) && (ev.keyCode != 16)) return;
-	//if (this.keysDown[ev.keyCode]) return;
 	if (!this.isVisible()) return;
 	if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
 
@@ -401,7 +394,10 @@ rcxContent._onKeyDown = function(ev) {
 			if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) break;
 		}
 		break;
-	case 89:	// y
+	case 79:   // o
+		this.superSticky();
+		break;
+	case 89:   // y
 		this.altView = 0;
 		ev.currentTarget.rikaichan.popY += 20;
 		this.show(ev.currentTarget.rikaichan, this.sameDict);
@@ -513,14 +509,18 @@ rcxContent.getTotalOffset = function(parent, tNode, offset) {
 
 // isInline	
 rcxContent.isInline = function(node) {
-	return this.inlineNames.hasOwnProperty(node.nodeName) || document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline' ||
+	if (window === window.top) {
+		return this.inlineNames.hasOwnProperty(node.nodeName) || document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline' ||
 	        document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline-block';
+	}
 } // end of isInLine
 	
 // isVisible
 rcxContent.isVisible = function() {
-	var popup = document.getElementById('rikaichan-window');
-	return (popup) && (popup.style.display != 'none');
+	if (window === window.top) {
+		var popup = document.getElementById('rikaichan-window');
+		return (popup) && (popup.style.display != 'none');
+	}
 } // end of isVisible
 	
 // show
@@ -528,7 +528,6 @@ rcxContent.show = function(tdata, dictOption) {
 	var rp = tdata.prevRangeNode;
 	var ro = tdata.prevRangeOfs + tdata.uofs;
 	var u;
-
 	tdata.uofsNext = 1;
 	
 	if (!rp) {
@@ -537,7 +536,7 @@ rcxContent.show = function(tdata, dictOption) {
 		return 0;
 	}
 	
-	if ((ro < 0) || (ro >= rp.data.length)) {
+	if ((ro < 0) || (ro >= rp.data.length)) {	
 		this.clearHi();
 		this.hidePopup();
 		return 0;
@@ -714,10 +713,10 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 			if ((elem.title) && (elem.title != '')) v += 20;
 
 			// go up if necessary
-			if ((y + v + pH) > window.innerHeight) {
+			/*if ((y + v + pH) > window.innerHeight) {
 				var t = y - pH - 30;
 				if (t >= 0) y = t;
-			}
+			}*/
 			else y += v;
 				
 
@@ -820,8 +819,8 @@ rcxContent.processEntry = function(e) {
 	selEndList = rcxContent.lastSelEnd;
 
 	if (!e) {
-		rcxContent.hidePopup();
 		rcxContent.clearHi();
+		rcxContent.hidePopup();
 		return -1;
 	}
 	rcxContent.lastFound = [e];
@@ -945,17 +944,15 @@ rcxContent.getFirstTextChild = function(node) {
 		//
 } // end of getFirstTextChild
 
-/*rcxContent.makeFake = function(real) {
-	var fake = document.createElement('div');
-	fake.innerText = real.value;
-	fake.style.cssText = document.defaultView.getComputedStyle(real, '''').cssText;
-	fake.scrollTop = real.scrollTop;
-	fake.scrollLeft = real.scrollLeft;
-	fake.style.position = "absolute";
-	fake.style.zindex = 7777;
-	$(fake).offset({top:$(real).offset().top, left:$(real).offset().left})
-
-	return fake;
-}*/
+//method to toggle Super-sticky mode
+rcxContent.superSticky = function() {
+	this.superStickyMode = !this.superStickyMode;
+	if (this.superStickyMode == true) {
+		this.showPopup("Super-sticky mode enabled");
+	}
+	else {
+		this.showPopup("Super-sticky mode disabled");
+	}
+}
 
 safari.self.addEventListener("message", rcxContent.getMessage, false);

@@ -69,6 +69,7 @@ var rikaitan = {
 		'<tr><td>B</td><td>Previous character</td></tr>' +
 		'<tr><td>M</td><td>Next character</td></tr>' +
 		'<tr><td>N</td><td>Next word</td></tr>' +
+		'<tr><td>O</td><td>Super-sticky mode</td></tr>' +
 		'</table>',
 };
 var dictionary = {
@@ -132,11 +133,9 @@ rikaitan.shouldEnable = function(event) {
 // getMessageFromJs - Gets messages from rikaitan.js
 rikaitan.getMessageFromJs = function(event) {
 	if (window.top === window) {
-		console.log('receiveMessage');
 		switch(event.name) {
 		case 'xsearch':
 			var e = dictionary.search(event.message.text, event.message.dictOption);
-			console.log(e);
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 				"processentry", e);
 			break;
@@ -145,7 +144,6 @@ rikaitan.getMessageFromJs = function(event) {
 			rikaitan.resetDict();
 			break;
 		case 'translate':
-			console.log('translate');
 			console.log(event.message);
 			var t = dictionary.translate(event.message)
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
@@ -157,7 +155,6 @@ rikaitan.getMessageFromJs = function(event) {
 				"processhtml", html);
 			break;
 		case 'switchOnlyReading':
-			console.log('switchOnlyReading');
 			if(rikaitan.config.onlyreading == 'true') {
 				rikaitan.config.onlyreading = 'false'; 
 			}
@@ -172,7 +169,6 @@ rikaitan.getMessageFromJs = function(event) {
 
 // initStorage - Assigns initial values;
 rikaitan.initStorage = function(key, initialValue) {
-	console.log('initStorage');
 	var currentValue = localStorage[key];
 	if (!currentValue) {
 		localStorage[key] = initialValue;
@@ -183,7 +179,6 @@ rikaitan.initStorage = function(key, initialValue) {
 
 // assignSettings - Assigns the settings to local storage
 rikaitan.assignSettings = function(event) {
-	console.log('assignSettings');
 	if (event.key == "popupcolor") {
 		localStorage["popupcolor"] = event.newValue;
 	}
@@ -239,7 +234,6 @@ rikaitan.assignValues = function() {
 }
 
 rikaitan.savePrep = function(clip, entry) {
-	console.log('savePrep');
 	var me, mk;
 	var text;
 	var i;
@@ -343,7 +337,6 @@ dictionary.search = function(text, dictOption) {
 } // end of search
 
 dictionary.translate = function(text) {
-	console.log('translate');
 	var e, o;
 	var skip;
 
@@ -377,7 +370,6 @@ dictionary.translate = function(text) {
 } // end of translate
 
 dictionary.fileRead = function(url, charset) {
-	console.log('fileRead');
 	var req = new XMLHttpRequest();
 	req.open("GET", url, false);
 	req.send(null);
@@ -385,7 +377,6 @@ dictionary.fileRead = function(url, charset) {
 } // end of fileRead
 
 dictionary.fileReadArray = function(name, charset) {
-	console.log('fileReadArray');
 	var a = dictionary.fileRead(name, charset).split('\n');
 	while ((a.length > 0) && (a[a.length - 1].length == 0)){
 		a.pop();
@@ -414,7 +405,6 @@ dictionary.find = function(data, text) {
 } // end of find
 
 dictionary.loadDictionary = function() {
-	console.log('loadDictionary');
 	dictionary.wordDict = this.fileRead(safari.extension.baseURI + "data/dict.dat");
 	dictionary.wordIndex = this.fileRead(safari.extension.baseURI + "data/dict.idx");
 	dictionary.kanjiData = this.fileRead((safari.extension.baseURI + "data/kanji.dat"), 'UTF-8');
@@ -426,7 +416,6 @@ dictionary.loadDictionary = function() {
 } // end of loadDictionary
 
 dictionary.loadDIF = function() {
-	console.log('loadDIF');
 	dictionary.difReasons = [];
 	dictionary.difRules = [];
 	dictionary.difExact = [];
@@ -461,7 +450,6 @@ dictionary.loadDIF = function() {
 } // end of loadDIF
 
 dictionary.deinflect = function(word) {
-	console.log('deinflect');
 	var r = [];
 	var have = [];
 	var o;
@@ -518,7 +506,6 @@ dictionary.deinflect = function(word) {
 } // end of deinflect
 
 dictionary.wordSearch = function(word, doNames, max) {
-	console.log('wordSearch');
 	var i, u, v, r, p;
 	var trueLen = [0];
 	var entry = { };
@@ -783,7 +770,6 @@ dictionary.kanjiSearch = function(kanji) {
 } // end of kanjiSearch
 
 dictionary.makeHtml = function(entry) {
-	console.log('makeHtml');
 	var e;
 	var b = [];
 	var c, s, t;
@@ -1008,7 +994,6 @@ dictionary.makeHtmlForRuby = function(entry) {
 } // end of makeHtmlForRuby
 
 dictionary.makeText = function(entry, max) {
-	console.log('makeText');
 	var e;
 	var b;
 	var i, j;
