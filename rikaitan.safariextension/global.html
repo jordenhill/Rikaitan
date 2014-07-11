@@ -125,6 +125,7 @@ rikaitan.performCommand = function(event) {
 // shouldEnable - Checks upon opening/changing tabs if it should enable
 rikaitan.shouldEnable = function(event) {
 	if (rikaitan.button == true) {
+		rikaitan.assignValues();
 		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 			"enable", rikaitan.config);
 	}

@@ -136,8 +136,8 @@ rcxContent.getMessage = function(event) {
 		switch(event.name) {
 		case 'enable':
 			console.log('enabled');
-			delete window.rikaichan;
 			rcxContent.enableTab();
+			delete ro;
 			window.rikaichan.config = event.message;
 			break;
 		case 'disable':
@@ -269,31 +269,9 @@ rcxContent._onMouseMove = function(ev) {
 			
 		}
 			
-		// For text nodes do special stuff
-		// we make rp the text area and keep the offset the same
-		// we give the text area data so it can act normal
-		if(fake) {
-			rp = ev.target;
-			rp.data = rp.value
-		}
-		
-		if (ev.target == tdata.prevTarget && this.isVisible()) {
-			//console.log("exit due to same target");
-			if (tdata.title) {
-				if(fake) document.body.removeChild(fake);
-				return;
-			}
-			if ((rp == tdata.prevRangeNode) && (ro == tdata.prevRangeOfs)) {
-				if(fake) document.body.removeChild(fake);
-				return;
-			}
-		}
-			
-		if(fake) document.body.removeChild(fake);
 	}
 	catch(err) {
 		console.log(err.message);
-		if(fake) document.body.removeChild(fake);
 		return;
 	}
 
@@ -352,7 +330,6 @@ rcxContent.onKeyDown = function(ev) {
 rcxContent._onKeyDown = function(ev) {
 	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
 	if ((ev.shiftKey) && (ev.keyCode != 16)) return;
-	if (!this.isVisible()) return;
 	if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
 
 	var i;
@@ -426,9 +403,7 @@ rcxContent.onMouseDown = function(ev) {
 	
 // _onMouseDown
 rcxContent._onMouseDown = function(ev) {
-	if(ev.button != 0) return;
-	if(rcxContent.isVisible()) this.clearHi();
-	
+	if(ev.button != 0) return;	
 	mDown = true;
 	
 	// If we click outside of a text bos then we set oldCaret to -1 as an
@@ -515,16 +490,9 @@ rcxContent.isInline = function(node) {
 	}
 } // end of isInLine
 	
-// isVisible
-rcxContent.isVisible = function() {
-	if (window === window.top) {
-		var popup = document.getElementById('rikaichan-window');
-		return (popup) && (popup.style.display != 'none');
-	}
-} // end of isVisible
-	
 // show
 rcxContent.show = function(tdata, dictOption) {
+	console.log('show')
 	var rp = tdata.prevRangeNode;
 	var ro = tdata.prevRangeOfs + tdata.uofs;
 	var u;
@@ -889,7 +857,6 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 			// we set oldTA to null because we don't want to do weird stuf
 			// with buttons
 	        tdata.oldTA = null;
-	        //console.log("invalid input type for selection:" + rp.type);
 	        console.log(err.message);
 	    }
 		return;

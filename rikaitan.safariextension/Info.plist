@@ -30,7 +30,7 @@
 				<key>Identifier</key>
 				<string>Button</string>
 				<key>Image</key>
-				<string>icon128.png</string>
+				<string>toolbaricon.png</string>
 				<key>Label</key>
 				<string>Rikaitan</string>
 				<key>Tool Tip</key>
