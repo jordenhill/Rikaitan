@@ -330,6 +330,7 @@ rcxContent.onKeyDown = function(ev) {
 rcxContent._onKeyDown = function(ev) {
 	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
 	if ((ev.shiftKey) && (ev.keyCode != 16)) return;
+	if (!this.isVisible()) return;
 	if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
 
 	var i;
@@ -489,7 +490,13 @@ rcxContent.isInline = function(node) {
 	        document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline-block';
 	}
 } // end of isInLine
-	
+
+// isVisible
+rcxContent.isVisible = function() {
+	var popup = document.getElementById('rikaichan-window');
+	return (popup) && (popup.style.display != 'none');
+} // end of isVisible
+
 // show
 rcxContent.show = function(tdata, dictOption) {
 	console.log('show')
