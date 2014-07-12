@@ -44,21 +44,12 @@
 */
 
 var rcxContent = {
-	dictCount: 3,
 	altView: 0,
+	defaultDict: 2,
+	dictCount: 3,
 	sameDict: 0,
 	forceKanji: 0,
-	defaultDict: 2,
-	nextDict: 3,
-	textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
-	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
-	lastSelEnd: [],
-	lastRo: 0,
-	lastFound: null,	
-	mDown: false,
-	kanjiN: 1,
-	namesN: 2,
-	superStickyMode: false,
+	hideInStickyMode: false,
 	inlineNames: {
 		// text node
 		'#text': true,
@@ -102,19 +93,30 @@ var rcxContent = {
 		'RB': true,
 		'RT': true,
 		'RP': true
-	}
-}
+	},
+	kanjiN: 1,
+	lastFound: null,	
+	lastRo: 0,
+	lastSelEnd: [],
+	mDown: false,
+	namesN: 2,
+	nextDict: 3,
+	showInStickyMode: false,
+	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
+	superStickyMode: false,
+	textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
+}	
 
 var dictionary = {
-	config: {},
 	// katakana -> hiragana conversion tables
 	ch:[0x3092,0x3041,0x3043,0x3045,0x3047,0x3049,0x3083,0x3085,0x3087,0x3063,0x30FC,0x3042,0x3044,0x3046,
 		0x3048,0x304A,0x304B,0x304D,0x304F,0x3051,0x3053,0x3055,0x3057,0x3059,0x305B,0x305D,0x305F,0x3061,
 		0x3064,0x3066,0x3068,0x306A,0x306B,0x306C,0x306D,0x306E,0x306F,0x3072,0x3075,0x3078,0x307B,0x307E,
 		0x307F,0x3080,0x3081,0x3082,0x3084,0x3086,0x3088,0x3089,0x308A,0x308B,0x308C,0x308D,0x308F,0x3093],
+	config: {},
+	cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
 	cv:[0x30F4,0xFF74,0xFF75,0x304C,0x304E,0x3050,0x3052,0x3054,0x3056,0x3058,0x305A,0x305C,0x305E,0x3060,
 		0x3062,0x3065,0x3067,0x3069,0xFF85,0xFF86,0xFF87,0xFF88,0xFF89,0x3070,0x3073,0x3076,0x3079,0x307C],
-	cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
 	numList: [
 		'H',	'Halpern',
 		'L',	'Heisig',
@@ -130,14 +132,14 @@ var dictionary = {
 	],
 };
 
-// getMessage
+// Gets the messages passed from global.html and performs the corresponding
+// function
 rcxContent.getMessage = function(event) {
 	if (window === window.top) {
 		switch(event.name) {
 		case 'enable':
 			console.log('enabled');
 			rcxContent.enableTab();
-			delete ro;
 			window.rikaichan.config = event.message;
 			break;
 		case 'disable':
@@ -157,9 +159,9 @@ rcxContent.getMessage = function(event) {
 			break;
 		}
 	}
-} // end of getMessage
+}
 
-// enableTab
+// Enables the event listeners for Rikaitan
 rcxContent.enableTab = function() {
 		if(window.rikaichan == null) {
 			window.rikaichan = {};
@@ -169,9 +171,9 @@ rcxContent.enableTab = function() {
 			window.addEventListener('mousedown', this.onMouseDown, false);
 			window.addEventListener('mouseup', this.onMouseUp, false);
 		}
-} // end of enableTab
+}
 	
-// disableTab
+// Disable the event listeners for Rikaitan
 rcxContent.disableTab = function() {
 	if (window.rikaichan != null) {
 		var graphics;
@@ -190,192 +192,207 @@ rcxContent.disableTab = function() {
 		this.clearHi();
 		delete window.rikaichan;
 	}
-} //end of disableTab
-	
-// onMouseMove
-rcxContent.onMouseMove = function(ev) {
-	if (window === window.top) rcxContent._onMouseMove(ev);
-} //end of onMouseMove
+}
 
 // _onMouseMove
-rcxContent._onMouseMove = function(ev) {
+rcxContent.onMouseMove = function(ev) {
 	if (window === window.top) {
-	var fake;
-	// Put this in a try catch so that an exception here doesn't prevent editing due to div.
-	try {			
-		var tdata = window.rikaichan;
-		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-		var rp = range.startContainer;
-		var ro = range.startOffset;
-		if(fake) {
-			// At the end of a line, don't do anything or you just get beginning of next line
-			if((rp.data) && rp.data.length == ro) {
-				document.body.removeChild(fake);
-				return;
-			}
-			fake.style.display = "none";
-			ro = this.getTotalOffset(rp.parentNode, rp, ro);
-		}
+		try {			
+			var tdata = window.rikaichan;
+			var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+			var rp = range.startContainer;
+			var ro = range.startOffset;
 			
-		if (tdata.timer) {
-			clearTimeout(tdata.timer);
-			tdata.timer = null;
-		}
-			
-		// This is to account for bugs in caretRangeFromPoint
-		// It includes the fact that it returns text nodes over non text nodes
-		// and also the fact that it miss the first character of inline nodes.
-		// If the range offset is equal to the node data length
-		// Then we have the second case and need to correct.
-		if((rp.data) && ro == rp.data.length) {
-			// A special exception is the WBR tag which is inline but doesn't
-			// contain text.
-			if((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
-				rp = rp.nextSibling.nextSibling;
-				ro = 0;
+			if (tdata.timer) {
+				clearTimeout(tdata.timer);
+				tdata.timer = null;
 			}
-			// If we're to the right of an inline character we can use the target.
-			// However, if we're just in a blank spot don't do anything.
-			else if(rcxContent.isInline(ev.target))	{
-					if(rp.parentNode == ev.target) ;
-					else if(fake && rp.parentNode.innerText == ev.target.value) ;
+			
+			// This is to account for bugs in caretRangeFromPoint
+			// It includes the fact that it returns text nodes over non text 
+			// nodes and also the fact that it miss the first character of 
+			// inline nodes. If the range offset is equal to the node data 
+			// length, then we have the second case and need to correct.
+			if ((rp.data) && ro == rp.data.length) {
+			
+				// A special exception is the WBR tag which is inline but 
+				// doesn't contain text.
+				if ((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
+					rp = rp.nextSibling.nextSibling;
+					ro = 0;
+				}
+			
+				// If we're to the right of an inline character we can use the 
+				// target. However, if we're just in a blank spot don't do 
+				// anything.
+				else if (rcxContent.isInline(ev.target)) {
+					if (rp.parentNode == ev.target) {
+						;
+					}
+					else if (rp.parentNode.innerText == ev.target.value) {
+						;
+					}
 					else {
-					rp = ev.target.firstChild;
+						rp = ev.target.firstChild;
+						ro = 0;
+					}
+				}
+				
+				// Otherwise we're on the right and can take the next sibling 
+				// of the inline element.
+				else {
+					rp = rp.parentNode.nextSibling
 					ro = 0;
 				}
 			}
-			// Otherwise we're on the right and can take the next sibling of the
-			// inline element.
-			else{
-				rp = rp.parentNode.nextSibling
-				ro = 0;
+			
+			// The case where the before div is empty so the false spot is in 
+			// the parent, but we should be able to take the target. The 1 
+			// seems random but it actually represents the preceding empty tag 
+			// also we don't want it to mess up with our fake div. Also, form 
+			// elements don't seem to fall into this case either.
+			if (!('form' in ev.target) && rp && rp.parentNode != ev.target && 
+					ro == 1) {
+				rp = rcxContent.getFirstTextChild(ev.target);
+				ro=0;
+			}
+					
+			// Otherwise, we're off in nowhere land and we should go home.
+			// offset should be 0 or max in this case.
+			else if((!(rp) || ((rp.parentNode != ev.target)))){
+				rp = null;
+				ro = -1;
+			}
+			
+		}
+		catch(err) {
+			console.log(err.message);
+			return;
+		}
+
+		tdata.prevTarget = ev.target;
+		tdata.prevRangeNode = rp;
+		tdata.prevRangeOfs = ro;
+		tdata.title = null;
+		tdata.uofs = 0;
+		this.uofsNext = 1;
+		
+		if ((rp) && (rp.data) && (ro < rp.data.length)) {
+			rcxContent.forceKanji = ev.shiftKey ? 1 : 0;
+			tdata.popX = ev.clientX;
+			tdata.popY = ev.clientY;
+			tdata.timer = setTimeout( 
+					function() { 
+						rcxContent.show(tdata, rcxContent.forceKanji ? 
+						rcxContent.forceKanji : rcxContent.defaultDict); 
+					}, 1);
+		return;
+		}
+
+		// For images with Japanese text
+		if (ev.target.nodeName == 'IMG') {
+			tdata.title = ev.target.alt;
+		}
+
+		if (tdata.title) {
+			tdata.popX = ev.clientX;
+			tdata.popY = ev.clientY;
+			rcxContent.showTitle(tdata);
+		}
+		else {
+		
+			// dont close just because we moved from a valid popup slightly 
+			// over to a place with nothing
+			var dx = tdata.popX - ev.clientX;
+			var dy = tdata.popY - ev.clientY;
+			var distance = Math.sqrt(dx * dx + dy * dy);
+		
+			if (distance > 3) {
+				this.clearHi();
+				this.hidePopup();
 			}
 		}
-		// The case where the before div is empty so the false spot is in the parent
-		// But we should be able to take the target.
-		// The 1 seems random but it actually represents the preceding empty tag
-		// also we don't want it to mess up with our fake div
-		// Also, form elements don't seem to fall into this case either.
-		if(!(fake) && !('form' in ev.target) && rp && rp.parentNode != ev.target && ro == 1) {
-			rp = rcxContent.getFirstTextChild(ev.target);
-			ro=0;
-		}
-					
-		// Otherwise, we're off in nowhere land and we should go home.
-		// offset should be 0 or max in this case.
-		else if(!(fake) && (!(rp) || ((rp.parentNode != ev.target)))){
-			rp = null;
-			ro = -1;
-			
-		}
-			
-	}
-	catch(err) {
-		console.log(err.message);
-		return;
-	}
-
-	tdata.prevTarget = ev.target;
-	tdata.prevRangeNode = rp;
-	tdata.prevRangeOfs = ro;
-	tdata.title = null;
-	tdata.uofs = 0;
-	this.uofsNext = 1;
-	
-	if ((rp.data) && (ro < rp.data.length)) {
-		this.forceKanji = ev.shiftKey ? 1 : 0;
-		tdata.popX = ev.clientX;
-		tdata.popY = ev.clientY;
-		tdata.timer = setTimeout(
-			function() {
-				rcxContent.show(tdata, rcxContent.forceKanji ? rcxContent.forceKanji : rcxContent.defaultDict);
-			}, 0);
-		return;
-	}
-	
-	if (true) {
-		if ((typeof(ev.target.title) == 'string') && (ev.target.title.length)) tdata.title = ev.target.title;
-		else if ((typeof(ev.target.alt) == 'string') && (ev.target.alt.length)) tdata.title = ev.target.alt;
-	}
-
-	// FF3
-	if (ev.target.nodeName == 'OPTION') tdata.title = ev.target.text;
-	else if (ev.target.nodeName == 'SELECT') tdata.title = ev.target.options[ev.target.selectedIndex].text;
-
-	if (tdata.title) {
-		tdata.popX = ev.clientX;
-		tdata.popY = ev.clientY;
-		tdata.timer = window.setTimeout(rcxContent.showTitle(tdata), 1, tdata);
-	}
-	else {
-		// dont close just because we moved from a valid popup slightly over to a place with nothing
-		var dx = tdata.popX - ev.clientX;
-		var dy = tdata.popY - ev.clientY;
-		var distance = Math.sqrt(dx * dx + dy * dy);
-		if (distance > 3) {
-			this.clearHi();
-			this.hidePopup();
-			delete tdata.popX, tdata.PopY;
-		}
 	}
 }
-}
-	
-// onKeyDown
+
+// _onKeyDown needs this to function properly	
 rcxContent.onKeyDown = function(ev) {
-	if (window === window.top) rcxContent._onKeyDown(ev);
-} // end of onKeyDown
-	
-// _onKeyDown
-rcxContent._onKeyDown = function(ev) {
-	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
-	if ((ev.shiftKey) && (ev.keyCode != 16)) return;
-	if (!this.isVisible()) return;
-	if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) return;
+	rcxContent._onKeyDown(ev)
+}
 
+// Called when a key is pressed and checks for keys that activate a process or
+// feature
+rcxContent._onKeyDown = function(ev) {
+	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) {
+		return;
+	}
+	if ((ev.shiftKey) && (ev.keyCode != 16)) {
+		return;
+	}
+	if (!rcxContent.isVisible()) {
+		return;
+	}
+	if (window.rikaichan.config.disablekeys == 'true' && (ev.keyCode != 16)) {
+		return;
+	}
+	
 	var i;
 
 	switch (ev.keyCode) {
-	case 16:	// shift
-	case 13:	// enter
+	case 13:	// enter - Change to a different dictionary
+	case 16:	// shift - Change to a different dictionary
 		this.show(ev.currentTarget.rikaichan, this.nextDict);
 		break;
-	case 27:	// esc
+	case 27:	// esc - Remove the popup
+	if (this.superStickyMode) {
+		this.hideInStickyMode = true;
+	}
 		this.hidePopup();
 		this.clearHi();
 		break;
-	case 65:	// a
+	case 65:	// a - Alternate popup location
+		this.initialStickyPopup();
 		this.altView = (this.altView + 1) % 3;
 		this.show(ev.currentTarget.rikaichan, this.sameDict);
 		break;
-	case 67:	// c
+	case 67:	// c - Copy to clip
 		safari.self.tab.dispatchMessage("copyToClip", rcxContent.lastFound);
 		break;
-	case 66:	// b
+	case 66:	// b - Previous character
+		this.initalStickyPopup();
 		var ofs = ev.currentTarget.rikaichan.uofs;
 		for (i = 50; i > 0; --i) {
 			ev.currentTarget.rikaichan.uofs = --ofs;
 			if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) {
-				if (ofs >= ev.currentTarget.rikaichan.uofs) break;
+				if (ofs >= ev.currentTarget.rikaichan.uofs) {
+					break;
+				}
 			}
 		}
 		break;
-	case 68:	// d
+	case 68:	// d - Hide or show definitions
+		this.initialStickyPopup();
 		safari.self.tab.dispatchMessage("switchOnlyReading", "");
 		this.show(ev.currentTarget.rikaichan, this.sameDict);
 		break;
-	case 77:	// m
+	case 77:	// m - Next character
+		this.initialStickyPopup();
 		ev.currentTarget.rikaichan.uofsNext = 1;
-	case 78:	// n
+	case 78:	// n - Next word
+		this.initialStickyPopup();
 		for (i = 50; i > 0; --i) {
 			ev.currentTarget.rikaichan.uofs += ev.currentTarget.rikaichan.uofsNext;
-			if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) break;
+			if (this.show(ev.currentTarget.rikaichan, this.defaultDict) >= 0) {
+				break;
+			}
 		}
 		break;
-	case 79:   // o
+	case 79:   // o - Super sticky mode
 		this.superSticky();
+		this.initialStickyPopup();
 		break;
-	case 89:   // y
+	case 89:   // y - Move popup down
+		this.initialStickyPopup();
 		this.altView = 0;
 		ev.currentTarget.rikaichan.popY += 20;
 		this.show(ev.currentTarget.rikaichan, this.sameDict);
@@ -384,69 +401,67 @@ rcxContent._onKeyDown = function(ev) {
 		return;
 	}
 
-	//this.keysDown[ev.keyCode] = 1;
-
 	// don't eat shift if in this mode
 	if (true) {
 		ev.preventDefault();
 	}
-} // end of onKeyDown
+}
 	
-// onKeyUp
-rcxContent.onKeyUp = function(ev) {
-	//if (rcxContent.keysDown[ev.keyCode]) rcxContent.keysDown[ev.keyCode] = 0;
-} // end of onKeyUp
-	
-// onMouseDown
+// Called when the mouse is clicked
 rcxContent.onMouseDown = function(ev) {
-	rcxContent._onMouseDown(ev);
-} // end of onMouseDown
+	if(ev.button != 0) {
+		return;	
+	}
 	
-// _onMouseDown
-rcxContent._onMouseDown = function(ev) {
-	if(ev.button != 0) return;	
 	mDown = true;
 	
 	// If we click outside of a text bos then we set oldCaret to -1 as an
 	// indicator not to restore position. Otherwise, we switch our saved
 	// text area to wherever we just clicked
 	
-	if(!('form' in ev.target)) window.rikaichan.oldCaret = -1;
-	else window.rikaichan.oldTA = ev.target;
-} // end of _onMouseDown
+	if(!('form' in ev.target)) {
+		window.rikaichan.oldCaret = -1;
+	}
+	else {
+		window.rikaichan.oldTA = ev.target;
+	}
+}
 	
-// onMouseUp
+// Called when the mouse button is released
 rcxContent.onMouseUp = function(ev) {
-	rcxContent._onMouseUp(ev);
-} // end of onMouseUp
-	
-// _onMouseUp
-rcxContent._onMouseUp = function(ev) {
 	if (ev.button != 0) return;
 	mDown = false;
-} // end of _onMouseUp
+}
 	
-// clearHi
+// Called in order to clear the highlighted text when necessary
 rcxContent.clearHi = function(ev) {
 	var tdata = window.rikaichan;
-	if ((!tdata) || (!tdata.prevSelView)) return;
+	
+	if ((!tdata) || (!tdata.prevSelView)) {
+		return;
+	}
 	if (tdata.prevSelView.closed) {
 		tdata.prevselView = null;
 		return;
 	}
 	
 	var sel = tdata.prevSelView.getSelection();
+	
 	// If there is an empty selection or the slection was done by rikaitan
 	// then we'll clear it.
+	
 	if ((!sel.toString()) || (tdata.selText == sel.toString())) {
+		
 		// In the case of no selection we clear the oldTA. The reason for
 		// this is because if there's no selection we probably clicked
 		// somewhere else and we don't want to bounce back.
 		if (!sel.toString()) {
 			tdata.oldTA = null;
 		}
+		
 		// clear all selections
 		sel.removeAllRanges();
+		
 		// Text area stuff. If oldTA is still around that means we had a
 		// highlighted region which we just cleared and now we're going to
 		// jump back to where we were. The cursor was before our lookup if
@@ -460,9 +475,9 @@ rcxContent.clearHi = function(ev) {
 	tdata.prevSelView = null;
 	tdata.kanjiChar = null;
 	tdata.selText = null;
-} // end of clearHi
+}
 	
-//getTotalOffset
+// getTotalOffset
 rcxContent.getTotalOffset = function(parent, tNode, offset) {
 	var fChild = parent.firstChild;
 	var realO = offset;
@@ -481,28 +496,30 @@ rcxContent.getTotalOffset = function(parent, tNode, offset) {
 	} while ((fChild = fChild.nextSibling) != tNode);
 	
 	return realO;
-} // end of getTotalOffset
+}
 
-// isInline	
+// Checks to see if portion of text is part of  entire line of text	
 rcxContent.isInline = function(node) {
 	if (window === window.top) {
-		return this.inlineNames.hasOwnProperty(node.nodeName) || document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline' ||
-	        document.defaultView.getComputedStyle(node,null).getPropertyValue('display') == 'inline-block';
+		return this.inlineNames.hasOwnProperty(node.nodeName) ||
+		document.defaultView.getComputedStyle(node,null).getPropertyValue('display') ==
+		 'inline' || document.defaultView.getComputedStyle(node,null).getPropertyValue('display') ==
+		 'inline-block';
 	}
-} // end of isInLine
+}
 
-// isVisible
+// Checks to see if the popup is currently visible
 rcxContent.isVisible = function() {
 	var popup = document.getElementById('rikaichan-window');
 	return (popup) && (popup.style.display != 'none');
-} // end of isVisible
+}
 
-// show
+// Gets text to prepare the translation and popup display
 rcxContent.show = function(tdata, dictOption) {
-	console.log('show')
 	var rp = tdata.prevRangeNode;
 	var ro = tdata.prevRangeOfs + tdata.uofs;
 	var u;
+	
 	tdata.uofsNext = 1;
 	
 	if (!rp) {
@@ -548,14 +565,14 @@ rcxContent.show = function(tdata, dictOption) {
 	textData = {'text':text, 'dictOption':dictOption};
 	safari.self.tab.dispatchMessage("xsearch", textData);
 	return 1;
-} // end of show
+}
 
-// showTitle	
+// Sends a message to global.html to translate title text	
 rcxContent.showTitle = function(tdata) {
-	safari.self.tab.dispatchMessage("translate", tdata);
-} // end of showTitle
+	safari.self.tab.dispatchMessage("translate", tdata.title);
+}
 
-// getContentType
+// Checks the content type of data contained in tDoc
 rcxContent.getContentType = function(tDoc) {
 	var m = tDoc.getElementsByTagName('meta');
 	for(var i in m) {
@@ -566,11 +583,10 @@ rcxContent.getContentType = function(tDoc) {
 		}
 	}
 	return null;
-} // end of getContentType
+}
 
-// showPopup
+// Displays the popup containing the dictionary information
 rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
-	if (window === window.top) {
 	topdoc = window.document;
 
 	if ((isNaN(x)) || (isNaN(y))) x = y = 0;
@@ -579,23 +595,20 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	var popup = topdoc.getElementById('rikaichan-window');
 	if (!popup) {
 		var css = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'link');
+		var cssdoc = window.rikaichan.config.css;
+		
 		css.setAttribute('rel', 'stylesheet');
 		css.setAttribute('type', 'text/css');
-		var cssdoc = window.rikaichan.config.css;
 		css.setAttribute('href', (safari.extension.baseURI + ('css/popup-' + 
 																cssdoc + '.css')));
 		css.setAttribute('id', 'rikaichan-css');
 		topdoc.getElementsByTagName('head')[0].appendChild(css);
-
 		popup = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'div');
 		popup.setAttribute('id', 'rikaichan-window');
 		topdoc.documentElement.appendChild(popup);
 
 		popup.addEventListener('dblclick',
- 			function (ev) {
-				rcxContent.hidePopup();
-				ev.stopPropagation();
-			}, true);
+ 			function (ev) { rcxContent.hidePopup(); ev.stopPropagation(); }, true);
 	}
 
 	popup.style.width = 'auto';
@@ -627,7 +640,9 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 		var pH = popup.offsetHeight;
 
 		// guess!
-		if (pW <= 0) pW = 200;
+		if (pW <= 0) {
+			pW = 200;
+		}
 		if (pH <= 0) {
 			pH = 0;
 			var j = 0;
@@ -646,34 +661,8 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 			x = (window.innerWidth - (pW + 20)) + window.scrollX;
 			y = (window.innerHeight - (pH + 20)) + window.scrollY;
 		}
-		// FIXME: This probably doesn't actually work
-		else if (elem instanceof window.HTMLOptionElement) {
-			// these things are always on z-top, so go sideways
-
-			x = 0;
-			y = 0;
-
-			var p = elem;
-			while (p) {
-				x += p.offsetLeft;
-				y += p.offsetTop;
-				p = p.offsetParent;
-			}
-			if (elem.offsetTop > elem.parentNode.clientHeight) y -= elem.offsetTop;
-
-			if ((x + popup.offsetWidth) > window.innerWidth) {
-				// too much to the right, go left
-				x -= popup.offsetWidth + 5;
-				if (x < 0) x = 0;
-			}
-			else {
-				// use SELECT's width
-				x += elem.parentNode.offsetWidth + 5;
-			}
-		}
+		
 		else {
-			//x -= bbo.screenX;
-			//y -= bbo.screenY;
 
 			// go left if necessary
 			if ((x + pW) > (window.innerWidth - 20)) {
@@ -688,10 +677,6 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 			if ((elem.title) && (elem.title != '')) v += 20;
 
 			// go up if necessary
-			/*if ((y + v + pH) > window.innerHeight) {
-				var t = y - pH - 30;
-				if (t >= 0) y = t;
-			}*/
 			else y += v;
 				
 
@@ -708,26 +693,28 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	popup.style.top = y + 'px';
 	popup.style.display = '';
 }
-}// end of showPopup
 
-// hidePopup
+// Hides the popup
 rcxContent.hidePopup = function() {
-	var popup = document.getElementById('rikaichan-window');
-	if (popup) {
-		popup.style.display = 'none';
-		popup.innerHTML = '';
+	if (!this.superStickyMode || this.hideInStickyMode) {
+		this.hideInStickyMode = false;
+		var popup = document.getElementById('rikaichan-window');
+		if (popup) {
+			popup.style.display = 'none';
+			popup.innerHTML = '';
+		}
+		this.title = null;
 	}
-	this.title = null;
-} // end of hidePopup
+}
 
-// unicodeInfo
+// Assigns unicode information
 rcxContent.unicodeInfo = function(c) {
 	hex = '0123456789ABCDEF';
 	u = c.charCodeAt(0);
 	return c + 'U' + hex[(u >>> 12) & 15] + hex[(u >>> 8) & 15] + hex[(u >>> 4) & 15] + hex[(u & 15)];
-} // end of unicodeInfo
+}
 
-// getInlineText
+// Gets the string of text
 rcxContent.getInlineText = function(node, selEndList, maxLength, xpathExpr) {
 	var text = '';
 	var endIndex;
@@ -738,7 +725,8 @@ rcxContent.getInlineText = function(node, selEndList, maxLength, xpathExpr) {
 		return node.data.substring(0, endIndex);
 	}
 	
-	var result = xpathExpr.evaluate(node, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+	var result = xpathExpr.evaluate(node, XPathResult.ORDERED_NODE_ITERATOR_TYPE, 
+		null);
 	
 	while ((text.length < maxLength) && (node = result.iterateNext())) {
 		endIndex = Math.min(node.data.length, maxLength - text.length);
@@ -747,18 +735,22 @@ rcxContent.getInlineText = function(node, selEndList, maxLength, xpathExpr) {
 	}
 	
 	return text;
-} // end of getInlineText
+}
 
-// getNext
+// Gets the next node
 rcxContent.getNext = function(node) {
 	var nextNode;
 	
-	if ((nextNode = node.nextSibling) != null) return nextNode;
-	if (((nextNode = node.parentNode) != null) && this.isInline(nextNode)) return this.getNext(nextNode);
+	if ((nextNode = node.nextSibling) != null) {
+		return nextNode;
+	}
+	if (((nextNode = node.parentNode) != null) && this.isInline(nextNode)) {
+		return this.getNext(nextNode);
+	}
 	return null;
-} // end of getNext
+}
 
-// getTextFromRange
+// Gets the text from within the corresponding range
 rcxContent.getTextFromRange = function(rangeParent, offset, selEndList, maxLength) {
 	if(rangeParent.nodeName == 'textarea' || rangeParent.nodeName == 'INPUT') {
 		var endIndex = Math.min(rangeParent.data.length, offset + maxLength);
@@ -769,7 +761,8 @@ rcxContent.getTextFromRange = function(rangeParent, offset, selEndList, maxLengt
 
 	var xpathExpr = rangeParent.ownerDocument.createExpression(rcxContent.textNodeExpr, null);
 
-	if (rangeParent.ownerDocument.evaluate(this.startElementExpr, rangeParent, null, XPathResult.BOOLEAN_TYPE, null).booleanValue) {
+	if (rangeParent.ownerDocument.evaluate(this.startElementExpr, rangeParent, 
+			null, XPathResult.BOOLEAN_TYPE, null).booleanValue) {
 		return '';
 	}
 	if (rangeParent.nodeType != Node.TEXT_NODE) {
@@ -781,13 +774,15 @@ rcxContent.getTextFromRange = function(rangeParent, offset, selEndList, maxLengt
 	selEndList.push({'node':rangeParent, 'offset':endIndex});
 
 	var nextNode = rangeParent;
-	while (((nextNode = this.getNext(nextNode)) != null) && (this.isInline(nextNode)) && (text.length < maxLength))
-		text += this.getInlineText(nextNode, selEndList, maxLength - text.length, xpathExpr);
-
+	while (((nextNode = this.getNext(nextNode)) != null) && 
+			(this.isInline(nextNode)) && (text.length < maxLength)) {
+		text += this.getInlineText(nextNode, selEndList, maxLength - 
+			text.length, xpathExpr);
+	}
 	return text;
-} // end of getTextFromRange
+}
 
-// processEntry
+// Processes the translation data
 rcxContent.processEntry = function(e) {
 	tdata = window.rikaichan;
 	ro = rcxContent.lastRo;
@@ -800,14 +795,19 @@ rcxContent.processEntry = function(e) {
 	}
 	rcxContent.lastFound = [e];
 
-	if (!e.matchLen) e.matchLen = 1;
+	if (!e.matchLen) {
+		e.matchLen = 1;
+	}
 	tdata.uofsNext = e.matchLen;
 	tdata.uofs = (ro - tdata.prevRangeOfs);
 	rp = tdata.prevRangeNode;
+	
 	// don't try to highlight form elements
-	if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && !('form' in tdata.prevTarget))  || 
+	if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && 
+				!('form' in tdata.prevTarget))  || 
 				(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
 		var doc = rp.ownerDocument;
+		
 		if (!doc) {
 			rcxContent.clearHi();
 			rcxContent.hidePopup();
@@ -818,28 +818,33 @@ rcxContent.processEntry = function(e) {
 	}
 	
 	safari.self.tab.dispatchMessage("makehtml", e);
-} // end of processEntry
+}
 
-// processHtml
+// Processes the HTML translation data
 rcxContent.processHtml = function(html) {
 	if (window === window.top) {
-		tdata = window.rikaichan;
-		rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
-		return 1;
+		if (!this.superStickyMode || this.showInStickyMode) {
+			tdata = window.rikaichan;
+			this.showInStickyMode = false;
+			rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
+			return 1;
+		}
 	}
-} // end of processHtml
+}
 
-// highlightMatch
+// Highlight the text that will be translated
 rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 	var sel = doc.defaultView.getSelection();
+	
 	// If selEndList is empty then we're dealing with a textarea/input situation
 	if (selEndList.length === 0) { 
 	    try {
 			if(rp.nodeName == '#text' || rp.nodeName == 'INPUT') {
 				// If there is already a selected region not caused by
 				// rikaikun, leave it alone
-				if((sel.toString()) && (tdata.selText != sel.toString()))
+				if((sel.toString()) && (tdata.selText != sel.toString())) {
 					return;
+				}
 				
 				// If there is no selected region and the saved
 				// textbox is the same as the current one
@@ -857,6 +862,7 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 			}
 	    }
 	    catch(err) {
+			
 			// If there is an error it is probably caused by the input type
 			// being not text.  This is the most general way to deal with
 			// arbitrary types.
@@ -872,13 +878,16 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 	// Special case for leaving a text box to an outside japanese
 	// Even if we're not currently in a text area we should save
 	// the last one we were in.
-	if(tdata.oldTA && !sel.toString() && tdata.oldCaret >= 0)
+	if(tdata.oldTA && !sel.toString() && tdata.oldCaret >= 0){
 		tdata.oldCaret = tdata.oldTA.selectionStart;   
-            
+	}
+	
 	var offset = matchLen + ro;
 	for (var i = 0; i < selEndList.length; i++) {
 		var selEnd = selEndList[i]
-		if (offset <= selEnd.offset) break;
+		if (offset <= selEnd.offset) {
+			break;
+		}
 		offset -= selEnd.offset;
 	}
 
@@ -886,20 +895,21 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 	range.setStart(rp, ro);
 	range.setEnd(selEnd.node, offset);
 
-	if ((sel.toString()) && (tdata.selText != sel.toString())) return;
+	if ((sel.toString()) && (tdata.selText != sel.toString())) {
+		return;
+	}
 	sel.removeAllRanges();
 	sel.addRange(range);
 	tdata.selText = sel.toString();
-} // end of highlightMatch
+}
 
-// processTitle
+// Process the title text of an image
 rcxContent.processTitle = function(e) {
 	tdata = window.rikaichan;
 	if (!e) {
 		rcxContent.hidePopup();
 		return;
 	}
-	console.log(tdata);
 	e.title = tdata.title.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) { return '&#' + c.charCodeAt(0) + ';' } );
 	if (tdata.title.length > e.textLen) {
 		e.title += '...';
@@ -907,18 +917,17 @@ rcxContent.processTitle = function(e) {
 	
 	this.lastFound = [e];
 	
-	var html = dictionary.makeHtml(e);
-	rcxContent.processHtml(html)
-}, // end of processTitle
+	safari.self.tab.dispatchMessage("makehtml", e);
+}
 
 //getFirstTextChild
 rcxContent.getFirstTextChild = function(node) {
 	return document.evaluate('descendant::text()[not(parent::rp) and not(ancestor::rt)]',
 						node, null, XPathResult.ANY_TYPE, null).iterateNext();
 		//
-} // end of getFirstTextChild
+}
 
-//method to toggle Super-sticky mode
+//method to toggle Super-sticky mode, which keeps the popup until dismissed
 rcxContent.superSticky = function() {
 	this.superStickyMode = !this.superStickyMode;
 	if (this.superStickyMode == true) {
@@ -926,6 +935,12 @@ rcxContent.superSticky = function() {
 	}
 	else {
 		this.showPopup("Super-sticky mode disabled");
+	}
+}
+
+rcxContent.initialStickyPopup = function() {
+	if (this.superStickyMode) {
+		this.showInStickyMode = true;
 	}
 }
 

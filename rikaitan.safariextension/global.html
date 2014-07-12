@@ -146,9 +146,9 @@ rikaitan.getMessageFromJs = function(event) {
 			break;
 		case 'translate':
 			console.log(event.message);
-			var t = dictionary.translate(event.message)
+			var trans = dictionary.translate(event.message)
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"processtitle", t);
+				"processtitle", trans);
 			break;
 		case 'makehtml':
 			var html = dictionary.makeHtml(event.message);
