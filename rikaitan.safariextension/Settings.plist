@@ -4,7 +4,7 @@
 <array>
 	<dict>
 		<key>DefaultValue</key>
-		<string>blue</string>
+		<string>translucent</string>
 		<key>Key</key>
 		<string>popupcolor</string>
 		<key>Title</key>

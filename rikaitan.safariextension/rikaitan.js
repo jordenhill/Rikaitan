@@ -4,7 +4,7 @@
 
 	---
 
-	Rikaikun
+	Originally based on Rikaikun
 	Copyright (C) 2010 Erek Speed
 	http://code.google.com/p/rikaikun/
 	
@@ -306,10 +306,10 @@ rcxContent.onMouseMove = function(ev) {
 			var dx = tdata.popX - ev.clientX;
 			var dy = tdata.popY - ev.clientY;
 			var distance = Math.sqrt(dx * dx + dy * dy);
-		
-			if (distance > 3) {
-				this.clearHi();
-				this.hidePopup();
+
+			if (distance > 2) {
+				rcxContent.clearHi();
+				rcxContent.hidePopup();
 			}
 		}
 	}
@@ -434,7 +434,7 @@ rcxContent.onMouseUp = function(ev) {
 }
 	
 // Called in order to clear the highlighted text when necessary
-rcxContent.clearHi = function(ev) {
+rcxContent.clearHi = function() {
 	var tdata = window.rikaichan;
 	
 	if ((!tdata) || (!tdata.prevSelView)) {
@@ -498,7 +498,7 @@ rcxContent.getTotalOffset = function(parent, tNode, offset) {
 	return realO;
 }
 
-// Checks to see if portion of text is part of  entire line of text	
+// Checks to see if portion of text is part of entire line of text	
 rcxContent.isInline = function(node) {
 	if (window === window.top) {
 		return this.inlineNames.hasOwnProperty(node.nodeName) ||
@@ -585,7 +585,7 @@ rcxContent.getContentType = function(tDoc) {
 	return null;
 }
 
-// Displays the popup containing the dictionary information
+// Displays the popup containing the dictionary and CSS information
 rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	topdoc = window.document;
 
@@ -615,7 +615,7 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	popup.style.height = 'auto';
 	popup.style.maxWidth = (looseWidth ? '' : '600px');
 	popup.style.opacity = window.rikaichan.config.opacity / 100;
-		
+
 	if (rcxContent.getContentType(topdoc) == 'text/plain') {
 		var df = document.createDocumentFragment();
 		df.appendChild(document.createElementNS('http://www.w3.org/1999/xhtml', 'span'));
