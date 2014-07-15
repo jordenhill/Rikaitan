@@ -43,6 +43,8 @@
 
 */
 
+"use strict";
+
 var rcxContent = {
 	altView: 0,
 	defaultDict: 2,
@@ -291,7 +293,13 @@ rcxContent.onMouseMove = function(ev) {
 
 		// For images with Japanese text
 		if (ev.target.nodeName == 'IMG') {
-			tdata.title = ev.target.alt;
+			console.log(ev.target)
+			if (ev.target.alt) {
+				tdata.title = ev.target.alt;
+			}
+			else if (ev.target.title) {
+				tdata.title = ev.target.title;
+			}
 		}
 
 		if (tdata.title) {
@@ -413,7 +421,7 @@ rcxContent.onMouseDown = function(ev) {
 		return;	
 	}
 	
-	mDown = true;
+	var mDown = true;
 	
 	// If we click outside of a text bos then we set oldCaret to -1 as an
 	// indicator not to restore position. Otherwise, we switch our saved
@@ -430,7 +438,7 @@ rcxContent.onMouseDown = function(ev) {
 // Called when the mouse button is released
 rcxContent.onMouseUp = function(ev) {
 	if (ev.button != 0) return;
-	mDown = false;
+	var mDown = false;
 }
 	
 // Called in order to clear the highlighted text when necessary
@@ -562,7 +570,7 @@ rcxContent.show = function(tdata, dictOption) {
 	
 	rcxContent.lastSelEnd = selEndList;
 	rcxContent.lastRo = ro;
-	textData = {'text':text, 'dictOption':dictOption};
+	var textData = {'text':text, 'dictOption':dictOption};
 	safari.self.tab.dispatchMessage("xsearch", textData);
 	return 1;
 }
@@ -587,7 +595,7 @@ rcxContent.getContentType = function(tDoc) {
 
 // Displays the popup containing the dictionary and CSS information
 rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
-	topdoc = window.document;
+	var topdoc = window.document;
 
 	if ((isNaN(x)) || (isNaN(y))) x = y = 0;
 
@@ -635,7 +643,7 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 		popup.style.left = '0px';
 		popup.style.display = '';
 
-		bbo = window;
+		var bbo = window;
 		var pW = popup.offsetWidth;
 		var pH = popup.offsetHeight;
 
@@ -671,7 +679,7 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 			}
 
 			// below the mouse
-			const v = 25;
+			var v = 25;
 
 			// under the popup title
 			if ((elem.title) && (elem.title != '')) v += 20;
@@ -784,9 +792,9 @@ rcxContent.getTextFromRange = function(rangeParent, offset, selEndList, maxLengt
 
 // Processes the translation data
 rcxContent.processEntry = function(e) {
-	tdata = window.rikaichan;
-	ro = rcxContent.lastRo;
-	selEndList = rcxContent.lastSelEnd;
+	var tdata = window.rikaichan;
+	var ro = rcxContent.lastRo;
+	var selEndList = rcxContent.lastSelEnd;
 
 	if (!e) {
 		rcxContent.clearHi();
@@ -800,7 +808,7 @@ rcxContent.processEntry = function(e) {
 	}
 	tdata.uofsNext = e.matchLen;
 	tdata.uofs = (ro - tdata.prevRangeOfs);
-	rp = tdata.prevRangeNode;
+	var rp = tdata.prevRangeNode;
 	
 	// don't try to highlight form elements
 	if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && 
@@ -824,7 +832,7 @@ rcxContent.processEntry = function(e) {
 rcxContent.processHtml = function(html) {
 	if (window === window.top) {
 		if (!this.superStickyMode || this.showInStickyMode) {
-			tdata = window.rikaichan;
+			var tdata = window.rikaichan;
 			this.showInStickyMode = false;
 			rcxContent.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
 			return 1;
@@ -841,7 +849,7 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 	    try {
 			if(rp.nodeName == '#text' || rp.nodeName == 'INPUT') {
 				// If there is already a selected region not caused by
-				// rikaikun, leave it alone
+				// rikaitan, leave it alone
 				if((sel.toString()) && (tdata.selText != sel.toString())) {
 					return;
 				}
@@ -905,7 +913,7 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 
 // Process the title text of an image
 rcxContent.processTitle = function(e) {
-	tdata = window.rikaichan;
+	var tdata = window.rikaichan;
 	if (!e) {
 		rcxContent.hidePopup();
 		return;

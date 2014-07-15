@@ -45,6 +45,8 @@
 
 <script type="text/javascript" charset="UTF-8">
 
+"use strict";
+
 var rikaitan = {
 	haveNames: true,
 	button: false,
@@ -103,7 +105,6 @@ rikaitan.performCommand = function(event) {
 		if(event.command === "button") {
 			rikaitan.button = !rikaitan.button;
 			if (rikaitan.button == true) {
-				console.log("Rikaitan enabled.");
 				rikaitan.assignValues();
 				dictionary.loadDictionary();
 				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
@@ -114,7 +115,6 @@ rikaitan.performCommand = function(event) {
 				}
 			}	
 			else {
-				console.log("Rikaitan disabled.");
 				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 					"disable", "");
 			}
@@ -145,7 +145,6 @@ rikaitan.getMessageFromJs = function(event) {
 			rikaitan.resetDict();
 			break;
 		case 'translate':
-			console.log(event.message);
 			var trans = dictionary.translate(event.message)
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 				"processtitle", trans);
@@ -212,7 +211,7 @@ rikaitan.assignSettings = function(event) {
 	}
 } // end of assignSettings 
 
-// assignValues - Assigns the setting values before extension should run
+// Assigns the setting values before extension should run
 rikaitan.assignValues = function() {
 	rikaitan.config = {};
 	rikaitan.config.css = localStorage["popupcolor"];
@@ -227,9 +226,9 @@ rikaitan.assignValues = function() {
 	rikaitan.config.kanjicomponents = localStorage["kanjicomponents"];
 	rikaitan.config.opacity = localStorage["opacity"];
 	rikaitan.config.kanjiinfo = new Array(dictionary.numList.length / 2);
-	numList = dictionary.numList;
+	var numList = dictionary.numList;
 	
-	for (i = 0; i*2 < dictionary.numList.length; i++) {
+	for (var i = 0; i*2 < dictionary.numList.length; i++) {
 		rikaitan.initStorage(dictionary.numList[i*2], "true")
 	}
 }
@@ -386,7 +385,7 @@ dictionary.fileReadArray = function(name, charset) {
 } // end of fileReadArray
 
 dictionary.find = function(data, text) {
-	const tlen = text.length;
+	var tlen = text.length;
 	var beg = 0;
 	var end = data.length - 1;
 	var i;
@@ -571,7 +570,6 @@ dictionary.wordSearch = function(word, doNames, max) {
 		index = dictionary.nameIndex;
 		maxTrim = 20;//this.config.namax;
 		entry.names = 1;
-		console.log('doNames');
 	}
 	else {
 		dict = dictionary.wordDict;
@@ -674,7 +672,6 @@ entry.matchLen = maxLen;
 } // end of wordSearch
 
 dictionary.bruteSearch = function(text, doNames) {
-	console.log('bruteSearch');
 	var r, e, d, i, j;
 	var wb, we;
 	var max;
@@ -732,8 +729,7 @@ dictionary.bruteSearch = function(text, doNames) {
 } // end of bruteSearch
 
 dictionary.kanjiSearch = function(kanji) {
-	console.log('kanjiSearch');
-	const hex = '0123456789ABCDEF';
+	var hex = '0123456789ABCDEF';
 	var kde;
 	var entry;
 	var a, b;
@@ -836,7 +832,7 @@ dictionary.makeHtml = function(entry) {
 		nums = '';
 		j = 0;
 
-		kanjiinfo = rikaitan.config.kanjiinfo;
+		var kanjiinfo = rikaitan.config.kanjiinfo;
 		for (i = 0; i*2 < this.numList.length; i++) {
 			c = this.numList[i*2];
 			if (kanjiinfo[i] == 'true') {
@@ -867,7 +863,7 @@ dictionary.makeHtml = function(entry) {
 			if (!e) continue;
 			
 			// the next two lines re-process the entries that contain separate search key and spelling due to mixed hiragana/katakana spelling
-			e3 = e[3].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+			var e3 = e[3].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 			if (e3) e = e3;
 
 			if (s != e[3]) {

@@ -16,6 +16,7 @@
 			<string>Light Blue</string>
 			<string>Yellow</string>
 			<string>White</string>
+			<string>Translucent</string>
 		</array>
 		<key>Type</key>
 		<string>ListBox</string>
@@ -26,6 +27,7 @@
 			<string>lightblue</string>
 			<string>yellow</string>
 			<string>white</string>
+			<string>translucent</string>
 		</array>
 	</dict>
 	<dict>
