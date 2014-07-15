@@ -64,6 +64,8 @@
 			<string>All</string>
 		</dict>
 	</dict>
+	<key>Update Manifest URL</key>
+	<string>https://github.com/jordenhill/Rikaitan/raw/master/rikaitan.safariextension/update.plist</string>
 	<key>Website</key>
 	<string>https://github.com/jordenhill</string>
 </dict>
