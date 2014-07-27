@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.70</string>
+	<string>1.70.1</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>Chrome</key>
@@ -65,7 +65,7 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>https://github.com/jordenhill/Rikaitan/raw/master/rikaitan.safariextension/update.plist</string>
+	<string>http://github.com/jordenhill/Rikaitan/raw/master/rikaitan.safariextension/update.plist</string>
 	<key>Website</key>
 	<string>https://github.com/jordenhill</string>
 </dict>
