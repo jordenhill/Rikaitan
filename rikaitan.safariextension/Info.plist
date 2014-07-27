@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Jorden Hill</string>
 	<key>Builder Version</key>
-	<string>10538.43.40</string>
+	<string>10538.46</string>
 	<key>CFBundleDisplayName</key>
 	<string>Rikaitan</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.65</string>
+	<string>1.70</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>Chrome</key>

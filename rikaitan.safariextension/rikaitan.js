@@ -280,7 +280,7 @@ rcxContent.onMouseMove = function(ev) {
 		this.uofsNext = 1;
 		
 		if ((rp) && (rp.data) && (ro < rp.data.length)) {
-			//rcxContent.forceKanji = ev.shiftKey ? 1 : 0;
+			rcxContent.forceKanji = ev.shiftKey ? 1 : 0;
 			tdata.popX = ev.clientX;
 			tdata.popY = ev.clientY;
 			tdata.timer = setTimeout( 

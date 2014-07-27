@@ -214,6 +214,16 @@ rikaitan.assignSettings = function(event) {
 // Assigns the setting values before extension should run
 rikaitan.assignValues = function() {
 	rikaitan.config = {};
+	rikaitan.initStorage("popupcolor", "translucent");
+	rikaitan.initStorage("highlight", true);
+	rikaitan.initStorage("textboxhl", false);
+	rikaitan.initStorage("onlyreading", false);
+	rikaitan.initStorage("copySeparator", "tab");
+	rikaitan.initStorage("lineEnding", "n");
+	rikaitan.initStorage("minihelp", true);
+	rikaitan.initStorage("disablekeys", false);
+	rikaitan.initStorage("kanjicomponents", true);
+	rikaitan.initStorage("opacity", 100);
 	rikaitan.config.css = localStorage["popupcolor"];
 	rikaitan.config.highlight = localStorage["highlight"];
 	rikaitan.config.textboxhl = localStorage["textboxhl"];
@@ -227,7 +237,6 @@ rikaitan.assignValues = function() {
 	rikaitan.config.opacity = localStorage["opacity"];
 	rikaitan.config.kanjiinfo = new Array(dictionary.numList.length / 2);
 	var numList = dictionary.numList;
-	
 	for (var i = 0; i*2 < dictionary.numList.length; i++) {
 		rikaitan.initStorage(dictionary.numList[i*2], "true")
 	}

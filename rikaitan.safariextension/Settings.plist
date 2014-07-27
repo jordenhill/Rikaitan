@@ -42,16 +42,6 @@
 	</dict>
 	<dict>
 		<key>DefaultValue</key>
-		<true/>
-		<key>Key</key>
-		<string>textboxhl</string>
-		<key>Title</key>
-		<string>Highlight text in textboxes</string>
-		<key>Type</key>
-		<string>CheckBox</string>
-	</dict>
-	<dict>
-		<key>DefaultValue</key>
 		<false/>
 		<key>Key</key>
 		<string>onlyreading</string>
