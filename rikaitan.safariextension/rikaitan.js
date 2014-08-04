@@ -104,6 +104,7 @@ var rcxContent = {
 	namesN: 2,
 	nextDict: 3,
 	showInStickyMode: false,
+	showingMinihelp: false,
 	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
 	superStickyMode: false,
 	textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
@@ -111,14 +112,17 @@ var rcxContent = {
 
 var dictionary = {
 	// katakana -> hiragana conversion tables
-	ch:[0x3092,0x3041,0x3043,0x3045,0x3047,0x3049,0x3083,0x3085,0x3087,0x3063,0x30FC,0x3042,0x3044,0x3046,
-		0x3048,0x304A,0x304B,0x304D,0x304F,0x3051,0x3053,0x3055,0x3057,0x3059,0x305B,0x305D,0x305F,0x3061,
-		0x3064,0x3066,0x3068,0x306A,0x306B,0x306C,0x306D,0x306E,0x306F,0x3072,0x3075,0x3078,0x307B,0x307E,
-		0x307F,0x3080,0x3081,0x3082,0x3084,0x3086,0x3088,0x3089,0x308A,0x308B,0x308C,0x308D,0x308F,0x3093],
+	ch:[0x3092,0x3041,0x3043,0x3045,0x3047,0x3049,0x3083,0x3085,0x3087,0x3063,
+		0x30FC,0x3042,0x3044,0x3046,0x3048,0x304A,0x304B,0x304D,0x304F,0x3051,
+		0x3053,0x3055,0x3057,0x3059,0x305B,0x305D,0x305F,0x3061,0x3064,0x3066,
+		0x3068,0x306A,0x306B,0x306C,0x306D,0x306E,0x306F,0x3072,0x3075,0x3078,
+		0x307B,0x307E,0x307F,0x3080,0x3081,0x3082,0x3084,0x3086,0x3088,0x3089,
+		0x308A,0x308B,0x308C,0x308D,0x308F,0x3093],
 	config: {},
 	cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
-	cv:[0x30F4,0xFF74,0xFF75,0x304C,0x304E,0x3050,0x3052,0x3054,0x3056,0x3058,0x305A,0x305C,0x305E,0x3060,
-		0x3062,0x3065,0x3067,0x3069,0xFF85,0xFF86,0xFF87,0xFF88,0xFF89,0x3070,0x3073,0x3076,0x3079,0x307C],
+	cv:[0x30F4,0xFF74,0xFF75,0x304C,0x304E,0x3050,0x3052,0x3054,0x3056,0x3058,
+		0x305A,0x305C,0x305E,0x3060,0x3062,0x3065,0x3067,0x3069,0xFF85,0xFF86,
+		0xFF87,0xFF88,0xFF89,0x3070,0x3073,0x3076,0x3079,0x307C],
 	numList: [
 		'H',	'Halpern',
 		'L',	'Heisig',
@@ -315,7 +319,8 @@ rcxContent.onMouseMove = function(ev) {
 			var dy = tdata.popY - ev.clientY;
 			var distance = Math.sqrt(dx * dx + dy * dy);
 
-			if (distance > 2) {
+			if (distance > 2 && rcxContent.showingMinihelp == false) {
+				console.log('here4');
 				rcxContent.clearHi();
 				rcxContent.hidePopup();
 			}
@@ -530,13 +535,15 @@ rcxContent.show = function(tdata, dictOption) {
 	
 	tdata.uofsNext = 1;
 	
-	if (!rp) {
+	if (!rp && rcxContent.showingMinihelp == false) {
+		console.log('here1');
 		this.clearHi();
 		this.hidePopup();
 		return 0;
 	}
 	
-	if ((ro < 0) || (ro >= rp.data.length)) {	
+	if ((ro < 0) || (ro >= rp.data.length) && rcxContent.showingMinihelp == false) {	
+		console.log('here3');
 		this.clearHi();
 		this.hidePopup();
 		return 0;
@@ -546,7 +553,8 @@ rcxContent.show = function(tdata, dictOption) {
 	// to get selected
 	while (((u = rp.data.charCodeAt(ro)) == 32) || (u == 9) || (u == 10)) {
 		++ro;
-		if (ro >= rp.data.length) {
+		if (ro >= rp.data.length && rcxContent.showingMinihelp == false) {
+			console.log('here2');
 			this.clearHi;
 			this.hidePopup();
 			return 0;
@@ -558,7 +566,7 @@ rcxContent.show = function(tdata, dictOption) {
 		((u < 0x3001) || (u > 0x30FF)) &&	 
 		((u < 0x3400) || (u > 0x9FFF)) &&
 		((u < 0xF900) || (u > 0xFAFF)) &&
-		((u < 0xFF10) || (u > 0xFF9D)))) {
+		((u < 0xFF10) || (u > 0xFF9D))) && rcxContent.showingMinihelp == false) {
 		this.clearHi();
 		this.hidePopup();
 		return -2;
@@ -593,13 +601,20 @@ rcxContent.getContentType = function(tDoc) {
 	return null;
 }
 
-// Displays the popup containing the dictionary and CSS information
+// Displays the popup containing the information
 rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	var topdoc = window.document;
-
-	if ((isNaN(x)) || (isNaN(y))) x = y = 0;
-
-
+	
+	var textStr = text.toString();
+	if (textStr.indexOf("Rikaitan enabled!") > -1) {
+		rcxContent.showingMinihelp = true;
+		console.log('got it');
+	}
+	
+	if ((isNaN(x)) || (isNaN(y))) {
+		x = y = 0;
+	}
+	
 	var popup = topdoc.getElementById('rikaichan-window');
 	if (!popup) {
 		var css = topdoc.createElementNS('http://www.w3.org/1999/xhtml', 'link');
@@ -796,7 +811,8 @@ rcxContent.processEntry = function(e) {
 	var ro = rcxContent.lastRo;
 	var selEndList = rcxContent.lastSelEnd;
 
-	if (!e) {
+	if (!e && rcxContent.showingMinihelp == false) {
+		console.log('here6');
 		rcxContent.clearHi();
 		rcxContent.hidePopup();
 		return -1;
@@ -816,7 +832,8 @@ rcxContent.processEntry = function(e) {
 				(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
 		var doc = rp.ownerDocument;
 		
-		if (!doc) {
+		if (!doc && rcxContent.showingMinihelp == false) {
+			console.log('here7');
 			rcxContent.clearHi();
 			rcxContent.hidePopup();
 			return 0;

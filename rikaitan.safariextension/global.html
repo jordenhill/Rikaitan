@@ -54,12 +54,6 @@ var rikaitan = {
 	altView: 0,
 	enabled: 0,
 	kanjiN: 1,
-	namesN: 2,
-	showMode: 0,
-	sameDict: 0,
-	forceKanji: 1,
-	defaultDict: 2,
-	nextDict: 3,
 	miniHelp:
 		'<span style="font-weight:bold">Rikaitan enabled!</span><br><br>' +
 		'<table cellspacing=5>' +
@@ -73,6 +67,12 @@ var rikaitan = {
 		'<tr><td>N</td><td>Next word</td></tr>' +
 		'<tr><td>O</td><td>Super-sticky mode</td></tr>' +
 		'</table>',
+	namesN: 2,
+	showMode: 0,
+	sameDict: 0,
+	forceKanji: 1,
+	defaultDict: 2,
+	nextDict: 3,
 };
 var dictionary = {
 	config: {},
@@ -111,14 +111,14 @@ rikaitan.performCommand = function(event) {
 					"enable", rikaitan.config);
 				if (rikaitan.config.minihelp == "true") {
 					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-						"showPopup", rikaitan.miniHelp);
-				}
-			}	
+					"showPopup", rikaitan.miniHelp);
+				}		
+			}
+		}	
 			else {
 				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 					"disable", "");
 			}
-		}
 	}
 }// end of performCommand
 
