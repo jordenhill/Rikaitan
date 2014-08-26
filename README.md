@@ -2,7 +2,7 @@ Rikaitan
 
 <b>NOTE: If the link from the safar extension site isn't working, please try this link:</b>
 
-<url>https://github.com/jordenhill/Rikaitan/raw/master/rikaitan.safariextz</url>
+<url>http://github.com/jordenhill/Rikaitan/raw/master/rikaitan.safariextz</url>
 
 When clicking this the extension should be downloaded to the folder where you keep your safari downloads. From there click the extension and it should install.
 
