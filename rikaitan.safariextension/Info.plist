@@ -67,6 +67,6 @@
 	<key>Update Manifest URL</key>
 	<string>http://github.com/jordenhill/Rikaitan/raw/master/rikaitan.safariextension/update.plist</string>
 	<key>Website</key>
-	<string>https://github.com/jordenhill</string>
+	<string>http://github.com/jordenhill</string>
 </dict>
 </plist>
