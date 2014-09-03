@@ -149,6 +149,7 @@ rcxContent.getMessage = function(event) {
 			window.rikaichan.config = event.message;
 			break;
 		case 'disable':
+			console.log('disabled');
 			rcxContent.disableTab();
 			break;
 		case 'showPopup':
@@ -608,7 +609,6 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	var textStr = text.toString();
 	if (textStr.indexOf("Rikaitan enabled!") > -1) {
 		rcxContent.showingMinihelp = true;
-		console.log('got it');
 	}
 	
 	if ((isNaN(x)) || (isNaN(y))) {

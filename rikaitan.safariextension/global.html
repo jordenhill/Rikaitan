@@ -104,6 +104,7 @@ rikaitan.performCommand = function(event) {
 	if (window.top === window) {	
 		if(event.command === "button") {
 			rikaitan.button = !rikaitan.button;
+			console.log(rikaitan.button);
 			if (rikaitan.button == true) {
 				rikaitan.assignValues();
 				dictionary.loadDictionary();
@@ -113,12 +114,11 @@ rikaitan.performCommand = function(event) {
 					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 					"showPopup", rikaitan.miniHelp);
 				}		
-			}
-		}	
-			else {
+			} else {
 				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 					"disable", "");
 			}
+		}
 	}
 }// end of performCommand
 
