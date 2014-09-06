@@ -3,9 +3,16 @@
 	
 	---
 	
-	Rikaikun
+	Based on Rikaikun
 	Copyright (C) 2010 Erek Speed
 	http://code.google.com/p/rikaikun/
+	
+	---
+	
+	Uses concepts and data from Rikaisama
+	Christopher Brochtrup
+	cb4960@gmail.com
+	http://rikaisama.sourceforge.net/
 	
 	---
 
@@ -179,6 +186,7 @@ rikaitan.initStorage = function(key, initialValue) {
 
 // assignSettings - Assigns the settings to local storage
 rikaitan.assignSettings = function(event) {
+	console.log(event.newValue);
 	if (event.key == "popupcolor") {
 		localStorage["popupcolor"] = event.newValue;
 	}
@@ -209,6 +217,9 @@ rikaitan.assignSettings = function(event) {
 	if (event.key == "opacity") {
 		localStorage["opacity"] = event.newValue;
 	}
+	if (event.key == "showFreq") {
+		localStorage["showFreq"] = event.newValue;
+	}
 } // end of assignSettings 
 
 // Assigns the setting values before extension should run
@@ -224,6 +235,7 @@ rikaitan.assignValues = function() {
 	rikaitan.initStorage("disablekeys", false);
 	rikaitan.initStorage("kanjicomponents", true);
 	rikaitan.initStorage("opacity", 100);
+	rikaitan.initStorage("showFreq", true);
 	rikaitan.config.css = localStorage["popupcolor"];
 	rikaitan.config.highlight = localStorage["highlight"];
 	rikaitan.config.textboxhl = localStorage["textboxhl"];
@@ -235,6 +247,7 @@ rikaitan.assignValues = function() {
 	rikaitan.config.disablekeys = localStorage["disablekeys"];
 	rikaitan.config.kanjicomponents = localStorage["kanjicomponents"];
 	rikaitan.config.opacity = localStorage["opacity"];
+	rikaitan.config.showFreq = localStorage["showFreq"];
 	rikaitan.config.kanjiinfo = new Array(dictionary.numList.length / 2);
 	var numList = dictionary.numList;
 	for (var i = 0; i*2 < dictionary.numList.length; i++) {
@@ -420,8 +433,9 @@ dictionary.loadDictionary = function() {
 	dictionary.radData = this.fileReadArray((safari.extension.baseURI + 'data/radicals.dat'), 'UTF-8'); 
 	dictionary.nameDict = this.fileRead(safari.extension.baseURI + 'data/names.dat');
 	dictionary.nameIndex = this.fileRead(safari.extension.baseURI + 'data/names.idx');
+	dictionary.freq = this.fileRead(safari.extension.baseURI + 'data/freq.dat');
+	dictionary.createFreqTable();
 	dictionary.loadDIF();
-	//	this.test_kanji();
 } // end of loadDictionary
 
 dictionary.loadDIF = function() {
@@ -674,7 +688,9 @@ dictionary.wordSearch = function(word, doNames, max) {
         word = word.substr(0, word.length - 1);
   }	// while word.length > 0
 
-if (entry.data.length == 0) return null;
+if (entry.data.length == 0) {
+	return null;
+}
 
 entry.matchLen = maxLen;
 	return entry;
@@ -818,7 +834,7 @@ dictionary.makeHtml = function(entry) {
 			'<td class="k-abox-f">freq<br/>' + (entry.misc['F'] ? entry.misc['F'] : '-') + '</td>' +
 			'<td class="k-abox-s">strokes<br/>' + entry.misc['S'] + '</td>' +
 			'</tr></table>';
-		if (rikaitan.config.kanjicomponents == 'true') {
+		if (rikaitan.config.kanjicomponents == "true") {
 			k = this.radData[bn].split('\t');
 			box += '<table class="k-bbox-tb">' +
 					'<tr><td class="k-bbox-1a">' + k[0] + '</td>' +
@@ -937,15 +953,54 @@ dictionary.makeHtml = function(entry) {
 			}
 
 			if (e[2]) {
-				if (pK == e[1]) k = '\u3001 <span class="w-kana">' + e[2] + '</span>';
-					else k += '<span class="w-kanji">' + e[1] + '</span> &#32; <span class="w-kana">' + e[2] + '</span>';
+				if (pK == e[1]) {
+					k = '\u3001 <span class="w-kana">' + e[2] + '</span>';
+					if (rikaitan.config.showFreq == "true") {
+						var freqStr = ""
+						var freq = dictionary.getFreq(e[1]);
+						if (freq) {
+							var freqStyle = dictionary.getFreqStyle(freq);
+							freqStr = '<span class="' + freqStyle + '">' + freq + '</span>';
+						}
+						t = freqStr;
+						k += t;
+					}
+				}
+				else {
+					k += '<span class="w-kanji">' + e[1] + '</span> &#32; <span class="w-kana">' + e[2] + '</span>';
+					if (rikaitan.config.showFreq == "true") {
+						var freqStr = ""
+						var freq = dictionary.getFreq(e[1]);
+						if (freq) {
+							var freqStyle = dictionary.getFreqStyle(freq);
+							freqStr = '<span class="' + freqStyle + '">' + freq + '</span>';
+						}
+						t = freqStr;
+						k += t;
+					}
+				}
 				pK = e[1];
 			}
 			else {
 				k += '<span class="w-kana">' + e[1] + '</span>';
+				if (rikaitan.config.showFreq == "true") {
+					var freqStr = ""
+					var freq = dictionary.getFreq(e[1]);
+					if (freq) {
+						var freqStyle = dictionary.getFreqStyle(freq);
+						freqStr = '<span class="' + freqStyle + '">' + freq + '</span>';
+					}
+					t = freqStr;
+					k += t;
+				}
 				pK = '';
 			}
 			b.push(k);
+			
+			/*s = e[3];
+			t = s.replace(/\//g, '; ');
+			t = t.replace(/\n/g, '<br/>');
+			b.push(t)*/
 
 			if (entry.data[i][1]) b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
 
@@ -963,7 +1018,7 @@ dictionary.makeHtml = function(entry) {
 		b.push(t);
 		if (entry.more) b.push('...<br/>');
 	}
-
+	
 	return b.join('');
 } // end of makeHtml
 
@@ -1050,6 +1105,34 @@ dictionary.makeText = function(entry, max) {
 	}
 	return b.join('');
 } // end of makeText
+
+dictionary.getFreq = function(expression) {
+	return dictionary.japaneseWordFrequencies[expression]
+}
+
+dictionary.getFreqStyle = function(freqNum) {
+	var freqStyle = 'w-freq-rare';
+	
+	if (freqNum <= 5000) {
+		freqStyle = 'w-freq-very-common';
+	} else if (freqNum <= 10000) {
+		freqStyle = 'w-freq-common';
+	} else if (freqNum <= 20000) {
+		freqStyle = 'w-freq-uncommon';
+	}
+	
+	return freqStyle;
+}
+
+dictionary.createFreqTable = function() {
+	dictionary.japaneseWordFrequencies = new Object();
+	var freqList = dictionary.freq.split('\n');
+	
+	for (var i = 0; i < freqList.length; i++) {
+		var freqTable = freqList[i].split(',');
+		dictionary.japaneseWordFrequencies[freqTable[0]] = parseInt(freqTable[1]);
+	}
+}
 
 safari.application.addEventListener("command", rikaitan.performCommand, false);
 safari.application.addEventListener("message", rikaitan.getMessageFromJs, false);

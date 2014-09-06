@@ -50,6 +50,26 @@
 	font-size: 12px;
 }
 
+#rikaichan-window .w-freq-very-common {
+	color: #00b300;
+	font-size: 12px;
+}
+
+#rikaichan-window .w-freq-common {
+	color: #b3b300;
+	font-size: 12px;
+}
+
+#rikaichan-window .w-freq-uncommon {
+	color: #b37400;
+	font-size: 12px;
+}
+
+#rikaichan-window .w-freq-rare {
+	color: #e28cbb;
+	font-size: 12px;
+}
+
 #rikaichan-window .w-def {
 	font-size: 13px;
 }

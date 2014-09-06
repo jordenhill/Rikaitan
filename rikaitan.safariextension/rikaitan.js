@@ -812,13 +812,12 @@ rcxContent.processEntry = function(e) {
 	var selEndList = rcxContent.lastSelEnd;
 
 	if (!e && rcxContent.showingMinihelp == false) {
-		console.log('here6');
 		rcxContent.clearHi();
 		rcxContent.hidePopup();
 		return -1;
 	}
 	rcxContent.lastFound = [e];
-
+	console.log(e);
 	if (!e.matchLen) {
 		e.matchLen = 1;
 	}
@@ -848,6 +847,7 @@ rcxContent.processEntry = function(e) {
 // Processes the HTML translation data
 rcxContent.processHtml = function(html) {
 	if (window === window.top) {
+		console.log(html);
 		if (!this.superStickyMode || this.showInStickyMode) {
 			var tdata = window.rikaichan;
 			this.showInStickyMode = false;

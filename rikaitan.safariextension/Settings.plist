@@ -136,5 +136,15 @@
 		<key>Type</key>
 		<string>Slider</string>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>showFreq</string>
+		<key>Title</key>
+		<string>Show Frequency</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
 </array>
 </plist>
