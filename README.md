@@ -1,4 +1,4 @@
-Rikaitan (v. 1.70.8)
+Rikaitan (v. 1.8)
 ==========
 
 About
@@ -41,22 +41,22 @@ License
 Rikaitan
 Copyright (C) 2014 Jorden Hill
 
-Based on Rikaikun
-Copyright (C) 2010 Erek Speed
-http://code.google.com/p/rikaikun/
+Based on Rikaikun  <br />
+Copyright (C) 2010 Erek Speed <br />
+http://code.google.com/p/rikaikun/ <br />
 
-Uses concepts and data from Rikaisama
-Christopher Brochtrup
-cb4960@gmail.com
-http://rikaisama.sourceforge.net/
+Uses concepts and data from Rikaisama <br />
+Christopher Brochtrup <br />
+cb4960@gmail.com <br />
+http://rikaisama.sourceforge.net/ <br />
 
-Originally based on Rikaichan 1.07
-by Jonathan Zarate
-http://www.polarcloud.com/
+Originally based on Rikaichan 1.07 <br />
+by Jonathan Zarate <br />
+http://www.polarcloud.com/ <br />
 
-Originally based on RikaiXUL 0.4 by Todd Rudick
-http://www.rikai.com/
-http://rikaixul.mozdev.org/
+Originally based on RikaiXUL 0.4 by Todd Rudick <br />
+http://www.rikai.com/ <br />
+http://rikaixul.mozdev.org/ <br />
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
