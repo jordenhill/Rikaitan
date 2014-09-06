@@ -17,6 +17,8 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
+**Version 1.8 (9/6/2014):** Added a feature to display the frequency of a word. Based on a word frequency database obtained from Rikaisama, by Christopher Brochtrup.
+
 **Version 1.70.8 (9/3/2014):** Issued a fix to the extension not disabling when toolbar button is clicked.
 
 Issues or Suggestions
@@ -39,9 +41,14 @@ License
 Rikaitan
 Copyright (C) 2014 Jorden Hill
 
-Originally based on Rikaikun
+Based on Rikaikun
 Copyright (C) 2010 Erek Speed
 http://code.google.com/p/rikaikun/
+
+Uses concepts and data from Rikaisama
+Christopher Brochtrup
+cb4960@gmail.com
+http://rikaisama.sourceforge.net/
 
 Originally based on Rikaichan 1.07
 by Jonathan Zarate
