@@ -17,7 +17,7 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
-**Version 1.8 (9/6/2014):** Added a feature to display the frequency of a word. Based on a word frequency database obtained from Rikaisama, by Christopher Brochtrup.
+**Version 1.8 (9/6/2014):** Added a feature to display the frequency of a word. Based on a word frequency database obtained from Rikaisama, by Christopher Brochtrup. Green is very common, gold is common, orange is uncommon, and pink is rare.
 
 **Version 1.70.8 (9/3/2014):** Issued a fix to the extension not disabling when toolbar button is clicked.
 
