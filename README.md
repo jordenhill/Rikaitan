@@ -6,6 +6,9 @@ About
 
 This is a version of the rikai (rikaichan, rikaisama, rikaikun) Japanese translation extension, which has been created for the Safari browser. When activated, simply place your cursor over Japanese words to display their dictionary definitions in a popup.
 
+![Rikaitan Example Shot](https://github.com/jordenhill/Rikaitan/blob/master/Example%20Shot.png)
+
+
 Download and Installation
 ----------
 
