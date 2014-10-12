@@ -1124,6 +1124,8 @@ dictionary.getFreqStyle = function(freqNum) {
 	return freqStyle;
 }
 
+//Creates a table of word frequencies. Takes the freq.dat file, splits it into
+//a word and its frequency, then aranges this data into the data structure.
 dictionary.createFreqTable = function() {
 	dictionary.japaneseWordFrequencies = new Object();
 	var freqList = dictionary.freq.split('\n');
