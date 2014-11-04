@@ -321,7 +321,6 @@ rcxContent.onMouseMove = function(ev) {
 			var distance = Math.sqrt(dx * dx + dy * dy);
 
 			if (distance > 2 && rcxContent.showingMinihelp == false) {
-				console.log('here4');
 				rcxContent.clearHi();
 				rcxContent.hidePopup();
 			}
@@ -537,14 +536,12 @@ rcxContent.show = function(tdata, dictOption) {
 	tdata.uofsNext = 1;
 	
 	if (!rp && rcxContent.showingMinihelp == false) {
-		console.log('here1');
 		this.clearHi();
 		this.hidePopup();
 		return 0;
 	}
 	
 	if ((ro < 0) || (ro >= rp.data.length) && rcxContent.showingMinihelp == false) {	
-		console.log('here3');
 		this.clearHi();
 		this.hidePopup();
 		return 0;
@@ -555,7 +552,6 @@ rcxContent.show = function(tdata, dictOption) {
 	while (((u = rp.data.charCodeAt(ro)) == 32) || (u == 9) || (u == 10)) {
 		++ro;
 		if (ro >= rp.data.length && rcxContent.showingMinihelp == false) {
-			console.log('here2');
 			this.clearHi;
 			this.hidePopup();
 			return 0;
@@ -832,7 +828,6 @@ rcxContent.processEntry = function(e) {
 		var doc = rp.ownerDocument;
 		
 		if (!doc && rcxContent.showingMinihelp == false) {
-			console.log('here7');
 			rcxContent.clearHi();
 			rcxContent.hidePopup();
 			return 0;
