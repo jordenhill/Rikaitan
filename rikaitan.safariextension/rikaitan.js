@@ -298,7 +298,6 @@ rcxContent.onMouseMove = function(ev) {
 
 		// For images with Japanese text
 		if (ev.target.nodeName == 'IMG') {
-			console.log(ev.target)
 			if (ev.target.alt) {
 				tdata.title = ev.target.alt;
 			}
@@ -813,7 +812,6 @@ rcxContent.processEntry = function(e) {
 		return -1;
 	}
 	rcxContent.lastFound = [e];
-	console.log(e);
 	if (!e.matchLen) {
 		e.matchLen = 1;
 	}
@@ -842,7 +840,6 @@ rcxContent.processEntry = function(e) {
 // Processes the HTML translation data
 rcxContent.processHtml = function(html) {
 	if (window === window.top) {
-		console.log(html);
 		if (!this.superStickyMode || this.showInStickyMode) {
 			var tdata = window.rikaichan;
 			this.showInStickyMode = false;
