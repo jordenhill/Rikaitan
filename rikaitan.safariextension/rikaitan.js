@@ -273,7 +273,6 @@ rcxContent.onMouseMove = function(ev) {
 			
 		}
 		catch(err) {
-			console.log(err.message);
 			return;
 		}
 
@@ -887,7 +886,6 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 			// we set oldTA to null because we don't want to do weird stuf
 			// with buttons
 	        tdata.oldTA = null;
-	        console.log(err.message);
 	    }
 		return;
 	}
