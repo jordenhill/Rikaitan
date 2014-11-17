@@ -1,4 +1,4 @@
-Rikaitan (v. 1.8.1)
+Rikaitan (v. 1.8.2)
 ==========
 
 About
@@ -20,6 +20,8 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
+**Version 1.8.2 (11/17/2014):** More console console error messages reported, removed messages for user version to prevent intrusiveness.
+
 **Version 1.8.1 (11/4/2014):** Had some console messages that weren't removed, which could be an annoyance to users who see the console. I've removed them.
 
 **Version 1.8 (9/6/2014):** Added a feature to display the frequency of a word. Based on a word frequency database obtained from Rikaisama, by Christopher Brochtrup. Green is very common, gold is common, orange is uncommon, and pink is rare.
