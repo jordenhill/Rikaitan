@@ -370,7 +370,7 @@ rcxContent._onKeyDown = function(ev) {
 		safari.self.tab.dispatchMessage("copyToClip", rcxContent.lastFound);
 		break;
 	case 66:	// b - Previous character
-		this.initalStickyPopup();
+		this.initialStickyPopup();
 		var ofs = ev.currentTarget.rikaichan.uofs;
 		for (i = 50; i > 0; --i) {
 			ev.currentTarget.rikaichan.uofs = --ofs;
