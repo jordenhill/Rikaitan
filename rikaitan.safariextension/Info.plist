@@ -18,6 +18,17 @@
 	<string>4.0.4</string>
 	<key>Chrome</key>
 	<dict>
+		<key>Context Menu Items</key>
+		<array>
+			<dict>
+				<key>Command</key>
+				<string>button</string>
+				<key>Identifier</key>
+				<string>Rikai</string>
+				<key>Title</key>
+				<string>Rikaitan</string>
+			</dict>
+		</array>
 		<key>Database Quota</key>
 		<real>1048576</real>
 		<key>Global Page</key>
