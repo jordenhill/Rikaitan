@@ -1,4 +1,4 @@
-Rikaitan (v. 1.8.3)
+Rikaitan (v. 1.9.0)
 ==========
 
 About
@@ -20,6 +20,8 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
+**Version 1.9.0 (12/18/2014):** Added contextual menu option to enable or disable extension. To access menu simply ctrl+click or right click within the browser window. When the extension is enabled, there is also now an option within the contextual menu to enable or disable popups if you only want to disable popups for a temporary period of time without disabling the entire extension. Also added ability to hide a popup that shows up by pressing the h key. 
+
 **Version 1.8.3 (12/18/2014):** Fixed misspelled initialStickyPopup for 'b' key case, causing b key to not function properly.
 
 
