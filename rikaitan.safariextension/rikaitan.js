@@ -102,6 +102,7 @@ var rcxContent = {
 	lastSelEnd: [],
 	mDown: false,
 	namesN: 2,
+	showPopups: true,
 	nextDict: 3,
 	showInStickyMode: false,
 	showingMinihelp: false,
@@ -156,13 +157,18 @@ rcxContent.getMessage = function(event) {
 			rcxContent.showPopup(event.message);
 			break;
 		case 'processentry':
-			rcxContent.processEntry(event.message);
+			if (rcxContent.showPopups) {
+				rcxContent.processEntry(event.message);
+			}
 			break;
 		case 'processhtml':
 			rcxContent.processHtml(event.message);
 			break;
 		case 'processtitle':
 			rcxContent.processTitle(event.message);
+			break;
+		case 'noShow':
+			rcxContent.flipNoShow();
 			break;
 		}
 	}
@@ -354,20 +360,10 @@ rcxContent._onKeyDown = function(ev) {
 	case 16:	// shift - Change to a different dictionary
 		this.show(ev.currentTarget.rikaichan, this.nextDict);
 		break;
-	case 27:	// esc - Remove the popup
-	if (this.superStickyMode) {
-		this.hideInStickyMode = true;
-	}
-		this.hidePopup();
-		this.clearHi();
-		break;
 	case 65:	// a - Alternate popup location
 		this.initialStickyPopup();
 		this.altView = (this.altView + 1) % 3;
 		this.show(ev.currentTarget.rikaichan, this.sameDict);
-		break;
-	case 67:	// c - Copy to clip
-		safari.self.tab.dispatchMessage("copyToClip", rcxContent.lastFound);
 		break;
 	case 66:	// b - Previous character
 		this.initialStickyPopup();
@@ -381,14 +377,25 @@ rcxContent._onKeyDown = function(ev) {
 			}
 		}
 		break;
+	case 67:	// c - Copy to clip
+		safari.self.tab.dispatchMessage("copyToClip", rcxContent.lastFound);
+		break;
 	case 68:	// d - Hide or show definitions
 		this.initialStickyPopup();
 		safari.self.tab.dispatchMessage("switchOnlyReading", "");
 		this.show(ev.currentTarget.rikaichan, this.sameDict);
 		break;
+	case 72:    // h - Hide or show popup
+		if (this.superStickyMode) {
+			this.hideInStickyMode = true;
+		}
+		this.hidePopup();
+		this.clearHi();
+		break;
 	case 77:	// m - Next character
 		this.initialStickyPopup();
 		ev.currentTarget.rikaichan.uofsNext = 1;
+		break;
 	case 78:	// n - Next word
 		this.initialStickyPopup();
 		for (i = 50; i > 0; --i) {
@@ -956,6 +963,17 @@ rcxContent.superSticky = function() {
 rcxContent.initialStickyPopup = function() {
 	if (this.superStickyMode) {
 		this.showInStickyMode = true;
+	}
+}
+
+//function to flip the boolean showPopups variable so the extension will or 
+//won't display popups
+rcxContent.flipNoShow = function() {
+	if (this.showPopups) {
+		this.showPopups = false;
+	}
+	else {
+		this.showPopups = true;
 	}
 }
 

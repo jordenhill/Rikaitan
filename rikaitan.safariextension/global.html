@@ -70,6 +70,7 @@ var rikaitan = {
 		'<tr><td>D</td><td>Hide/show definitions</td></tr>' +
 		'<tr><td>Shift/Enter&nbsp;&nbsp;</td><td>Switch dictionaries</td></tr>' +
 		'<tr><td>B</td><td>Previous character</td></tr>' +
+		'<tr><td>H</td><td>Hide/show popups</td></tr>' +
 		'<tr><td>M</td><td>Next character</td></tr>' +
 		'<tr><td>N</td><td>Next word</td></tr>' +
 		'<tr><td>O</td><td>Super-sticky mode</td></tr>' +
@@ -108,24 +109,25 @@ var dictionary = {
 
 // performCommand - Gets messages from Safari
 rikaitan.performCommand = function(event) {
-	if (window.top === window) {	
-		if(event.command === "button") {
-			rikaitan.button = !rikaitan.button;
-			console.log(rikaitan.button);
-			if (rikaitan.button == true) {
-				rikaitan.assignValues();
-				dictionary.loadDictionary();
+	if(event.command === "button") {
+		rikaitan.button = !rikaitan.button;
+		if (rikaitan.button == true) {
+			rikaitan.assignValues();
+			dictionary.loadDictionary();
+			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+				"enable", rikaitan.config);
+			if (rikaitan.config.minihelp == "true") {
 				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-					"enable", rikaitan.config);
-				if (rikaitan.config.minihelp == "true") {
-					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-					"showPopup", rikaitan.miniHelp);
-				}		
-			} else {
-				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-					"disable", "");
-			}
+				"showPopup", rikaitan.miniHelp);
+			}		
+		} else {
+			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+				"disable", "");
 		}
+	}
+	else if (event.command === "switch") {
+		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+			"noShow", "");
 	}
 }// end of performCommand
 
@@ -137,6 +139,13 @@ rikaitan.shouldEnable = function(event) {
 			"enable", rikaitan.config);
 	}
 } // end of shouldEnable
+
+rikaitan.handleContextMenu = function(event) {
+	if (rikaitan.button == true) {
+		event.contextMenu.appendContextMenuItem("switch", "Enable/disable Rikaitan popups", "switch");
+	}
+	
+}
 
 // getMessageFromJs - Gets messages from rikaitan.js
 rikaitan.getMessageFromJs = function(event) {
@@ -1136,12 +1145,15 @@ dictionary.createFreqTable = function() {
 	}
 }
 
+
+
 safari.application.addEventListener("command", rikaitan.performCommand, false);
 safari.application.addEventListener("message", rikaitan.getMessageFromJs, false);
 safari.extension.settings.addEventListener("change", rikaitan.assignSettings, false);
 safari.application.addEventListener("navigate", rikaitan.shouldEnable, false);
 safari.application.addEventListener("open", rikaitan.shouldEnable, false);
 safari.application.addEventListener("activate", rikaitan.shouldEnable, true);
+safari.application.addEventListener("contextmenu", rikaitan.handleContextMenu, false);
 </script>
 </head>
 <body>
