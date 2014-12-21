@@ -12,7 +12,7 @@ This is a version of the rikai (rikaichan, rikaisama, rikaikun) Japanese transla
 Download and Installation
 ----------
 
-You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/v1.8/rikaitan.safariextz).
+You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases).
 
 When clicking this the extension should be downloaded to the folder where you keep your safari downloads. From there click the extension and it should install.
 
