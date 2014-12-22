@@ -102,39 +102,13 @@ var rcxContent = {
 	namesN: 2,
 	showPopups: true,
 	nextDict: 3,
+	sanseidoKoku: false,
+	sanseidoWaei: false,
 	showInStickyMode: false,
 	showingMinihelp: false,
 	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
 	superStickyMode: false,
 	textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
-};
-
-var dictionary = {
-	// katakana -> hiragana conversion tables
-	ch:[0x3092,0x3041,0x3043,0x3045,0x3047,0x3049,0x3083,0x3085,0x3087,0x3063,
-		0x30FC,0x3042,0x3044,0x3046,0x3048,0x304A,0x304B,0x304D,0x304F,0x3051,
-		0x3053,0x3055,0x3057,0x3059,0x305B,0x305D,0x305F,0x3061,0x3064,0x3066,
-		0x3068,0x306A,0x306B,0x306C,0x306D,0x306E,0x306F,0x3072,0x3075,0x3078,
-		0x307B,0x307E,0x307F,0x3080,0x3081,0x3082,0x3084,0x3086,0x3088,0x3089,
-		0x308A,0x308B,0x308C,0x308D,0x308F,0x3093],
-	config: {},
-	cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
-	cv:[0x30F4,0xFF74,0xFF75,0x304C,0x304E,0x3050,0x3052,0x3054,0x3056,0x3058,
-		0x305A,0x305C,0x305E,0x3060,0x3062,0x3065,0x3067,0x3069,0xFF85,0xFF86,
-		0xFF87,0xFF88,0xFF89,0x3070,0x3073,0x3076,0x3079,0x307C],
-	numList: [
-		'H',	'Halpern',
-		'L',	'Heisig',
-		'E',	'Henshall',
-		'DK',	'Kanji Learners Dictionary',
-		'N',	'Nelson',
-		'V',	'New Nelson',
-		'Y',	'PinYin',
-		'P',	'Skip Pattern',
-		'IN',	'Tuttle Kanji &amp; Kana',
-		'I',	'Tuttle Kanji Dictionary',
-		'U',	'Unicode'
-	],
 };
 
 // Gets the messages passed from global.html
@@ -145,6 +119,13 @@ rcxContent.getMessage = function(event) {
 		case 'enable':
 			rcxContent.enableTab();
 			window.rikaichan.config = event.message;
+			
+			if (window.rikaichan.config.dict == "sanseidoKoku") {
+				rcxContent.sanseidoKoku = true;
+			} else if (window.rikaichan.config.dict == "sanseidoWaei") {
+				rcxContent.sanseidoWaei = false;
+			}
+			
 			break;
 		case 'disable':
 			rcxContent.disableTab();
@@ -399,6 +380,9 @@ rcxContent._onKeyDown = function(ev) {
 	case 79:   // o - Super sticky mode
 		this.superSticky();
 		this.initialStickyPopup();
+		break;
+	case 83:   // s - change dictionary between default and sanseido J-J/J-E
+		this.changeDictionary();
 		break;
 	case 89:   // y - Move popup down
 		this.initialStickyPopup();
@@ -946,6 +930,17 @@ rcxContent.flipNoShow = function() {
 	}
 	else {
 		this.showPopups = true;
+	}
+};
+
+rcxContent.changeDictionary = function() {
+	if (this.sanseidoKoku) {
+		this.sanseidoKoku = false;
+		this.sanseidoWaei = true;
+	} else if (this.sanseidoWaei) {
+		this.sanseidoWaei = false;
+	} else {
+		this.sanseidoKoku = true;
 	}
 };
 

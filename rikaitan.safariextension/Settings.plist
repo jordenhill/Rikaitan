@@ -146,5 +146,27 @@
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>Default</string>
+		<key>Key</key>
+		<string>dict</string>
+		<key>Title</key>
+		<string>Dictionary</string>
+		<key>Titles</key>
+		<array>
+			<string>Default</string>
+			<string>Sanseido (J-J)</string>
+			<string>Sanseido (J-E)</string>
+		</array>
+		<key>Type</key>
+		<string>ListBox</string>
+		<key>Values</key>
+		<array>
+			<string>default</string>
+			<string>sanseidoKoku</string>
+			<string>sanseidoWaei</string>
+		</array>
+	</dict>
 </array>
 </plist>
