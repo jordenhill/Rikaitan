@@ -43,8 +43,6 @@
 
 */
 
-"use strict";
-
 var rcxContent = {
 	altView: 0,
 	defaultDict: 2,
@@ -109,7 +107,7 @@ var rcxContent = {
 	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
 	superStickyMode: false,
 	textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
-}	
+};
 
 var dictionary = {
 	// katakana -> hiragana conversion tables
@@ -139,18 +137,16 @@ var dictionary = {
 	],
 };
 
-// Gets the messages passed from global.html and performs the corresponding
-// function
+// Gets the messages passed from global.html
 rcxContent.getMessage = function(event) {
-	if (window === window.top) {
-		switch(event.name) {
+	"use strict";
+	
+	switch(event.name) {
 		case 'enable':
-			console.log('enabled');
 			rcxContent.enableTab();
 			window.rikaichan.config = event.message;
 			break;
 		case 'disable':
-			console.log('disabled');
 			rcxContent.disableTab();
 			break;
 		case 'showPopup':
@@ -170,9 +166,8 @@ rcxContent.getMessage = function(event) {
 		case 'noShow':
 			rcxContent.flipNoShow();
 			break;
-		}
 	}
-}
+};
 
 // Enables the event listeners for Rikaitan
 rcxContent.enableTab = function() {
@@ -184,7 +179,7 @@ rcxContent.enableTab = function() {
 			window.addEventListener('mousedown', this.onMouseDown, false);
 			window.addEventListener('mouseup', this.onMouseUp, false);
 		}
-}
+};
 	
 // Disable the event listeners for Rikaitan
 rcxContent.disableTab = function() {
@@ -205,9 +200,8 @@ rcxContent.disableTab = function() {
 		this.clearHi();
 		delete window.rikaichan;
 	}
-}
+};
 
-// _onMouseMove
 rcxContent.onMouseMove = function(ev) {
 	if (window === window.top) {
 		try {			
@@ -330,15 +324,12 @@ rcxContent.onMouseMove = function(ev) {
 			}
 		}
 	}
-}
+};
 
-// _onKeyDown needs this to function properly	
 rcxContent.onKeyDown = function(ev) {
 	rcxContent._onKeyDown(ev)
-}
+};
 
-// Called when a key is pressed and checks for keys that activate a process or
-// feature
 rcxContent._onKeyDown = function(ev) {
 	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) {
 		return;
@@ -423,7 +414,7 @@ rcxContent._onKeyDown = function(ev) {
 	if (true) {
 		ev.preventDefault();
 	}
-}
+};
 	
 // Called when the mouse is clicked
 rcxContent.onMouseDown = function(ev) {
@@ -443,13 +434,13 @@ rcxContent.onMouseDown = function(ev) {
 	else {
 		window.rikaichan.oldTA = ev.target;
 	}
-}
+};
 	
 // Called when the mouse button is released
 rcxContent.onMouseUp = function(ev) {
 	if (ev.button != 0) return;
 	var mDown = false;
-}
+};
 	
 // Called in order to clear the highlighted text when necessary
 rcxContent.clearHi = function() {
@@ -493,9 +484,8 @@ rcxContent.clearHi = function() {
 	tdata.prevSelView = null;
 	tdata.kanjiChar = null;
 	tdata.selText = null;
-}
+};
 	
-// getTotalOffset
 rcxContent.getTotalOffset = function(parent, tNode, offset) {
 	var fChild = parent.firstChild;
 	var realO = offset;
@@ -514,9 +504,8 @@ rcxContent.getTotalOffset = function(parent, tNode, offset) {
 	} while ((fChild = fChild.nextSibling) != tNode);
 	
 	return realO;
-}
+};
 
-// Checks to see if portion of text is part of entire line of text	
 rcxContent.isInline = function(node) {
 	if (window === window.top) {
 		return this.inlineNames.hasOwnProperty(node.nodeName) ||
@@ -524,15 +513,13 @@ rcxContent.isInline = function(node) {
 		 'inline' || document.defaultView.getComputedStyle(node,null).getPropertyValue('display') ==
 		 'inline-block';
 	}
-}
+};
 
-// Checks to see if the popup is currently visible
 rcxContent.isVisible = function() {
 	var popup = document.getElementById('rikaichan-window');
 	return (popup) && (popup.style.display != 'none');
-}
+};
 
-// Gets text to prepare the translation and popup display
 rcxContent.show = function(tdata, dictOption) {
 	var rp = tdata.prevRangeNode;
 	var ro = tdata.prevRangeOfs + tdata.uofs;
@@ -583,14 +570,12 @@ rcxContent.show = function(tdata, dictOption) {
 	var textData = {'text':text, 'dictOption':dictOption};
 	safari.self.tab.dispatchMessage("xsearch", textData);
 	return 1;
-}
+};
 
-// Sends a message to global.html to translate title text	
 rcxContent.showTitle = function(tdata) {
 	safari.self.tab.dispatchMessage("translate", tdata.title);
-}
+};
 
-// Checks the content type of data contained in tDoc
 rcxContent.getContentType = function(tDoc) {
 	var m = tDoc.getElementsByTagName('meta');
 	for(var i in m) {
@@ -601,9 +586,8 @@ rcxContent.getContentType = function(tDoc) {
 		}
 	}
 	return null;
-}
+};
 
-// Displays the popup containing the information
 rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	var topdoc = window.document;
 	
@@ -716,9 +700,8 @@ rcxContent.showPopup = function(text, elem, x, y, looseWidth) {
 	popup.style.left = x + 'px';
 	popup.style.top = y + 'px';
 	popup.style.display = '';
-}
+};
 
-// Hides the popup
 rcxContent.hidePopup = function() {
 	if (!this.superStickyMode || this.hideInStickyMode) {
 		this.hideInStickyMode = false;
@@ -729,16 +712,14 @@ rcxContent.hidePopup = function() {
 		}
 		this.title = null;
 	}
-}
+};
 
-// Assigns unicode information
 rcxContent.unicodeInfo = function(c) {
 	hex = '0123456789ABCDEF';
 	u = c.charCodeAt(0);
 	return c + 'U' + hex[(u >>> 12) & 15] + hex[(u >>> 8) & 15] + hex[(u >>> 4) & 15] + hex[(u & 15)];
-}
+};
 
-// Gets the string of text
 rcxContent.getInlineText = function(node, selEndList, maxLength, xpathExpr) {
 	var text = '';
 	var endIndex;
@@ -759,9 +740,8 @@ rcxContent.getInlineText = function(node, selEndList, maxLength, xpathExpr) {
 	}
 	
 	return text;
-}
+};
 
-// Gets the next node
 rcxContent.getNext = function(node) {
 	var nextNode;
 	
@@ -772,9 +752,8 @@ rcxContent.getNext = function(node) {
 		return this.getNext(nextNode);
 	}
 	return null;
-}
+};
 
-// Gets the text from within the corresponding range
 rcxContent.getTextFromRange = function(rangeParent, offset, selEndList, maxLength) {
 	if(rangeParent.nodeName == 'textarea' || rangeParent.nodeName == 'INPUT') {
 		var endIndex = Math.min(rangeParent.data.length, offset + maxLength);
@@ -804,9 +783,8 @@ rcxContent.getTextFromRange = function(rangeParent, offset, selEndList, maxLengt
 			text.length, xpathExpr);
 	}
 	return text;
-}
+};
 
-// Processes the translation data
 rcxContent.processEntry = function(e) {
 	var tdata = window.rikaichan;
 	var ro = rcxContent.lastRo;
@@ -841,9 +819,8 @@ rcxContent.processEntry = function(e) {
 	}
 	
 	safari.self.tab.dispatchMessage("makehtml", e);
-}
+};
 
-// Processes the HTML translation data
 rcxContent.processHtml = function(html) {
 	if (window === window.top) {
 		if (!this.superStickyMode || this.showInStickyMode) {
@@ -853,9 +830,8 @@ rcxContent.processHtml = function(html) {
 			return 1;
 		}
 	}
-}
+};
 
-// Highlight the text that will be translated
 rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 	var sel = doc.defaultView.getSelection();
 	
@@ -923,9 +899,8 @@ rcxContent.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 	sel.removeAllRanges();
 	sel.addRange(range);
 	tdata.selText = sel.toString();
-}
+};
 
-// Process the title text of an image
 rcxContent.processTitle = function(e) {
 	var tdata = window.rikaichan;
 	if (!e) {
@@ -940,16 +915,13 @@ rcxContent.processTitle = function(e) {
 	this.lastFound = [e];
 	
 	safari.self.tab.dispatchMessage("makehtml", e);
-}
+};
 
-//getFirstTextChild
 rcxContent.getFirstTextChild = function(node) {
 	return document.evaluate('descendant::text()[not(parent::rp) and not(ancestor::rt)]',
 						node, null, XPathResult.ANY_TYPE, null).iterateNext();
-		//
-}
+};
 
-//method to toggle Super-sticky mode, which keeps the popup until dismissed
 rcxContent.superSticky = function() {
 	this.superStickyMode = !this.superStickyMode;
 	if (this.superStickyMode == true) {
@@ -958,13 +930,13 @@ rcxContent.superSticky = function() {
 	else {
 		this.showPopup("Super-sticky mode disabled");
 	}
-}
+};
 
 rcxContent.initialStickyPopup = function() {
 	if (this.superStickyMode) {
 		this.showInStickyMode = true;
 	}
-}
+};
 
 //function to flip the boolean showPopups variable so the extension will or 
 //won't display popups
@@ -975,6 +947,6 @@ rcxContent.flipNoShow = function() {
 	else {
 		this.showPopups = true;
 	}
-}
+};
 
 safari.self.addEventListener("message", rcxContent.getMessage, false);
