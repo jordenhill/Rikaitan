@@ -102,8 +102,8 @@ var rcxContent = {
 	namesN: 2,
 	showPopups: true,
 	nextDict: 3,
-	sanseidoKoku: false,
-	sanseidoWaei: false,
+	sanseido: false,
+	sanseidoState: 0,
 	showInStickyMode: false,
 	showingMinihelp: false,
 	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
@@ -382,7 +382,7 @@ rcxContent._onKeyDown = function(ev) {
 		this.initialStickyPopup();
 		break;
 	case 83:   // s - change dictionary between default and sanseido J-J/J-E
-		this.changeDictionary();
+		this.changeSanseido();
 		break;
 	case 89:   // y - Move popup down
 		this.initialStickyPopup();
@@ -551,9 +551,15 @@ rcxContent.show = function(tdata, dictOption) {
 	
 	rcxContent.lastSelEnd = selEndList;
 	rcxContent.lastRo = ro;
-	var textData = {'text':text, 'dictOption':dictOption};
-	safari.self.tab.dispatchMessage("xsearch", textData);
-	return 1;
+	
+	if (this.sanseido) {
+		this.sanseidoState = 0;
+		this.sanseidoSearch(tdata);
+	} else {
+		var textData = {'text':text, 'dictOption':dictOption};
+		safari.self.tab.dispatchMessage("xsearch", textData);
+		return 1; 
+	}	
 };
 
 rcxContent.showTitle = function(tdata) {
@@ -780,8 +786,10 @@ rcxContent.processEntry = function(e) {
 		return -1;
 	}
 	rcxContent.lastFound = [e];
-	if (!e.matchLen) {
-		e.matchLen = 1;
+	if (e != null) {
+		if (!e.matchLen) {
+			e.matchLen = 1;
+		}
 	}
 	tdata.uofsNext = e.matchLen;
 	tdata.uofs = (ro - tdata.prevRangeOfs);
@@ -891,7 +899,11 @@ rcxContent.processTitle = function(e) {
 		rcxContent.hidePopup();
 		return;
 	}
-	e.title = tdata.title.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) { return '&#' + c.charCodeAt(0) + ';' } );
+	e.title = tdata.title.substr(0, e.textLen).replace(/[\x00-\xff]/g, 
+		function (c) { 
+			return '&#' + c.charCodeAt(0) + ';' 
+		} 
+	);
 	if (tdata.title.length > e.textLen) {
 		e.title += '...';
 	}
@@ -933,15 +945,220 @@ rcxContent.flipNoShow = function() {
 	}
 };
 
-rcxContent.changeDictionary = function() {
-	if (this.sanseidoKoku) {
-		this.sanseidoKoku = false;
-		this.sanseidoWaei = true;
-	} else if (this.sanseidoWaei) {
-		this.sanseidoWaei = false;
-	} else {
-		this.sanseidoKoku = true;
-	}
+rcxContent.changeSanseido = function() {
+	this.sanseido = !this.sanseido;
+	console.log(this.sanseido);
 };
+
+rcxContent.sanseidoSearch = function(tdata) {
+	var searchTerm;
+	console.log(tdata);
+	
+	if (this.sanseidoState == 0) {
+		searchTerm = this.getSearchTerm(false);
+	} else if (this.sanseidoState == 1) {
+		searchTerm = this.getSearchTerm(true);
+	}
+	
+	if (!searchTerm) {
+		return;
+	}
+	
+	if ((this.sanseidoState == 0) && !this.containsKanji(searchTerm)) {
+		this.sanseidoState = 1;
+	}
+	
+	rcxContent.showPopup("Searching...");
+	
+	var searchRequest = new XMLHttpRequest();
+	
+	searchRequest.open('GET', 'http://www.sanseido.net/User/Dic/Index.aspx?TWords=' + 
+		searchTerm + '&st=0&DailyLL=checkbox', true);
+	
+	searchRequest.onReadyStateChange = function (aEvt) {
+		if (rcxContent.searchRequest.readyState == 4) {
+			if (rcxContent.searchRequest.status == 200) {
+				rcxContent.parseAndDisplay(searchRequest.responseText);
+			}
+		}
+	};
+	
+	searchRequest.send(null);
+};
+
+rcxContent.getSearchTerm = function(getReading) {
+	var entry = this.lastFound;
+	var searchTerm = "";
+	
+	if ((!entry) || (entry.length == 0)) {
+		return null;
+	}
+	
+	if (entry[0] && entry[0].kanji && entry[0].onkun) {
+		searchTerm = entry[0].kanji;
+	} else if (entry[0] && entry[0].data[0]) {
+		var entryData = entry[0].data[0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+	
+		if (getReading) {
+			if (entryData[2]) {
+				searchTerm = entryData[2];
+			} else {
+				searchTerm = entryData[1];
+			}
+		} else {
+			if (entryData[2] && !this.containsKanji(this.word)) {
+				searchTerm = entryData[2];
+			} else {
+				searchTerm = entryData[1];
+			}
+		}
+	} else {
+		return null;
+	}
+	
+	return searchTerm;
+};
+
+rcxContent.parseAndDisplay = function(entryPageText) {
+	var domPars = rcxContent.parseHtml(entryPageText);
+	var divList = domPars.getElementsByTagName("div");
+	var entryFound = false;
+	
+	for (divIdx = 0; divIdx < divList.length; divIdx++) {
+		if (divList[divIdx].className == "NetDicBody") {
+			entryFound = true;
+			
+			var defText = "";
+			var childList = divList[divIdx].childNodes;
+			var defFinished = false;
+			
+			for (nodeIdx = 0; nodeIdx < childList.length && !defFinished; nodeIdx++) {
+				if (childList[nodeIdx].nodeName == "b") {
+					if (childList[nodeIdx].childNodes.length == 1) {
+						var defNum = childList[nodeIdx].childNodes[0].nodeValue.match(
+							/［([１２３４５６７８９０]+)］/);
+						
+						if (defNum) {
+							defText += "<br/>" + RegExp.$1;
+						} else {
+							var subDefNum = childList[nodeIdx].childNodes[0].nodeValue.match(
+								/［([１２３４５６７８９０]+)］/);
+							
+							if (subDefNum) {
+								defText += this.convertIntegerToCircledNumStr(this.convertJpNumToInt(RegExp.$1));
+							}
+						}
+					} else {
+						for (bIdx = 0; bIdx < childList[nodeIdx].childNodes.length; bIdx++) {
+							if (childList[nodeIdx].childNodes[bIdx].nodeName == "span") {
+								defFinished = true;
+							}
+						}
+					}
+				}
+				
+				if (defFinished) {
+					break;
+				}
+				
+				if ((childList[nodeIdx].nodeName == "#text") && 
+					(this.trim(childList[nodeIdx].nodeValue) != "")) {
+						defText += childList[nodeIdx].nodeValue;
+				}
+			}
+			
+			if (defText.length == 0) {
+				this.sanseidoState = 1;
+				entryFound = false;
+				break;
+			}
+			
+			var jdicCode = "";
+			rcxContent.lastFound[0].data[0][0].match(/\/(\(.+?\)).+\//);
+			
+			if (RegExp.$1) {
+				jdicCode = RegExp.$1;
+			}
+			
+			rcxContent.lastFound[0].data[0][0] = rcxContent.lastFound[0].data[0][0].replace(
+				/\/.\//g, "/" + jdicCode + defText + "/");
+			rcxContent.lastFound[0].data = [rcxContent.lastFound[0].data[0]];
+			rcxContent.lastFound[0].more = false;
+			
+			safari.self.tab.dispatchMessage("makehtml", rcxContent.lastFound[0]);
+			
+			break;
+		}
+	}
+	
+	if (!entryFound) {
+		this.sanseidoState++;
+		
+		if (this.sanseidoState < 2) {
+			window.setTimeout (
+				function() {
+					rcxContent.sanseidoSearch(tdata);
+				}, 10
+			)
+		} else {
+			safari.self.tab.dispatchMessage("makehtml", rcxContent.lastFound[0]);
+		}
+	}
+}
+
+rcxContent.parseHtml = function(htmlString) {
+	var html = document.implementation.createDocument("http://www.w3.org/1999/xhtml",
+		"html", null);
+	
+	html.documentElement.appendChild(body);
+	body.appendChild(Components.classes["@mozilla.ord/feed-unescapehtml;1"].getService(
+		Components.interfaces.nslScriptableUnescapeHTML).parseFragment(htmlString, false, null, body));
+	
+	return body;
+};
+
+rcxContent.convertIntegerToCircledNumStr = function(num) {
+	var circledNumStr = "(" + num + ")";
+	
+	if (num == 0) {
+		circledNumStr = "⓪";
+	} else if ((num >= 1) && (num <= 20)) {
+		circledNumStr = String.fromCharCode(("①".charCodeAt(0) - 1) + num);
+	} else if ((num >= 21) && (num <= 35)) {
+		circledNumStr = String.fromCharCode(("㉑".charCodeAt(0) - 1) + num);
+	} else if ((num >= 36) && (num <= 50)) {
+		circledNumStr = String.fromCharCode(("㊱".charCodeAt(0) - 1) + num);
+	}
+	
+	return circledNumStr;
+};
+
+rcxContent.convertJpNumtoInt = function(jpNum) {
+	var numStr = "";
+	for (i = 0; i < jpNum.length; i++) {
+		if ((jpNum[i] >= "０") && (jpNum[i] <= "９")) {
+			var convertedNum = (jpNum.charCodeAt(0) - "０".charCodeAt(0));
+			numStr += convertedNum;
+		}
+	}
+	
+	return Number(numStr);
+};
+
+rcxContent.trim = function(text) {
+	return text.replace(/^\s\s*/, "").replace(/\s\s*$/, "");
+};
+
+rcxContent.trimEnd = function(text) {
+	return text.replace(/\s\s*$/, "");
+};
+
+rcxContent.containsKanji = function(text) {
+	for (i = 0; i < text.length; i++) {
+		if ((text[i] >= '\u4E00') && (text[i] <= '\u9FBF')) {
+			return true;
+		}
+	}
+}
 
 safari.self.addEventListener("message", rcxContent.getMessage, false);
