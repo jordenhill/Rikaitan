@@ -98,6 +98,7 @@ var rcxContent = {
 	lastFound: null,	
 	lastRo: 0,
 	lastSelEnd: [],
+	lastTdata: null,
 	mDown: false,
 	namesN: 2,
 	showPopups: true,
@@ -108,6 +109,7 @@ var rcxContent = {
 	showingMinihelp: false,
 	startElementExpr: 'boolean(parent::rp or ancestor::rt)',
 	superStickyMode: false,
+	termLen: 0,
 	textNodeExpr: 'descendant-or-self::text()[not(parent::rp) and not(ancestor::rt)]',
 };
 
@@ -119,13 +121,6 @@ rcxContent.getMessage = function(event) {
 		case 'enable':
 			rcxContent.enableTab();
 			window.rikaichan.config = event.message;
-			
-			if (window.rikaichan.config.dict == "sanseidoKoku") {
-				rcxContent.sanseidoKoku = true;
-			} else if (window.rikaichan.config.dict == "sanseidoWaei") {
-				rcxContent.sanseidoWaei = false;
-			}
-			
 			break;
 		case 'disable':
 			rcxContent.disableTab();
@@ -133,7 +128,7 @@ rcxContent.getMessage = function(event) {
 		case 'showPopup':
 			rcxContent.showPopup(event.message);
 			break;
-		case 'processentry':
+		case 'processEntry':
 			if (rcxContent.showPopups) {
 				rcxContent.processEntry(event.message);
 			}
@@ -146,6 +141,9 @@ rcxContent.getMessage = function(event) {
 			break;
 		case 'noShow':
 			rcxContent.flipNoShow();
+			break;
+		case 'parse':
+			rcxContent.parse(event.message);
 			break;
 	}
 };
@@ -184,125 +182,123 @@ rcxContent.disableTab = function() {
 };
 
 rcxContent.onMouseMove = function(ev) {
-	if (window === window.top) {
-		try {			
-			var tdata = window.rikaichan;
-			var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
-			var rp = range.startContainer;
-			var ro = range.startOffset;
+	try {			
+		var tdata = window.rikaichan;
+		var range = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+		var rp = range.startContainer;
+		var ro = range.startOffset;
 			
-			if (tdata.timer) {
-				clearTimeout(tdata.timer);
-				tdata.timer = null;
+		if (tdata.timer) {
+			clearTimeout(tdata.timer);
+			tdata.timer = null;
+		}
+			
+		// This is to account for bugs in caretRangeFromPoint
+		// It includes the fact that it returns text nodes over non text 
+		// nodes and also the fact that it miss the first character of 
+		// inline nodes. If the range offset is equal to the node data 
+		// length, then we have the second case and need to correct.
+		if ((rp.data) && ro == rp.data.length) {
+		
+			// A special exception is the WBR tag which is inline but 
+			// doesn't contain text.
+			if ((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
+				rp = rp.nextSibling.nextSibling;
+				ro = 0;
 			}
 			
-			// This is to account for bugs in caretRangeFromPoint
-			// It includes the fact that it returns text nodes over non text 
-			// nodes and also the fact that it miss the first character of 
-			// inline nodes. If the range offset is equal to the node data 
-			// length, then we have the second case and need to correct.
-			if ((rp.data) && ro == rp.data.length) {
-			
-				// A special exception is the WBR tag which is inline but 
-				// doesn't contain text.
-				if ((rp.nextSibling) && (rp.nextSibling.nodeName == 'WBR')) {
-					rp = rp.nextSibling.nextSibling;
-					ro = 0;
+			// If we're to the right of an inline character we can use the 
+			// target. However, if we're just in a blank spot don't do 
+			// anything.
+			else if (rcxContent.isInline(ev.target)) {
+				if (rp.parentNode == ev.target) {
+					;
 				}
-			
-				// If we're to the right of an inline character we can use the 
-				// target. However, if we're just in a blank spot don't do 
-				// anything.
-				else if (rcxContent.isInline(ev.target)) {
-					if (rp.parentNode == ev.target) {
-						;
-					}
-					else if (rp.parentNode.innerText == ev.target.value) {
-						;
-					}
-					else {
-						rp = ev.target.firstChild;
-						ro = 0;
-					}
+				else if (rp.parentNode.innerText == ev.target.value) {
+					;
 				}
-				
-				// Otherwise we're on the right and can take the next sibling 
-				// of the inline element.
 				else {
-					rp = rp.parentNode.nextSibling
+					rp = ev.target.firstChild;
 					ro = 0;
 				}
 			}
 			
-			// The case where the before div is empty so the false spot is in 
-			// the parent, but we should be able to take the target. The 1 
-			// seems random but it actually represents the preceding empty tag 
-			// also we don't want it to mess up with our fake div. Also, form 
-			// elements don't seem to fall into this case either.
-			if (!('form' in ev.target) && rp && rp.parentNode != ev.target && 
-					ro == 1) {
-				rp = rcxContent.getFirstTextChild(ev.target);
-				ro=0;
+			// Otherwise we're on the right and can take the next sibling 
+			// of the inline element.
+			else {
+				rp = rp.parentNode.nextSibling
+				ro = 0;
 			}
-					
-			// Otherwise, we're off in nowhere land and we should go home.
-			// offset should be 0 or max in this case.
-			else if((!(rp) || ((rp.parentNode != ev.target)))){
-				rp = null;
-				ro = -1;
-			}
-			
 		}
-		catch(err) {
-			return;
-		}
-
-		tdata.prevTarget = ev.target;
-		tdata.prevRangeNode = rp;
-		tdata.prevRangeOfs = ro;
-		tdata.title = null;
-		tdata.uofs = 0;
-		this.uofsNext = 1;
 		
-		if ((rp) && (rp.data) && (ro < rp.data.length)) {
-			rcxContent.forceKanji = ev.shiftKey ? 1 : 0;
-			tdata.popX = ev.clientX;
-			tdata.popY = ev.clientY;
-			tdata.timer = setTimeout( 
-					function() { 
-						rcxContent.show(tdata, rcxContent.forceKanji ? 
-						rcxContent.forceKanji : rcxContent.defaultDict); 
-					}, 1);
+		// The case where the before div is empty so the false spot is in 
+		// the parent, but we should be able to take the target. The 1 
+		// seems random but it actually represents the preceding empty tag 
+		// also we don't want it to mess up with our fake div. Also, form 
+		// elements don't seem to fall into this case either.
+		if (!('form' in ev.target) && rp && rp.parentNode != ev.target && 
+				ro == 1) {
+			rp = rcxContent.getFirstTextChild(ev.target);
+			ro=0;
+		}
+				
+		// Otherwise, we're off in nowhere land and we should go home.
+		// offset should be 0 or max in this case.
+		else if((!(rp) || ((rp.parentNode != ev.target)))){
+			rp = null;
+			ro = -1;
+		}
+		
+	}
+	catch(err) {
 		return;
-		}
+	}
 
-		// For images with Japanese text
-		if (ev.target.nodeName == 'IMG') {
-			if (ev.target.alt) {
-				tdata.title = ev.target.alt;
-			}
-			else if (ev.target.title) {
-				tdata.title = ev.target.title;
-			}
-		}
-
-		if (tdata.title) {
-			tdata.popX = ev.clientX;
-			tdata.popY = ev.clientY;
-			rcxContent.showTitle(tdata);
-		}
-		else {
+	tdata.prevTarget = ev.target;
+	tdata.prevRangeNode = rp;
+	tdata.prevRangeOfs = ro;
+	tdata.title = null;
+	tdata.uofs = 0;
+	this.uofsNext = 1;
 		
-			// dont close just because we moved from a valid popup slightly 
-			// over to a place with nothing
-			var dx = tdata.popX - ev.clientX;
-			var dy = tdata.popY - ev.clientY;
-			var distance = Math.sqrt(dx * dx + dy * dy);
+	if ((rp) && (rp.data) && (ro < rp.data.length)) {
+		rcxContent.forceKanji = ev.shiftKey ? 1 : 0;
+		tdata.popX = ev.clientX;
+		tdata.popY = ev.clientY;
+		tdata.timer = setTimeout( 
+				function() { 
+					rcxContent.show(tdata, rcxContent.forceKanji ? 
+					rcxContent.forceKanji : rcxContent.defaultDict); 
+				}, 1);
+	return;
+	}
 
-			if (distance > 2 && rcxContent.showingMinihelp == false) {
-				rcxContent.clearHi();
-				rcxContent.hidePopup();
-			}
+	// For images with Japanese text
+	if (ev.target.nodeName == 'IMG') {
+		if (ev.target.alt) {
+			tdata.title = ev.target.alt;
+		}
+		else if (ev.target.title) {
+			tdata.title = ev.target.title;
+		}
+	}
+
+	if (tdata.title) {
+		tdata.popX = ev.clientX;
+		tdata.popY = ev.clientY;
+		rcxContent.showTitle(tdata);
+	}
+	else {
+	
+		// dont close just because we moved from a valid popup slightly 
+		// over to a place with nothing
+		var dx = tdata.popX - ev.clientX;
+		var dy = tdata.popY - ev.clientY;
+		var distance = Math.sqrt(dx * dx + dy * dy);
+
+		if (distance > 2 && rcxContent.showingMinihelp == false) {
+			rcxContent.clearHi();
+		rcxContent.hidePopup();
 		}
 	}
 };
@@ -517,7 +513,7 @@ rcxContent.show = function(tdata, dictOption) {
 		return 0;
 	}
 	
-	if ((ro < 0) || (ro >= rp.data.length) && rcxContent.showingMinihelp == false) {	
+	if ((ro < 0) || (ro >= rp.data.length) && rcxContent.showingMinihelp == false) {
 		this.clearHi();
 		this.hidePopup();
 		return 0;
@@ -551,15 +547,16 @@ rcxContent.show = function(tdata, dictOption) {
 	
 	rcxContent.lastSelEnd = selEndList;
 	rcxContent.lastRo = ro;
+	rcxContent.lastTdata = tdata;
 	
 	if (this.sanseido) {
-		this.sanseidoState = 0;
-		this.sanseidoSearch(tdata);
+		rcxContent.sanseidoSearch();
 	} else {
 		var textData = {'text':text, 'dictOption':dictOption};
 		safari.self.tab.dispatchMessage("xsearch", textData);
-		return 1; 
 	}	
+	
+	return 1; 
 };
 
 rcxContent.showTitle = function(tdata) {
@@ -790,8 +787,7 @@ rcxContent.processEntry = function(e) {
 		if (!e.matchLen) {
 			e.matchLen = 1;
 		}
-	}
-	tdata.uofsNext = e.matchLen;
+		tdata.uofsNext = e.matchLen;
 	tdata.uofs = (ro - tdata.prevRangeOfs);
 	var rp = tdata.prevRangeNode;
 	
@@ -809,6 +805,7 @@ rcxContent.processEntry = function(e) {
 		rcxContent.highlightMatch(doc, rp, ro, e.matchLen, selEndList, tdata);
 		tdata.prevSelView = doc.defaultView;
 	}
+}
 	
 	safari.self.tab.dispatchMessage("makehtml", e);
 };
@@ -946,14 +943,13 @@ rcxContent.flipNoShow = function() {
 };
 
 rcxContent.changeSanseido = function() {
+	console.log('sanseido');
 	this.sanseido = !this.sanseido;
-	console.log(this.sanseido);
 };
 
-rcxContent.sanseidoSearch = function(tdata) {
+rcxContent.sanseidoSearch = function() {
 	var searchTerm;
-	console.log(tdata);
-	
+		
 	if (this.sanseidoState == 0) {
 		searchTerm = this.getSearchTerm(false);
 	} else if (this.sanseidoState == 1) {
@@ -968,22 +964,9 @@ rcxContent.sanseidoSearch = function(tdata) {
 		this.sanseidoState = 1;
 	}
 	
-	rcxContent.showPopup("Searching...");
-	
-	var searchRequest = new XMLHttpRequest();
-	
-	searchRequest.open('GET', 'http://www.sanseido.net/User/Dic/Index.aspx?TWords=' + 
-		searchTerm + '&st=0&DailyLL=checkbox', true);
-	
-	searchRequest.onReadyStateChange = function (aEvt) {
-		if (rcxContent.searchRequest.readyState == 4) {
-			if (rcxContent.searchRequest.status == 200) {
-				rcxContent.parseAndDisplay(searchRequest.responseText);
-			}
-		}
-	};
-	
-	searchRequest.send(null);
+	rcxContent.showPopup("Searching...", null, this.lastTdata.popX, this.lastTdata.popY, false);
+
+	safari.self.tab.dispatchMessage("searchReq", searchTerm);
 };
 
 rcxContent.getSearchTerm = function(getReading) {
@@ -997,33 +980,37 @@ rcxContent.getSearchTerm = function(getReading) {
 	if (entry[0] && entry[0].kanji && entry[0].onkun) {
 		searchTerm = entry[0].kanji;
 	} else if (entry[0] && entry[0].data[0]) {
-		var entryData = entry[0].data[0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+		var entryData = entry[0].data[0][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
 	
 		if (getReading) {
 			if (entryData[2]) {
 				searchTerm = entryData[2];
+				this.termLen = searchTerm.length;
 			} else {
 				searchTerm = entryData[1];
+				this.termLen = searchTerm.length;
 			}
 		} else {
-			if (entryData[2] && !this.containsKanji(this.word)) {
+			if (entryData[2] && !this.containsKanji(entry[0].data[0][0])) {
 				searchTerm = entryData[2];
+				this.termLen = searchTerm.length;
 			} else {
 				searchTerm = entryData[1];
+				this.termLen = searchTerm.length;
 			}
 		}
 	} else {
 		return null;
 	}
-	
+
 	return searchTerm;
 };
 
-rcxContent.parseAndDisplay = function(entryPageText) {
+rcxContent.parse = function(entryPageText) {
 	var domPars = rcxContent.parseHtml(entryPageText);
 	var divList = domPars.getElementsByTagName("div");
 	var entryFound = false;
-	
+
 	for (divIdx = 0; divIdx < divList.length; divIdx++) {
 		if (divList[divIdx].className == "NetDicBody") {
 			entryFound = true;
@@ -1079,12 +1066,17 @@ rcxContent.parseAndDisplay = function(entryPageText) {
 			if (RegExp.$1) {
 				jdicCode = RegExp.$1;
 			}
-			
-			rcxContent.lastFound[0].data[0][0] = rcxContent.lastFound[0].data[0][0].replace(
-				/\/.\//g, "/" + jdicCode + defText + "/");
+			rcxContent.lastFound[0].data[0][0] = rcxContent.lastFound[0].data[0][0]
+				.replace(/\/.+\//g, "/" + jdicCode + defText + "/");
 			rcxContent.lastFound[0].data = [rcxContent.lastFound[0].data[0]];
 			rcxContent.lastFound[0].more = false;
 			
+			var rp = this.lastTdata.prevRangeNode;
+			var doc = rp.ownerDocument;
+			var ro = this.lastRo;
+			var selEndList = rcxContent.lastSelEnd;
+			
+			rcxContent.highlightMatch(doc, rp, ro, this.termLen, selEndList, this.lastTdata);
 			safari.self.tab.dispatchMessage("makehtml", rcxContent.lastFound[0]);
 			
 			break;
@@ -1097,7 +1089,7 @@ rcxContent.parseAndDisplay = function(entryPageText) {
 		if (this.sanseidoState < 2) {
 			window.setTimeout (
 				function() {
-					rcxContent.sanseidoSearch(tdata);
+					rcxContent.sanseidoSearch();
 				}, 10
 			)
 		} else {
@@ -1109,10 +1101,12 @@ rcxContent.parseAndDisplay = function(entryPageText) {
 rcxContent.parseHtml = function(htmlString) {
 	var html = document.implementation.createDocument("http://www.w3.org/1999/xhtml",
 		"html", null);
+	var body = document.createElementNS("http://www.w3.org/1999/xhtml", "body");
+	var parser = new DOMParser();
+	var stuff = parser.parseFromString(htmlString, "text/html");
 	
 	html.documentElement.appendChild(body);
-	body.appendChild(Components.classes["@mozilla.ord/feed-unescapehtml;1"].getService(
-		Components.interfaces.nslScriptableUnescapeHTML).parseFragment(htmlString, false, null, body));
+	body.appendChild(stuff.body);
 	
 	return body;
 };

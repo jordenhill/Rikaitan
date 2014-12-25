@@ -108,6 +108,7 @@ var dictionary = {
 		'<tr><td>S</td><td>Change definition source</td></tr>' +
 		'</table>',
 	sameDict: 0,
+	sanseidoState: 0,
 	showMode: 0,
 };
 
@@ -118,6 +119,7 @@ dictionary.performCommand = function(event) {
 		if (dictionary.button == true) {
 			dictionary.assignValues();
 			dictionary.loadDictionary();
+			console.log('検索');
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 				"enable", dictionary.config);
 			if (dictionary.config.minihelp == "true") {
@@ -128,8 +130,7 @@ dictionary.performCommand = function(event) {
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 				"disable", "");
 		}
-	}
-	else if (event.command === "switch") {
+	} else if (event.command === "switch") {
 		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 			"noShow", "");
 	}
@@ -156,7 +157,7 @@ dictionary.getMessageFromJs = function(event) {
 		case 'xsearch':
 			var e = dictionary.search(event.message.text, event.message.dictOption);
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"processentry", e);
+				"processEntry", e);
 			break;
 		case 'resetDict':
 			console.log('resetDict');
@@ -184,6 +185,8 @@ dictionary.getMessageFromJs = function(event) {
 		case 'copyToClip':
 			dictionary.copyToClip(event.message);
 			break;
+		case 'searchReq':
+			dictionary.searchRequest(event.message);
 		}
 	}
 };
@@ -337,7 +340,7 @@ dictionary.search = function(text, dictOption) {
 		}
 		dictionary.showMode = (dictionary.showMode + 1) % dictionary.dictCount;
 	} while (dictionary.showMode != m);
-	
+
 	return e;
 };
 
@@ -1118,6 +1121,23 @@ dictionary.createFreqTable = function() {
 		dictionary.japaneseWordFrequencies[freqTable[0]] = parseInt(freqTable[1]);
 	}
 };
+
+dictionary.searchRequest = function(searchTerm) {
+	var searchReq = new XMLHttpRequest();
+	var url = encodeURI('http://www.sanseido.net/User/Dic/Index.aspx?TWords=' + searchTerm + '&st=0&DailyJJ=checkbox');
+	searchReq.open('GET', url, true);
+	
+	searchReq.onreadystatechange = function (aEvt) {
+		if (searchReq.readyState == 4) {
+			if (searchReq.status == 200) {
+				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+					'parse', searchReq.responseText);
+			}
+		}
+	};
+	
+	searchReq.send(null);
+}
 
 safari.application.addEventListener("command", dictionary.performCommand, false);
 safari.application.addEventListener("message", dictionary.getMessageFromJs, false);
