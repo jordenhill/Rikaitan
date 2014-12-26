@@ -79,6 +79,7 @@ var dictionary = {
 	kanjiN: 1,
 	namesN: 2,
 	nextDict: 3,
+	sanseido: 4,
 	numList: [
 		'H',	'Halpern',
 		'L',	'Heisig',
@@ -119,7 +120,6 @@ dictionary.performCommand = function(event) {
 		if (dictionary.button == true) {
 			dictionary.assignValues();
 			dictionary.loadDictionary();
-			console.log('検索');
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 				"enable", dictionary.config);
 			if (dictionary.config.minihelp == "true") {
@@ -187,6 +187,12 @@ dictionary.getMessageFromJs = function(event) {
 			break;
 		case 'searchReq':
 			dictionary.searchRequest(event.message);
+			break;
+		case 'wsearch':
+			var e = dictionary.wordSearch(event.message);
+			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+				"processEntry", e);
+			break;
 		}
 	}
 };
@@ -319,6 +325,9 @@ dictionary.search = function(text, dictOption) {
 	case dictionary.nextDict:
 		dictionary.showMode = (dictionary.showMode + 1) % dictionary.dictCount;
 		break;
+	case dictionary.sanseido:
+		var e = wordSearch(text, false);
+		return e;
 	}
 	
 	var m  = dictionary.showMode;
@@ -1004,7 +1013,7 @@ dictionary.makeHtml = function(entry) {
 		b.push(t);
 		if (entry.more) b.push('...<br/>');
 	}
-	
+
 	return b.join('');
 };
 
