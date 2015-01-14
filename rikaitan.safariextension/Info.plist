@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Jorden Hill</string>
 	<key>Builder Version</key>
-	<string>10600.3.8.2</string>
+	<string>10600.3.10.2</string>
 	<key>CFBundleDisplayName</key>
 	<string>Rikaitan</string>
 	<key>CFBundleIdentifier</key>
@@ -13,22 +13,11 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.9.0</string>
+	<string>1.9.1</string>
 	<key>CFBundleVersion</key>
-	<string>4.1.0</string>
+	<string>4.1.1</string>
 	<key>Chrome</key>
 	<dict>
-		<key>Context Menu Items</key>
-		<array>
-			<dict>
-				<key>Command</key>
-				<string>button</string>
-				<key>Identifier</key>
-				<string>Rikai</string>
-				<key>Title</key>
-				<string>Rikaitan</string>
-			</dict>
-		</array>
 		<key>Database Quota</key>
 		<real>1048576</real>
 		<key>Global Page</key>

@@ -138,14 +138,16 @@ rikaitan.shouldEnable = function(event) {
 		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 			"enable", rikaitan.config);
 	}
-} // end of shouldEnable
+}
 
 rikaitan.handleContextMenu = function(event) {
-	if (rikaitan.button == true) {
-		event.contextMenu.appendContextMenuItem("switch", "Enable/disable Rikaitan popups", "switch");
+	if (localStorage["contextMenu"] === 'true') {
+		event.contextMenu.appendContextMenuItem("button", "Rikaitan");
+		if (dictionary.button == true) {
+			event.contextMenu.appendContextMenuItem("switch", "Enable/disable dictionary popups", "switch");
+		}
 	}
-	
-}
+};
 
 // getMessageFromJs - Gets messages from rikaitan.js
 rikaitan.getMessageFromJs = function(event) {
@@ -193,76 +195,46 @@ rikaitan.initStorage = function(key, initialValue) {
 	return false;
 } // end of initStorage
 
-// assignSettings - Assigns the settings to local storage
+// Assigns settings to local storage
 rikaitan.assignSettings = function(event) {
-	console.log(event.newValue);
-	if (event.key == "popupcolor") {
-		localStorage["popupcolor"] = event.newValue;
-	}
-	if (event.key == "highlight") {
-		localStorage['highlight'] = event.newValue;
-	}
-	if (event.key == "textboxhl") {
-		localStorage['textboxhl'] = event.newValue;
-	}
-	if (event.key == "onlyreading") {
-		localStorage['onlyreading'] = event.newValue;
-	}	
-	if (event.key == "copySeparator") {
-		localStorage["copySeparator"] = event.newValue;
-	}	
-	if (event.key == "lineEnding") {
-		localStorage["lineEnding"] = event.newValue;
-	}	
-	if (event.key == "minihelp") {
-		localStorage["minihelp"] = event.newValue;
-	}
-	if (event.key == "disablekeys") {
-		localStorage["disablekeys"] = event.newValue;
-	}
-	if (event.key == "kanjicomponents") {
-		localStorage["kanjicomponents"] = event.newValue;
-	}
-	if (event.key == "opacity") {
-		localStorage["opacity"] = event.newValue;
-	}
-	if (event.key == "showFreq") {
-		localStorage["showFreq"] = event.newValue;
-	}
-} // end of assignSettings 
+	console.log("Changing " + event.key + " to " + event.newValue);
+	localStorage[event.key] = event.newValue;
+};
 
-// Assigns the setting values before extension should run
+// Assigns setting values before extension should run
 rikaitan.assignValues = function() {
-	rikaitan.config = {};
-	rikaitan.initStorage("popupcolor", "translucent");
-	rikaitan.initStorage("highlight", true);
-	rikaitan.initStorage("textboxhl", false);
-	rikaitan.initStorage("onlyreading", false);
-	rikaitan.initStorage("copySeparator", "tab");
-	rikaitan.initStorage("lineEnding", "n");
-	rikaitan.initStorage("minihelp", true);
-	rikaitan.initStorage("disablekeys", false);
-	rikaitan.initStorage("kanjicomponents", true);
-	rikaitan.initStorage("opacity", 100);
-	rikaitan.initStorage("showFreq", true);
-	rikaitan.config.css = localStorage["popupcolor"];
-	rikaitan.config.highlight = localStorage["highlight"];
-	rikaitan.config.textboxhl = localStorage["textboxhl"];
-	rikaitan.config.onlyreading = localStorage["onlyreading"];
-	rikaitan.config.copySeparator = localStorage["copySeparator"];
-	rikaitan.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
-	rikaitan.config.lineEnding = localStorage["lineEnding"];
-	rikaitan.config.minihelp = localStorage["minihelp"];
-	rikaitan.config.disablekeys = localStorage["disablekeys"];
-	rikaitan.config.kanjicomponents = localStorage["kanjicomponents"];
-	rikaitan.config.opacity = localStorage["opacity"];
-	rikaitan.config.showFreq = localStorage["showFreq"];
-	rikaitan.config.kanjiinfo = new Array(dictionary.numList.length / 2);
+	dictionary.config = {};
+	dictionary.initStorage("popupcolor", "translucent");
+	dictionary.initStorage("highlight", true);
+	dictionary.initStorage("textboxhl", false);
+	dictionary.initStorage("onlyreading", false);
+	dictionary.initStorage("copySeparator", "tab");
+	dictionary.initStorage("lineEnding", "n");
+	dictionary.initStorage("minihelp", true);
+	dictionary.initStorage("disablekeys", false);
+	dictionary.initStorage("kanjicomponents", true);
+	dictionary.initStorage("opacity", 100);
+	dictionary.initStorage("showFreq", true);
+	dictionary.config.css = localStorage["popupcolor"];
+	dictionary.config.highlight = localStorage["highlight"];
+	dictionary.config.textboxhl = localStorage["textboxhl"];
+	dictionary.config.onlyreading = localStorage["onlyreading"];
+	dictionary.config.copySeparator = localStorage["copySeparator"];
+	dictionary.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
+	dictionary.config.lineEnding = localStorage["lineEnding"];
+	dictionary.config.minihelp = localStorage["minihelp"];
+	dictionary.config.disablekeys = localStorage["disablekeys"];
+	dictionary.config.kanjicomponents = localStorage["kanjicomponents"];
+	dictionary.config.opacity = localStorage["opacity"];
+	dictionary.config.showFreq = localStorage["showFreq"];
+	dictionary.config.dict = localStorage["dict"];
+	dictionary.config.contextMenu = localStorage["contextMenu"];
+	dictionary.config.kanjiinfo = new Array(dictionary.numList.length / 2);
 	var numList = dictionary.numList;
 	for (var i = 0; i*2 < dictionary.numList.length; i++) {
-		rikaitan.initStorage(dictionary.numList[i*2], "true")
+		dictionary.initStorage(dictionary.numList[i*2], "true")
 	}
-}
+};
 
 rikaitan.savePrep = function(clip, entry) {
 	var me, mk;
