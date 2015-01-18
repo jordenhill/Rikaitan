@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Jorden Hill</string>
 	<key>Builder Version</key>
-	<string>10600.3.10.2</string>
+	<string>10600.3.17</string>
 	<key>CFBundleDisplayName</key>
 	<string>Rikaitan</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.9.1</string>
+	<string>1.9.2</string>
 	<key>CFBundleVersion</key>
-	<string>4.1.1</string>
+	<string>4.1.2</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
@@ -31,6 +31,8 @@
 				<string>Button</string>
 				<key>Image</key>
 				<string>toolbaricon.png</string>
+				<key>Include By Default</key>
+				<true/>
 				<key>Label</key>
 				<string>Rikaitan</string>
 				<key>Tool Tip</key>

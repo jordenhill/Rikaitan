@@ -82,6 +82,7 @@ var rikaitan = {
 	defaultDict: 2,
 	nextDict: 3,
 };
+
 var dictionary = {
 	config: {},
 	// katakana -> hiragana conversion tables
@@ -115,8 +116,8 @@ rikaitan.performCommand = function(event) {
 			rikaitan.assignValues();
 			dictionary.loadDictionary();
 			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"enable", rikaitan.config);
-			if (rikaitan.config.minihelp == "true") {
+				"enable", dictionary.config);
+			if (dictionary.config.minihelp == "true") {
 				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 				"showPopup", rikaitan.miniHelp);
 			}		
@@ -136,14 +137,14 @@ rikaitan.shouldEnable = function(event) {
 	if (rikaitan.button == true) {
 		rikaitan.assignValues();
 		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-			"enable", rikaitan.config);
+			"enable", dictionary.config);
 	}
 }
 
 rikaitan.handleContextMenu = function(event) {
 	if (localStorage["contextMenu"] === 'true') {
 		event.contextMenu.appendContextMenuItem("button", "Rikaitan");
-		if (dictionary.button == true) {
+		if (rikaitan.button == true) {
 			event.contextMenu.appendContextMenuItem("switch", "Enable/disable dictionary popups", "switch");
 		}
 	}
@@ -173,20 +174,20 @@ rikaitan.getMessageFromJs = function(event) {
 				"processhtml", html);
 			break;
 		case 'switchOnlyReading':
-			if(rikaitan.config.onlyreading == 'true') {
-				rikaitan.config.onlyreading = 'false'; 
+			if(dictionary.config.onlyreading == 'true') {
+				dictionary.config.onlyreading = 'false'; 
 			}
 			else {
-				rikaitan.config.onlyreading = 'true';
+				dictionary.config.onlyreading = 'true';
 			}
-			localStorage['onlyreading'] = rikaitan.config.onlyreading;
+			localStorage['onlyreading'] = dictionary.config.onlyreading;
 			break;
 		}
 	}
 } // end of reveiveMessage
 
 // initStorage - Assigns initial values;
-rikaitan.initStorage = function(key, initialValue) {
+dictionary.initStorage = function(key, initialValue) {
 	var currentValue = localStorage[key];
 	if (!currentValue) {
 		localStorage[key] = initialValue;
@@ -248,7 +249,7 @@ rikaitan.savePrep = function(clip, entry) {
 		return null;
 	}
 	if (clip) {
-		me = rikaitan.config.maxClipCopyEntries;
+		me = dictionary.config.maxClipCopyEntries;
 	}
 	if (!this.fromLB) {
 		mk = 1;
@@ -270,16 +271,16 @@ rikaitan.savePrep = function(clip, entry) {
 		}
 	}
 		
-	if (rikaitan.config.lineEnding == "rn") {
+	if (dictionary.config.lineEnding == "rn") {
 		text = text.replace(/\n/g,'\r\n');
-	} else if (rikaitan.config.lineEnding == "r") {
+	} else if (dictionary.config.lineEnding == "r") {
 		text = text.replace(/\n/g, "\r");
 	}
-	if (rikaitan.config.copySeparator != "tab") {
-		if (rikaitan.config.copySeparator == "comma") {
+	if (dictionary.config.copySeparator != "tab") {
+		if (dictionary.config.copySeparator == "comma") {
 			return text.replace(/\t/g, ",");
 		}
-		if (rikaitan.config.copySeparator == "space") {
+		if (dictionary.config.copySeparator == "space") {
 			return text.replace(/\t/g, " ");
 		}
 	}
@@ -815,7 +816,7 @@ dictionary.makeHtml = function(entry) {
 			'<td class="k-abox-f">freq<br/>' + (entry.misc['F'] ? entry.misc['F'] : '-') + '</td>' +
 			'<td class="k-abox-s">strokes<br/>' + entry.misc['S'] + '</td>' +
 			'</tr></table>';
-		if (rikaitan.config.kanjicomponents == "true") {
+		if (dictionary.config.kanjicomponents == "true") {
 			k = this.radData[bn].split('\t');
 			box += '<table class="k-bbox-tb">' +
 					'<tr><td class="k-bbox-1a">' + k[0] + '</td>' +
@@ -838,7 +839,7 @@ dictionary.makeHtml = function(entry) {
 		nums = '';
 		j = 0;
 
-		var kanjiinfo = rikaitan.config.kanjiinfo;
+		var kanjiinfo = dictionary.config.kanjiinfo;
 		for (i = 0; i*2 < this.numList.length; i++) {
 			c = this.numList[i*2];
 			if (kanjiinfo[i] == 'true') {
@@ -936,7 +937,7 @@ dictionary.makeHtml = function(entry) {
 			if (e[2]) {
 				if (pK == e[1]) {
 					k = '\u3001 <span class="w-kana">' + e[2] + '</span>';
-					if (rikaitan.config.showFreq == "true") {
+					if (dictionary.config.showFreq == "true") {
 						var freqStr = ""
 						var freq = dictionary.getFreq(e[1]);
 						if (freq) {
@@ -949,7 +950,7 @@ dictionary.makeHtml = function(entry) {
 				}
 				else {
 					k += '<span class="w-kanji">' + e[1] + '</span> &#32; <span class="w-kana">' + e[2] + '</span>';
-					if (rikaitan.config.showFreq == "true") {
+					if (dictionary.config.showFreq == "true") {
 						var freqStr = ""
 						var freq = dictionary.getFreq(e[1]);
 						if (freq) {
@@ -964,7 +965,7 @@ dictionary.makeHtml = function(entry) {
 			}
 			else {
 				k += '<span class="w-kana">' + e[1] + '</span>';
-				if (rikaitan.config.showFreq == "true") {
+				if (dictionary.config.showFreq == "true") {
 					var freqStr = ""
 					var freq = dictionary.getFreq(e[1]);
 					if (freq) {
@@ -989,7 +990,7 @@ dictionary.makeHtml = function(entry) {
 			t = s.replace(/\//g, '; ');
 			if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
 			if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
-			if (rikaitan.config.onlyreading == 'false') {
+			if (dictionary.config.onlyreading == 'false') {
 				t = '<br/><span class="w-def">' + t + '</span><br/>';
 			}
 			else {
