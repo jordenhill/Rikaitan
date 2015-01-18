@@ -1,4 +1,4 @@
-Rikaitan (v1.9.1)
+Rikaitan (v1.9.2)
 ==========
 
 About
@@ -12,7 +12,7 @@ This is a version of the rikai (rikaichan, rikaisama, rikaikun) Japanese transla
 Download and Installation
 ----------
 
-You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/v1.9.1/rikaitan.safariextz).
+You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/v1.9.2/rikaitan.safariextz).
 
 When clicking this the extension should be downloaded to the folder where you keep your safari downloads. From there click the extension and it should install.
 
@@ -20,6 +20,8 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
+**Version 1.9.2 (1/18/2015):** Fixed errors causing extension to not start.
+
 **Version 1.9.1 (1/14/2014):** Added an option to disable contextual menu items.
 
 **Version 1.9.0 (12/18/2014):** Added contextual menu option to enable or disable extension. To access menu simply ctrl+click or right click within the browser window. When the extension is enabled, there is also now an option within the contextual menu to enable or disable popups if you only want to disable popups for a temporary period of time without disabling the entire extension. Also added ability to hide a popup that shows up by pressing the h key. 
