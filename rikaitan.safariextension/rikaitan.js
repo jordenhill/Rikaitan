@@ -317,11 +317,9 @@ rikaitan._onMouseMove = function(ev) {
 		var dx = tdata.popX - ev.clientX;
 		var dy = tdata.popY - ev.clientY;
 		var distance = Math.sqrt(dx * dx + dy * dy);
-		if (rikaitan.superStickyMode) {
-			if (distance > 4) {
-				rikaitan.clearHi();
-				rikaitan.hidePopup();
-			}
+		if (distance > 20) {
+			rikaitan.clearHi();
+			rikaitan.hidePopup();
 		}
 	}
 },
