@@ -113,126 +113,126 @@ var dictionary = {
 
 // performCommand - Gets messages from Safari
 dictionary.performCommand = function(event) {
-	if(event.command === "button") {
-		dictionary.button = !dictionary.button;
-		if (dictionary.button === true) {
-			dictionary.assignValues();
-			dictionary.loadDictionary();
-			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"enable", dictionary.config);
-			if (dictionary.config.miniHelp == "true") {
-				safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"showPopup", dictionary.miniHelp);
-			}		
-		} else {
-			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"disable", "");
-		}
-	} else if (event.command === "switch") {
-		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-			"noShow", "");
-	}
+  if(event.command === "button") {
+    dictionary.button = !dictionary.button;
+    if (dictionary.button === true) {
+      dictionary.assignValues();
+      dictionary.loadDictionary();
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "enable", dictionary.config);
+      if (dictionary.config.miniHelp == "true") {
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "showPopup", dictionary.miniHelp);
+      }
+    } else {
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "disable", "");
+    }
+  } else if (event.command === "switch") {
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+      "noShow", "");
+  }
 };
 
 // Tells extension to enable itself when changing tabs if already activated
 dictionary.shouldEnable = function(event) {
-	if (dictionary.button === true) {
-		dictionary.assignValues();
-		safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-			"enable", dictionary.config);
-	}
+  if (dictionary.button === true) {
+    dictionary.assignValues();
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+      "enable", dictionary.config);
+  }
 };
 
 dictionary.handlecontextMenu = function(event) {
-	if (dictionary.button === true) {
-		event.contextMenu.appendcontextMenuItem("switch", "Enable/disable dictionary popups", "switch");
-	}
+  if (dictionary.button === true) {
+    event.contextMenu.appendcontextMenuItem("switch", 
+      "Enable/disable dictionary popups", "switch");
+  }
 };
 
 dictionary.getMessageFromJs = function(event) {
-	if (window.top === window) {
-		switch(event.name) {
-		case 'xsearch':
-			var e = dictionary.search(event.message.text, event.message.dictOption);
-			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"processEntry", e);
-			break;
-		case 'resetDict':
-			dictionary.resetDict();
-			break;
-		case 'translate':
-			var translation = dictionary.translate(event.message);
-			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"processtitle", translation);
-			break;
-		case 'makehtml':
-			var html = dictionary.makeHtml(event.message);
-			safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-				"processhtml", html);
-			break;
-		case 'switchonlyReading':
-			if(dictionary.config.onlyReading == 'true') {
-				dictionary.config.onlyReading = 'false'; 
-			}
-			else {
-				dictionary.config.onlyReading = 'true';
-			}
-			localStorage.onlyReading = dictionary.config.onlyReading;
-			break;
-		case 'searchReq':
-			dictionary.searchRequest(event.message);
-		}
-	}
+  if (window.top === window) {
+    switch(event.name) {
+    case 'xsearch':
+      var e = dictionary.search(event.message.text, event.message.dictOption);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processEntry", e);
+      break;
+    case 'resetDict':
+      dictionary.resetDict();
+      break;
+    case 'translate':
+      var translation = dictionary.translate(event.message);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processtitle", translation);
+      break;
+    case 'makehtml':
+      var html = dictionary.makeHtml(event.message);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processhtml", html);
+      break;
+    case 'switchonlyReading':
+      if(dictionary.config.onlyReading == 'true') {
+        dictionary.config.onlyReading = 'false'; 
+      } else {
+        dictionary.config.onlyReading = 'true';
+      }
+      localStorage.onlyReading = dictionary.config.onlyReading;
+      break;
+    case 'searchReq':
+      dictionary.searchRequest(event.message);
+    }
+  }
 };
 
 // Assigns initial values;
 dictionary.initStorage = function(key, initialValue) {
-	var currentValue = localStorage[key];
-	if (!currentValue) {
-		localStorage[key] = initialValue;
-		return true;
-	}
-	return false;
+  var currentValue = localStorage[key];
+  if (!currentValue) {
+    localStorage[key] = initialValue;
+    return true;
+  }
+  return false;
 };
 
 // Assigns settings to local storage
 dictionary.assignSettings = function(event) {
-	console.log("Changing " + event.key + " to " + event.newValue);
-	localStorage[event.key] = event.newValue;
+  console.log("Changing " + event.key + " to " + event.newValue);
+  localStorage[event.key] = event.newValue;
 };
 
 // Assigns setting values before extension should run
 dictionary.assignValues = function() {
-	dictionary.config = {};
-	dictionary.initStorage("popupColor", "translucent");
-	dictionary.initStorage("highlight", true);
-	dictionary.initStorage("textboxhl", false);
-	dictionary.initStorage("onlyReading", false);
-	dictionary.initStorage("copySeparator", "tab");
-	dictionary.initStorage("lineEnding", "n");
-	dictionary.initStorage("miniHelp", true);
-	dictionary.initStorage("disableKeys", false);
-	dictionary.initStorage("kanjiComponents", true);
-	dictionary.initStorage("opacity", 100);
-	dictionary.initStorage("showFreq", true);
-	dictionary.config.css = localStorage.popupColor;
-	dictionary.config.highlight = localStorage.highlight;
-	dictionary.config.textboxhl = localStorage.textboxhl;
-	dictionary.config.onlyReading = localStorage.onlyReading;
-	dictionary.config.copySeparator = localStorage.copySeparator;
-	dictionary.config.lineEnding = localStorage.lineEnding;
-	dictionary.config.miniHelp = localStorage.miniHelp;
-	dictionary.config.disableKeys = localStorage.disableKeys;
-	dictionary.config.kanjiComponents = localStorage.kanjiComponents;
-	dictionary.config.opacity = localStorage.opacity;
-	dictionary.config.showFreq = localStorage.showFreq;
-	dictionary.config.dict = localStorage.dict;
-	dictionary.config.contextMenu = localStorage.contextMenu;
-	dictionary.config.kanjiinfo = new Array(dictionary.numList.length / 2);
-	var numList = dictionary.numList;
-	for (var i = 0; i*2 < dictionary.numList.length; i++) {
-		dictionary.initStorage(dictionary.numList[i*2], "true");
-	}
+  dictionary.config = {};
+  dictionary.initStorage("popupColor", "translucent");
+  dictionary.initStorage("highlight", true);
+  dictionary.initStorage("textboxhl", false);
+  dictionary.initStorage("onlyReading", false);
+  dictionary.initStorage("copySeparator", "tab");
+  dictionary.initStorage("lineEnding", "n");
+  dictionary.initStorage("miniHelp", true);
+  dictionary.initStorage("disableKeys", false);
+  dictionary.initStorage("kanjiComponents", true);
+  dictionary.initStorage("opacity", 100);
+  dictionary.initStorage("showFreq", true);
+  dictionary.config.css = localStorage.popupColor;
+  dictionary.config.highlight = localStorage.highlight;
+  dictionary.config.textboxhl = localStorage.textboxhl;
+  dictionary.config.onlyReading = localStorage.onlyReading;
+  dictionary.config.copySeparator = localStorage.copySeparator;
+  dictionary.config.lineEnding = localStorage.lineEnding;
+  dictionary.config.miniHelp = localStorage.miniHelp;
+  dictionary.config.disableKeys = localStorage.disableKeys;
+  dictionary.config.kanjiComponents = localStorage.kanjiComponents;
+  dictionary.config.opacity = localStorage.opacity;
+  dictionary.config.showFreq = localStorage.showFreq;
+  dictionary.config.dict = localStorage.dict;
+  dictionary.config.contextMenu = localStorage.contextMenu;
+  dictionary.config.kanjiinfo = new Array(dictionary.numList.length / 2);
+  var numList = dictionary.numList;
+  for (var i = 0; i*2 < dictionary.numList.length; i++) {
+    dictionary.initStorage(dictionary.numList[i*2], "true");
+  }
 };
 
 dictionary.search = function(text, dictOption) {
@@ -339,112 +339,113 @@ dictionary.find = function(data, text) {
 };
 
 dictionary.loadDictionary = function() {
-	dictionary.wordDict = this.fileRead(safari.extension.baseURI + "data/dict.dat");
-	dictionary.wordIndex = this.fileRead(safari.extension.baseURI + "data/dict.idx");
-	dictionary.kanjiData = this.fileRead((safari.extension.baseURI + "data/kanji.dat"), 'UTF-8');
-	dictionary.radData = this.fileReadArray((safari.extension.baseURI + 'data/radicals.dat'), 'UTF-8'); 
-	dictionary.nameDict = this.fileRead(safari.extension.baseURI + 'data/names.dat');
-	dictionary.nameIndex = this.fileRead(safari.extension.baseURI + 'data/names.idx');
-	dictionary.freq = this.fileRead(safari.extension.baseURI + 'data/freq.dat');
-	dictionary.createFreqTable();
-	dictionary.loadDIF();
+  dictionary.wordDict = this.fileRead(safari.extension.baseURI + 
+    "data/dict.dat");
+  dictionary.wordIndex = this.fileRead(safari.extension.baseURI + 
+    "data/dict.idx");
+  dictionary.kanjiData = this.fileRead((safari.extension.baseURI + 
+    "data/kanji.dat"), 'UTF-8');
+  dictionary.radData = this.fileReadArray((safari.extension.baseURI + 
+    'data/radicals.dat'), 'UTF-8'); 
+  dictionary.nameDict = this.fileRead(safari.extension.baseURI + 
+    'data/names.dat');
+  dictionary.nameIndex = this.fileRead(safari.extension.baseURI + 
+    'data/names.idx');
+  dictionary.freq = this.fileRead(safari.extension.baseURI + 'data/freq.dat');
+  dictionary.createFreqTable();
+  dictionary.loadDIF();
 };
 
 dictionary.loadDIF = function() {
-	dictionary.deinflectReasons = [];
-	dictionary.deinflectRules = [];
-	dictionary.deinflectExact = [];
+  dictionary.deinflectReasons = [];
+  dictionary.deinflectRules = [];
+  dictionary.deinflectExact = [];
 
-	var buffer = dictionary.fileReadArray(safari.extension.baseURI + 'data/deinflect.dat', 'UTF-8');
-	var prevLen = -1;
-	var g, o;
+  var buffer = dictionary.fileReadArray(safari.extension.baseURI + 
+    'data/deinflect.dat', 'UTF-8');
+  var prevLen = -1;
+  var g, o;
 
-	// i = 1: skip header
-	for (var i = 1; i < buffer.length; ++i) {
-		var split = buffer[i].split('\t');
+  // i = 1: skip header
+  for (var i = 1; i < buffer.length; ++i) {
+    var split = buffer[i].split('\t');
+    if (split.length == 1) {
+      dictionary.deinflectReasons.push(split[0]);
+    } else if (split.length == 4) {
+      o = {};
+      o.from = split[0];
+      o.to = split[1];
+      o.type = split[2];
+      o.reason = split[3];
 
-		if (split.length == 1) {
-			dictionary.deinflectReasons.push(split[0]);
-		}
-		else if (split.length == 4) {
-			o = {};
-			o.from = split[0];
-			o.to = split[1];
-			o.type = split[2];
-			o.reason = split[3];
-
-			if (prevLen != o.from.length) {
-				prevLen = o.from.length;
-				g = [];
-				g.flen = prevLen;
-				dictionary.deinflectRules.push(g);
-			}
-			g.push(o);
-		}
-	}
+      if (prevLen != o.from.length) {
+        prevLen = o.from.length;
+        g = [];
+        g.flen = prevLen;
+        dictionary.deinflectRules.push(g);
+      }
+      g.push(o);
+    }
+  }
 };
 
 dictionary.deinflect = function(word) {
-	var root = [];
-	var have = [];
-	var o;
+  var root = [];
+  var have = [];
+  var o;
 
-	o = {};
-	o.word = word;
-	o.type = 0xFF;
-	o.reason = '';
-	root.push(o);
-	have[word] = 0;
+  o = {};
+  o.word = word;
+  o.type = 0xFF;
+  o.reason = '';
+  root.push(o);
+  have[word] = 0;
 
-	var index = 0;
-	do {
-		word = root[index].word;
-		var wordLen = word.length;
-		var type = root[index].type;
+  var index = 0;
+  do {
+    word = root[index].word;
+    var wordLen = word.length;
+    var type = root[index].type;
 
-		for (var j = 0; j < this.deinflectRules.length; ++j) {
-			
-			var g = this.deinflectRules[j];
-			
-			if (g.flen <= wordLen) {
-				var end = word.substr(-g.flen);
-				
-				for (var k = 0; k < g.length; ++k) {
-					var rule = g[k];
-					
-					if ((type & rule.type) && (end == rule.from)) {
-						var newWord = word.substr(0, word.length - rule.from.length) + rule.to;
-						
-						if (newWord.length <= 1) {
-							continue;
-						}
-						
-						o = {};
-						
-						if (have[newWord] !== undefined) {
-							o = root[have[newWord]];
-							o.type |= (rule.type >> 8);
-							continue;
-						}
-						
-						have[newWord] = root.length;
-						
-						if (root[index].reason.length) {
-							o.reason = this.deinflectReasons[rule.reason] + ' &lt; ' 
-								+ root[index].reason;
-						} else {
-							o.reason = this.deinflectReasons[rule.reason];
-						}
-						o.type = rule.type >> 8;
-						o.word = newWord;
-						root.push(o);
-					}
-				}
-			}
-		}
-	} while (++index < root.length);
+    for (var j = 0; j < this.deinflectRules.length; ++j) {
+      var g = this.deinflectRules[j];
+      if (g.flen <= wordLen) {
+        var end = word.substr(-g.flen);
+        for (var k = 0; k < g.length; ++k) {
+          var rule = g[k];
+          if ((type & rule.type) && (end == rule.from)) {
+            var newWord = word.substr(0, word.length - rule.from.length) + 
+              rule.to;
+            if (newWord.length <= 1) {
+              continue;
+            }
 
-	return root;
+            o = {};
+
+            if (have[newWord] !== undefined) {
+              o = root[have[newWord]];
+              o.type |= (rule.type >> 8);
+              continue;
+            }
+
+            have[newWord] = root.length;
+
+            if (root[index].reason.length) {
+              o.reason = this.deinflectReasons[rule.reason] + ' &lt; ' +
+                  root[index].reason;
+            } else {
+              o.reason = this.deinflectReasons[rule.reason];
+            }
+            o.type = rule.type >> 8;
+            o.word = newWord;
+            root.push(o);
+          }
+        }
+      }
+    }
+  } while (++index < root.length);
+
+  return root;
 };
 
 dictionary.wordSearch = function(word, doNames, max) {
@@ -1069,6 +1070,7 @@ dictionary.searchRequest = function(searchTerm) {
 		searchReq.onreadystatechange = function (aEvt) {
 			if (searchReq.readyState == 4) {
 				if (searchReq.status == 200) {
+					console.log(searchReq);
 					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 						'parse', searchReq.responseText);
 				}
