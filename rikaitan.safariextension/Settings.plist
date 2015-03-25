@@ -166,5 +166,15 @@
 			<string>sanseidoKoku</string>
 		</array>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>sanseidoDict</string>
+		<key>Title</key>
+		<string>J-J Dictionary (Sanseido)</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
 </array>
 </plist>

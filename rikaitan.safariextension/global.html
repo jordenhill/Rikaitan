@@ -167,20 +167,36 @@ dictionary.getMessageFromJs = function(event) {
         "processtitle", translation);
       break;
     case 'makehtml':
-      var html = dictionary.makeHtml(event.message);
+      var html;
+      
+      if (dictionary.config.sanseidoDict === 'true') {
+        html = dictionary.sanseidoToHTML(event.message);
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+          "sanseido", '');
+      } else {
+        html = dictionary.makeHtml(event.message);
+      }
+      
       safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
         "processhtml", html);
       break;
-    case 'switchonlyReading':
+    case 'switchOnlyReading':
       if(dictionary.config.onlyReading == 'true') {
         dictionary.config.onlyReading = 'false'; 
       } else {
         dictionary.config.onlyReading = 'true';
       }
-      localStorage.onlyReading = dictionary.config.onlyReading;
+      break;
+    case 'changeDictLanguage':
+      if (dictionary.config.sanseidoDict == 'true') {
+        dictionary.config.sanseidoDict = 'false';
+      } else {
+        dictionary.config.sanseidoDict = 'true';
+      }
       break;
     case 'searchReq':
       dictionary.searchRequest(event.message);
+      break;
     }
   }
 };
@@ -228,6 +244,7 @@ dictionary.assignValues = function() {
   dictionary.config.showFreq = localStorage.showFreq;
   dictionary.config.dict = localStorage.dict;
   dictionary.config.contextMenu = localStorage.contextMenu;
+  dictionary.config.sanseidoDict = localStorage.sanseidoDict;
   dictionary.config.kanjiinfo = new Array(dictionary.numList.length / 2);
   var numList = dictionary.numList;
   for (var i = 0; i*2 < dictionary.numList.length; i++) {
@@ -715,6 +732,109 @@ dictionary.kanjiSearch = function(kanji) {
 	return entry;
 };
 
+dictionary.sanseidoToHTML = function(entry) {
+  var e, c, s, t, i, j, n;
+  var b = [];
+  
+  if (entry == null) {
+    return '';
+  }
+  
+  var pK = '';
+  var k;
+
+  for (i = 0; i < entry.data.length; ++i) {
+    e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+    if (!e) {
+      continue;
+    }
+    
+    /*
+    e[1] = kanji/kana
+    e[2] = kana
+    e[3] = definition
+    */
+
+    if (s != e[3]) {
+      b.push(t);
+      pK = k = '';
+    } else {
+      k = t.length ? '<br/>' : '';
+    }
+
+    if (e[2]) {
+      if (pK == e[1]) {
+        k = '\u3001 <span class="w-kana">' + e[2] + '</span>';
+        if (dictionary.config.showFreq == "true") {
+          var freqStr = ""
+          var freq = dictionary.getFreq(e[1]);
+          if (freq) {
+            var freqStyle = dictionary.getFreqStyle(freq);
+            freqStr = '<span class="' + freqStyle + '">' + freq + '</span>';
+          }
+          t = freqStr;
+          k += t;
+        }
+      } else {
+        k += '<span class="w-kanji">' + e[1] + '</span> &#32; <span class="w-kana">' + e[2] + '</span>';
+        if (dictionary.config.showFreq == "true") {
+          var freqStr = ""
+          var freq = dictionary.getFreq(e[1]);
+          if (freq) {
+            var freqStyle = dictionary.getFreqStyle(freq);
+            freqStr = '<span class="' + freqStyle + '">' + freq + '</span>';
+          }
+          t = freqStr;
+          k += t;
+        }
+      }
+      pK = e[1];
+    } else {
+      k += '<span class="w-kana">' + e[1] + '</span>';
+      if (dictionary.config.showFreq == "true") {
+        var freqStr = ""
+        var freq = dictionary.getFreq(e[1]);
+        if (freq) {
+          var freqStyle = dictionary.getFreqStyle(freq);
+          freqStr = '<span class="' + freqStyle + '">' + freq + '</span>';
+        }
+        t = freqStr;
+        k += t;
+      }
+      pK = '';
+    }
+    b.push(k);
+
+    /*s = e[3];
+    t = s.replace(/\//g, '; ');
+    t = t.replace(/\n/g, '<br/>');
+    b.push(t)*/
+
+    if (entry.data[i][1]) {
+      b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
+    }
+    
+    s = e[3];
+    t = s.replace(/\//g, '; ');
+    
+    if (/* !this.config.wpos */false) {
+      t = t.replace(/^\([^)]+\)\s*/, '');
+    }
+    if (/* !this.config.wpop */false) {
+      t = t.replace('; (P)', '');
+    }
+    if (dictionary.config.onlyReading == 'false') {
+      t = '<br/><span class="w-def">' + t + '</span><br/>';
+    } else {
+      t = '<br/>';
+    }
+  }
+  
+  b.push(t);
+  
+  return b.join('');
+}
+
 dictionary.makeHtml = function(entry) {
 	var e;
 	var b = [];
@@ -1070,7 +1190,6 @@ dictionary.searchRequest = function(searchTerm) {
 		searchReq.onreadystatechange = function (aEvt) {
 			if (searchReq.readyState == 4) {
 				if (searchReq.status == 200) {
-					console.log(searchReq);
 					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
 						'parse', searchReq.responseText);
 				}

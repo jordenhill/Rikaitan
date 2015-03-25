@@ -100,7 +100,7 @@ var rikaitan = {
   namesN: 2,
   showPopups: true,
   nextDict: 3,
-  sanseido: false,
+  sanseido: 0,
   sanseidoState: 0,
   showInStickyMode: false,
   showingMinihelp: false,
@@ -126,7 +126,9 @@ rikaitan.getMessage = function(event) {
       rikaitan.showPopup(event.message);
       break;
     case 'processEntry':
-      if (rikaitan.showPopups) {
+      if (rikaitan.sanseido === 1) {
+        rikaitan.sanseidoProcess(event.message);
+      } else if (rikaitan.showPopups) {
         rikaitan.processEntry(event.message);
       }
       break;
@@ -142,6 +144,8 @@ rikaitan.getMessage = function(event) {
     case 'parse':
       rikaitan.parse(event.message);
       break;
+    case 'sanseido':
+      rikaitan.sanseido = 1;
   }
 };
 
@@ -311,7 +315,7 @@ rikaitan._onKeyDown = function(event) {
 	
   var i;
 
-  switch (ev.keyCode) {
+  switch (event.keyCode) {
     case 13:	// enter - Change to a different dictionary
     case 16:	// shift - Change to a different dictionary
       this.show(event.currentTarget.rikaichan, this.nextDict);
@@ -325,11 +329,10 @@ rikaitan._onKeyDown = function(event) {
       this.initialStickyPopup();
       var offset = event.currentTarget.rikaichan.uofs;
         for (i = 50; i > 0; --i) {
-          event.currentTarget.rikaichan.uofs = --offset;
-          if (this.show(event.currentTarget.rikaichan, this.defaultDict) >= 0) {
-            if (offset >= event.currentTarget.rikaichan.uofs) {
+          event.currentTarget.rikaichan.uofs = --offset
+          if ((this.show(event.currentTarget.rikaichan, this.defaultDict) >= 0) 
+            && (offset >= event.currentTarget.rikaichan.uofs)) {
               break;
-            }
           }
         }
       break;
@@ -366,7 +369,13 @@ rikaitan._onKeyDown = function(event) {
       this.initialStickyPopup();
       break;
     case 83:   // s - change dictionary between default and sanseido J-J/J-E
-      this.changeSanseido();
+      this.showPopup('Sanseido Mode');
+      safari.self.tab.dispatchMessage("changeDictLanguage", "");
+      if (this.sanseido == 0) { 
+        this.sanseido = 1;
+      } else {
+        this.sanseido--;
+      }
       break;
     case 89:   // y - Move popup down
       this.initialStickyPopup();
@@ -637,8 +646,8 @@ rikaitan.showPopup = function(text, elem, x, y, looseWidth) {
       x = window.scrollX;
       y = window.scrollY;
     } else if (this.altView == 2) {
-      x = (window.innerWidth - (pW + 20)) + window.scrollX;
-      y = (window.innerHeight - (pH + 20)) + window.scrollY;
+      x = (window.innerWidth - (popupWidth + 20)) + window.scrollX;
+      y = (window.innerHeight - (popupHeight + 20)) + window.scrollY;
     } else {
       // go left if necessary
       if ((x + popupWidth) > (window.innerWidth - 20)) {
@@ -754,46 +763,49 @@ rikaitan.getTextFromRange = function(rangeParent, offset, selEndList, maxLength)
   return text;
 };
 
-rikaitan.processEntry = function(entry) {
-	var tdata = window.rikaichan;
-	var ro = rikaitan.lastRo;
-	var selEndList = rikaitan.lastSelEnd;
+rikaitan.sanseidoProcess = function(entry) {
+  rikaitan.lastFound = [entry];
+  rikaitan.sanseidoSearch();
+}
 
-	if (!entry && rikaitan.showingMinihelp == false) {
-		rikaitan.clearHighlight();
-		rikaitan.hidePopup();
-		return -1;
-	}
-	
-	rikaitan.lastFound = [entry];
-	
-	if (this.sanseido) {
-		rikaitan.sanseidoSearch();
-	} else if (entry) {
-		if (!entry.matchLen) {
-			entry.matchLen = 1;
-		}
-		tdata.uofsNext = entry.matchLen;
-		tdata.uofs = (ro - tdata.prevRangeOfs);
-		var rp = tdata.prevRangeNode;
-	
-		// don't try to highlight form elements
-		if ((rp) && ((tdata.config.highlight == 'true' && !this.mDown && 
-				!('form' in tdata.prevTarget))  || 
-				(('form' in tdata.prevTarget) && tdata.config.textboxhl == 'true'))) {
-					var doc = rp.ownerDocument;
-		
-			if (!doc && rikaitan.showingMinihelp == false) {
-				rikaitan.clearHighlight();
-				rikaitan.hidePopup();
-				return 0;
-			}
-			rikaitan.highlightMatch(doc, rp, ro, entry.matchLen, selEndList, tdata);
-			tdata.prevSelView = doc.defaultView;
-		}
-		
-		safari.self.tab.dispatchMessage("makehtml", entry);
-	}
+rikaitan.processEntry = function(entry) {
+  var translationData = window.rikaichan;
+  var rangeOffset = rikaitan.lastRo;
+  var selEndList = rikaitan.lastSelEnd;
+
+  if (!entry && rikaitan.showingMinihelp == false) {
+    rikaitan.clearHighlight();
+    rikaitan.hidePopup();
+    return -1;
+  }
+
+  if (entry) {
+    if (!entry.matchLen) {
+      entry.matchLen = 1;
+    }
+    translationData.uofsNext = entry.matchLen;
+    translationData.uofs = (rangeOffset - translationData.prevRangeOfs);
+    var rp = translationData.prevRangeNode;
+
+    // don't try to highlight form elements
+    if ((rp) && ((translationData.config.highlight == 'true' && !this.mDown && 
+      !('form' in translationData.prevTarget))  ||  
+      (('form' in translationData.prevTarget) && translationData.config.textboxhl 
+      == 'true'))) {
+        var doc = rp.ownerDocument;
+
+        if (!doc && rikaitan.showingMinihelp == false) {
+          rikaitan.clearHighlight();
+          rikaitan.hidePopup();
+          return 0;
+        }
+        rikaitan.highlightMatch(doc, rp, rangeOffset, entry.matchLen, selEndList, 
+          translationData);
+        translationData.prevSelView = doc.defaultView;
+    }
+
+    safari.self.tab.dispatchMessage("makehtml", entry);
+  }
 };
 
 rikaitan.processHtml = function(html) {
@@ -801,52 +813,41 @@ rikaitan.processHtml = function(html) {
     if (!this.superStickyMode || this.showInStickyMode) {
       var translationData = window.rikaichan;
       this.showInStickyMode = false;
-      rikaitan.showPopup(html, tdata.prevTarget, tdata.popX, tdata.popY, false);
+      rikaitan.showPopup(html, translationData.prevTarget, translationData.popX, 
+        translationData.popY, false);
       return 1;
     }
   }
 };
 
 rikaitan.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
-	var sel = doc.defaultView.getSelection();
-	
-	// If selEndList is empty then we're dealing with a textarea/input situation
-	if (selEndList.length === 0) { 
-	    try {
-			if(rp.nodeName == '#text' || rp.nodeName == 'INPUT') {
-				// If there is already a selected region not caused by
-				// rikaitan, leave it alone
-				if((sel.toString()) && (tdata.selText != sel.toString())) {
-					return;
-				}
-				
-				// If there is no selected region and the saved
-				// textbox is the same as the current one
-				// then save the current cursor position
-				// The second half of the condition let's us place the
-				// cursor in another text box without having it jump back
-				if(!sel.toString() && tdata.oldTA == rp) {
-					tdata.oldCaret = rp.selectionStart;
-					tdata.oldTA = rp;
-				}
-				rp.selectionStart = ro;
-				rp.selectionEnd = matchLen + ro;
-				
-				tdata.selText = rp.nodeValue.substring(ro, matchLen+ro);
-			}
-	    }
-	    catch(err) {
-			
-			// If there is an error it is probably caused by the input type
-			// being not text.  This is the most general way to deal with
-			// arbitrary types.
-			
-			// we set oldTA to null because we don't want to do weird stuf
-			// with buttons
-	        tdata.oldTA = null;
-	    }
-		return;
-	}
+  var sel = doc.defaultView.getSelection();
+
+  // If selEndList is empty then we're dealing with a textarea/input situation
+  if (selEndList.length === 0) { 
+    if(rp.nodeName == '#text' || rp.nodeName == 'INPUT') {
+      // If there is already a selected region not caused by
+      // rikaitan, leave it alone
+      if((sel.toString()) && (tdata.selText != sel.toString())) {
+        return;
+      }
+
+      // If there is no selected region and the saved
+      // textbox is the same as the current one
+      // then save the current cursor position
+      // The second half of the condition let's us place the
+      // cursor in another text box without having it jump back
+      if(!sel.toString() && tdata.oldTA == rp) {
+        tdata.oldCaret = rp.selectionStart;
+        tdata.oldTA = rp;
+      }
+      rp.selectionStart = ro;
+      rp.selectionEnd = matchLen + ro;
+
+      tdata.selText = rp.nodeValue.substring(ro, matchLen+ro);
+    }
+    return;
+  }
 	
 	// Special case for leaving a text box to an outside japanese
 	// Even if we're not currently in a text area we should save
@@ -926,10 +927,6 @@ rikaitan.flipNoShow = function() {
   }
 };
 
-rikaitan.changeSanseido = function() {
-  this.sanseido = !this.sanseido;
-};
-
 rikaitan.sanseidoSearch = function() {
 	var searchTerm;
 		
@@ -946,9 +943,13 @@ rikaitan.sanseidoSearch = function() {
 	if ((this.sanseidoState == 0) && !this.containsKanji(searchTerm)) {
 		this.sanseidoState = 1;
 	}
-	rikaitan.showPopup("Searching...", null, this.lastTdaat.popX, this.lastTdata.popY, false);
+  
+  if (this.lastTdata != null && this.lastFound != null) {
+    rikaitan.showPopup("Searching...", null, this.lastTdata.popX, 
+      this.lastTdata.popY, false);
 
-	safari.self.tab.dispatchMessage("searchReq", searchTerm);
+    safari.self.tab.dispatchMessage("searchReq", searchTerm);
+  }
 };
 
 rikaitan.getSearchTerm = function(getReading) {
@@ -989,12 +990,16 @@ rikaitan.getSearchTerm = function(getReading) {
 };
 
 rikaitan.parse = function(entryPageText) {
-	var domPars = rikaitan.parseHtml(entryPageText);
-	var divList = domPars.getElementsByTagName("div");
-	var entryFound = false;
+  var domPars = rikaitan.parseHtml(entryPageText);
+  var divList = domPars.getElementsByTagName("div");
+  var entryFound = false;
 
-	for (divIdx = 0; divIdx < divList.length; divIdx++) {
-		if (divList[divIdx].className == "NetDicBody") {
+  if (rikaitan.lastFound == null) {
+    return;
+  }
+
+  for (divIdx = 0; divIdx < divList.length; divIdx++) {
+    if (divList[divIdx].className == "NetDicBody") {
 			entryFound = true;
 			
 			var defText = "";
@@ -1052,7 +1057,7 @@ rikaitan.parse = function(entryPageText) {
 				.replace(/\/.+\//g, "/" + jdicCode + defText + "/");
 			rikaitan.lastFound[0].data = [rikaitan.lastFound[0].data[0]];
 			rikaitan.lastFound[0].more = false;
-			
+
 			if (rikaitan.lastTdata !== null) {
 				var rp = rikaitan.lastTdata.prevRangeNode;
 				var doc = rp.ownerDocument;
