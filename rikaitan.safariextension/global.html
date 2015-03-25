@@ -1181,23 +1181,22 @@ dictionary.createFreqTable = function() {
 };
 
 dictionary.searchRequest = function(searchTerm) {
-	if (window === window.top) {
-		var searchReq = new XMLHttpRequest();
-		var url = encodeURI('http://www.sanseido.net/User/Dic/Index.aspx?TWords=' 
-			+ searchTerm + '&st=0&DailyJJ=checkbox');
-		searchReq.open('GET', url, true);
-	
-		searchReq.onreadystatechange = function (aEvt) {
-			if (searchReq.readyState == 4) {
-				if (searchReq.status == 200) {
-					safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-						'parse', searchReq.responseText);
-				}
-			}
-		};
-	
-		searchReq.send(null);
-	}
+  if (window === window.top) {
+    var searchReq = new XMLHttpRequest();
+    var url = encodeURI('http://www.sanseido.net/User/Dic/Index.aspx?TWords=' 
+      + searchTerm + '&st=0&DailyJJ=checkbox');
+    searchReq.open('GET', url, false);
+    searchReq.onreadystatechange = function (aEvt) {
+      if (searchReq.readyState == 4) {
+        if (searchReq.status == 200) {
+          safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+            'parse', searchReq.responseText);
+          }
+        }
+    };
+  
+    searchReq.send(null);
+  }
 };
 
 safari.application.addEventListener("command", dictionary.performCommand, false);

@@ -912,9 +912,9 @@ rikaitan.superSticky = function() {
 };
 
 rikaitan.initialStickyPopup = function() {
-	if (this.superStickyMode) {
-		this.showInStickyMode = true;
-	}
+  if (this.superStickyMode) {
+    this.showInStickyMode = true;
+  }
 };
 
 //function to flip the boolean showPopups variable so the extension will or 
@@ -928,21 +928,21 @@ rikaitan.flipNoShow = function() {
 };
 
 rikaitan.sanseidoSearch = function() {
-	var searchTerm;
-		
-	if (this.sanseidoState == 0) {
-		searchTerm = this.getSearchTerm(false);
-	} else if (this.sanseidoState == 1) {
-		searchTerm = this.getSearchTerm(true);
-	}
-	
-	if (!searchTerm) {
-		return;
-	}
-	
-	if ((this.sanseidoState == 0) && !this.containsKanji(searchTerm)) {
-		this.sanseidoState = 1;
-	}
+  var searchTerm;
+
+  if (this.sanseidoState == 0) {
+    searchTerm = this.getSearchTerm(false);
+  } else if (this.sanseidoState == 1) {
+    searchTerm = this.getSearchTerm(true);
+  }
+
+  if (!searchTerm) {
+    return;
+  }
+
+  if ((this.sanseidoState == 0) && !this.containsKanji(searchTerm)) {
+    this.sanseidoState = 1;
+  }
   
   if (this.lastTdata != null && this.lastFound != null) {
     rikaitan.showPopup("Searching...", null, this.lastTdata.popX, 
@@ -1000,91 +1000,91 @@ rikaitan.parse = function(entryPageText) {
 
   for (divIdx = 0; divIdx < divList.length; divIdx++) {
     if (divList[divIdx].className == "NetDicBody") {
-			entryFound = true;
-			
-			var defText = "";
-			var childList = divList[divIdx].childNodes;
-			var defFinished = false;
-			
-			for (nodeIdx = 0; nodeIdx < childList.length && !defFinished; nodeIdx++) {
-				if (childList[nodeIdx].nodeName == "b") {
-					if (childList[nodeIdx].childNodes.length == 1) {
-						var defNum = childList[nodeIdx].childNodes[0].nodeValue.match(
-							/［([１２３４５６７８９０]+)］/);
-						
-						if (defNum) {
-							defText += "<br/>" + RegExp.$1;
-						} else {
-							var subDefNum = childList[nodeIdx].childNodes[0].nodeValue.match(
-								/［([１２３４５６７８９０]+)］/);
-							
-							if (subDefNum) {
-								defText += this.convertIntegerToCircledNumStr(this.convertJpNumToInt(RegExp.$1));
-							}
-						}
-					} else {
-						for (bIdx = 0; bIdx < childList[nodeIdx].childNodes.length; bIdx++) {
-							if (childList[nodeIdx].childNodes[bIdx].nodeName == "span") {
-								defFinished = true;
-							}
-						}
-					}
-				}
-				
-				if (defFinished) {
-					break;
-				}
-				
-				if ((childList[nodeIdx].nodeName == "#text") && 
-					(this.trim(childList[nodeIdx].nodeValue) != "")) {
-						defText += childList[nodeIdx].nodeValue;
-				}
-			}
-			
-			if (defText.length == 0) {
-				this.sanseidoState = 1;
-				entryFound = false;
-				break;
-			}
-			
-			var jdicCode = "";
-			rikaitan.lastFound[0].data[0][0].match(/\/(\(.+?\)).+\//);
-			
-			if (RegExp.$1) {
-				jdicCode = RegExp.$1;
-			}
-			rikaitan.lastFound[0].data[0][0] = rikaitan.lastFound[0].data[0][0]
-				.replace(/\/.+\//g, "/" + jdicCode + defText + "/");
-			rikaitan.lastFound[0].data = [rikaitan.lastFound[0].data[0]];
-			rikaitan.lastFound[0].more = false;
+      entryFound = true;
 
-			if (rikaitan.lastTdata !== null) {
-				var rp = rikaitan.lastTdata.prevRangeNode;
-				var doc = rp.ownerDocument;
-				var ro = this.lastRo;
-				var selEndList = rikaitan.lastSelEnd;
-				rikaitan.highlightMatch(doc, rp, ro, this.termLen, selEndList,
-					 this.lastTdata);
-				safari.self.tab.dispatchMessage("makehtml", rikaitan.lastFound[0]);
-			
-				break;
-			}
-		}
-	}
-	
-	if (!entryFound) {
-		this.sanseidoState++;
-		
-		if (this.sanseidoState < 2) {
-			window.setTimeout (
-				function() {
-					rikaitan.sanseidoSearch();
-				}, 10
-			)
-		} else {
-			safari.self.tab.dispatchMessage("makehtml", rikaitan.lastFound[0]);
-		}
-	}
+      var defText = "";
+      var childList = divList[divIdx].childNodes;
+      var defFinished = false;
+
+      for (nodeIdx = 0; nodeIdx < childList.length && !defFinished; nodeIdx++) {
+        if (childList[nodeIdx].nodeName == "b") {
+          if (childList[nodeIdx].childNodes.length == 1) {
+            var defNum = childList[nodeIdx].childNodes[0].nodeValue.match(
+              /［([１２３４５６７８９０]+)］/);
+
+            if (defNum) {
+              defText += "<br/>" + RegExp.$1;
+            } else {
+              var subDefNum = childList[nodeIdx].childNodes[0].nodeValue.match(
+                /［([１２３４５６７８９０]+)］/);
+
+              if (subDefNum) {
+                defText += this.convertIntegerToCircledNumStr(
+                  this.convertJpNumToInt(RegExp.$1));
+                }
+            }
+          } else {
+            for (bIdx = 0; bIdx < childList[nodeIdx].childNodes.length; bIdx++) {
+              if (childList[nodeIdx].childNodes[bIdx].nodeName == "span") {
+                defFinished = true;
+              }
+            }
+          }
+        }
+
+        if (defFinished) {
+          break;
+        }
+
+        if ((childList[nodeIdx].nodeName == "#text") && 
+        (this.trim(childList[nodeIdx].nodeValue) != "")) {
+          defText += childList[nodeIdx].nodeValue;
+        }
+      }
+
+      if (defText.length == 0) {
+        this.sanseidoState = 1;
+        entryFound = false;
+        break;
+      }
+
+      var jdicCode = "";
+      rikaitan.lastFound[0].data[0][0].match(/\/(\(.+?\)).+\//);
+
+      if (RegExp.$1) {
+        jdicCode = RegExp.$1;
+      }
+      rikaitan.lastFound[0].data[0][0] = rikaitan.lastFound[0].data[0][0]
+        .replace(/\/.+\//g, "/" + jdicCode + defText + "/");
+      rikaitan.lastFound[0].data = [rikaitan.lastFound[0].data[0]];
+      rikaitan.lastFound[0].more = false;
+
+      if (rikaitan.lastTdata !== null) {
+        var rp = rikaitan.lastTdata.prevRangeNode;
+        var doc = rp.ownerDocument;
+        var ro = this.lastRo;
+        var selEndList = rikaitan.lastSelEnd;
+        rikaitan.highlightMatch(doc, rp, ro, this.termLen, selEndList,
+          this.lastTdata);
+        safari.self.tab.dispatchMessage("makehtml", rikaitan.lastFound[0]);
+
+        break;
+      }
+    }
+  }
+  
+  if (!entryFound) {
+    this.sanseidoState++;
+
+    if (this.sanseidoState < 2) {
+      window.setTimeout (
+        function() {
+          rikaitan.sanseidoSearch();
+        }, 10); 
+    } else {
+      safari.self.tab.dispatchMessage("makehtml", rikaitan.lastFound[0]);
+    }
+  }
 }
 
 rikaitan.parseHtml = function(htmlString) {
