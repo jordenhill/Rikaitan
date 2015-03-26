@@ -779,7 +779,7 @@ rikaitan.processEntry = function(entry) {
     return -1;
   }
 
-  if (entry) {
+  if (entry && (translationData.uofsNext !== 'undefined')) {
     if (!entry.matchLen) {
       entry.matchLen = 1;
     }
@@ -953,40 +953,39 @@ rikaitan.sanseidoSearch = function() {
 };
 
 rikaitan.getSearchTerm = function(getReading) {
-	var entry = this.lastFound;
-	var searchTerm = "";
+  var entry = this.lastFound;
+  var searchTerm = "";
 
-	if ((!entry) || (entry.length == 0)) {
-		return null;
-	}
-	
-	if (entry[0] && entry[0].kanji && entry[0].onkun) {
-		searchTerm = entry[0].kanji;
-	} else if (entry[0] && entry[0].data[0]) {
-		var entryData = entry[0].data[0][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
-	
-		if (getReading) {
-			if (entryData[2]) {
-				searchTerm = entryData[2];
-				this.termLen = searchTerm.length;
-			} else {
-				searchTerm = entryData[1];
-				this.termLen = searchTerm.length;
-			}
-		} else {
-			if (entryData[2] && !this.containsKanji(entry[0].data[0][0])) {
-				searchTerm = entryData[2];
-				this.termLen = searchTerm.length;
-			} else {
-				searchTerm = entryData[1];
-				this.termLen = searchTerm.length;
-			}
-		}
-	} else {
-		return null;
-	}
+  if ((!entry) || (entry.length == 0)) {
+    return null;
+  }
 
-	return searchTerm;
+  if (entry[0] && entry[0].kanji && entry[0].onkun) {
+    searchTerm = entry[0].kanji;
+  } else if (entry[0] && entry[0].data[0]) {
+    var entryData = entry[0].data[0][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+    if (getReading) {
+      if (entryData[1]) {
+        searchTerm = entryData[1];
+        this.termLen = searchTerm.length;
+      } else {
+        searchTerm = entryData[2];
+        this.termLen = searchTerm.length;
+      }
+    } else {
+      if (entryData[2] && !this.containsKanji(entry[0].data[0][0])) {
+        searchTerm = entryData[2];
+        this.termLen = searchTerm.length;
+      } else {
+        searchTerm = entryData[1];
+        this.termLen = searchTerm.length;
+      }
+    }
+  } else {
+    return null;
+  }
+
+  return searchTerm;
 };
 
 rikaitan.parse = function(entryPageText) {
@@ -1082,6 +1081,7 @@ rikaitan.parse = function(entryPageText) {
           rikaitan.sanseidoSearch();
         }, 10); 
     } else {
+      this.sanseidoState = 0;
       safari.self.tab.dispatchMessage("makehtml", rikaitan.lastFound[0]);
     }
   }

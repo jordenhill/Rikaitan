@@ -168,7 +168,7 @@ dictionary.getMessageFromJs = function(event) {
       break;
     case 'makehtml':
       var html;
-      
+
       if (dictionary.config.sanseidoDict === 'true') {
         html = dictionary.sanseidoToHTML(event.message);
         safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
@@ -253,39 +253,39 @@ dictionary.assignValues = function() {
 };
 
 dictionary.search = function(text, dictOption) {
-	var entry;
-	
-	switch(dictOption) {
-	case dictionary.forceKanji:
-		entry = dictionary.kanjiSearch(text.charAt(0));
-		return entry;
-	case dictionary.defaultDict:
-		dictionary.showMode = 0;
-		break;
-	case dictionary.nextDict:
-		dictionary.showMode = (dictionary.showMode + 1) % dictionary.dictCount;
-		break;
-	}
-	
-	var m  = dictionary.showMode;
-	var entry = null;
-	do{
-		switch (dictionary.showMode){
-		case 0:
-			entry = dictionary.wordSearch(text, false);
-			break;
-		case dictionary.kanjiN:
-			entry = dictionary.kanjiSearch(text.charAt(0));
-			break;
-		case dictionary.namesN:
-			entry = dictionary.wordSearch(text, true);
-			break;
-		}
-		if (entry) {
-			break;
-		}
-		dictionary.showMode = (dictionary.showMode + 1) % dictionary.dictCount;
-	} while (dictionary.showMode != m);
+  var entry;
+
+  switch(dictOption) {
+    case dictionary.forceKanji:
+      entry = dictionary.kanjiSearch(text.charAt(0));
+      return entry;
+    case dictionary.defaultDict:
+      dictionary.showMode = 0;
+      break;
+    case dictionary.nextDict:
+      dictionary.showMode = (dictionary.showMode + 1) % dictionary.dictCount;
+      break;
+  }
+
+  var m  = dictionary.showMode;
+  var entry = null;
+  do{
+    switch (dictionary.showMode){
+      case 0:
+        entry = dictionary.wordSearch(text, false);
+        break;
+      case dictionary.kanjiN:
+        entry = dictionary.kanjiSearch(text.charAt(0));
+        break;
+      case dictionary.namesN:
+        entry = dictionary.wordSearch(text, true);
+        break;
+    }
+    if (entry) {
+      break;
+    }
+    dictionary.showMode = (dictionary.showMode + 1) % dictionary.dictCount;
+  } while (dictionary.showMode != m);
 
 	return entry;
 };
