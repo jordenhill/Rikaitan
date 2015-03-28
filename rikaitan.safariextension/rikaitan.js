@@ -878,23 +878,23 @@ rikaitan.highlightMatch = function(doc, rp, ro, matchLen, selEndList, tdata) {
 };
 
 rikaitan.processTitle = function(e) {
-	var tdata = window.rikaichan;
-	if (!e) {
-		rikaitan.hidePopup();
-		return;
-	}
-	e.title = tdata.title.substr(0, e.textLen).replace(/[\x00-\xff]/g, 
-		function (c) { 
-			return '&#' + c.charCodeAt(0) + ';' 
-		} 
-	);
-	if (tdata.title.length > e.textLen) {
-		e.title += '...';
-	}
-	
-	this.lastFound = [e];
-	
-	safari.self.tab.dispatchMessage("makehtml", e);
+  var tdata = window.rikaichan;
+  if (!e) {
+    rikaitan.hidePopup();
+    return;
+  }
+  e.title = tdata.title.substr(0, e.textLen).replace(/[\x00-\xff]/g, 
+    function (c) { 
+      return '&#' + c.charCodeAt(0) + ';' 
+    } 
+  );
+  if (tdata.title.length > e.textLen) {
+    e.title += '...';
+  }
+
+  this.lastFound = [e];
+
+  safari.self.tab.dispatchMessage("makehtml", e);
 };
 
 rikaitan.getFirstTextChild = function(node) {
@@ -1004,23 +1004,14 @@ rikaitan.parse = function(entryPageText) {
       var defText = "";
       var childList = divList[divIdx].childNodes;
       var defFinished = false;
-
       for (nodeIdx = 0; nodeIdx < childList.length && !defFinished; nodeIdx++) {
-        if (childList[nodeIdx].nodeName == "b") {
+        if (childList[nodeIdx].nodeName === "b") {
           if (childList[nodeIdx].childNodes.length == 1) {
-            var defNum = childList[nodeIdx].childNodes[0].nodeValue.match(
-              /［([１２３４５６７８９０]+)］/);
-
-            if (defNum) {
-              defText += "<br/>" + RegExp.$1;
-            } else {
-              var subDefNum = childList[nodeIdx].childNodes[0].nodeValue.match(
-                /［([１２３４５６７８９０]+)］/);
-
-              if (subDefNum) {
-                defText += this.convertIntegerToCircledNumStr(
-                  this.convertJpNumToInt(RegExp.$1));
-                }
+            var subDefNum = childList[nodeIdx].childNodes[0].nodeValue.match(
+                /[１２３４５６７８９０]/);
+            if (subDefNum) {
+              defText += this.convertIntegerToCircledNumStr(
+                rikaitan.convertJpNumtoInt(subDefNum));
             }
           } else {
             for (bIdx = 0; bIdx < childList[nodeIdx].childNodes.length; bIdx++) {
@@ -1048,7 +1039,7 @@ rikaitan.parse = function(entryPageText) {
       }
 
       var jdicCode = "";
-      rikaitan.lastFound[0].data[0][0].match(/\/(\(.+?\)).+\//);
+      var code = rikaitan.lastFound[0].data[0][0].match(/\/(\(.+?\)).+\//);
 
       if (RegExp.$1) {
         jdicCode = RegExp.$1;
@@ -1088,44 +1079,44 @@ rikaitan.parse = function(entryPageText) {
 }
 
 rikaitan.parseHtml = function(htmlString) {
-	var html = document.implementation.createDocument("http://www.w3.org/1999/xhtml",
-		"html", null);
-	var body = document.createElementNS("http://www.w3.org/1999/xhtml", "body");
-	var parser = new DOMParser();
-	var stuff = parser.parseFromString(htmlString, "text/html");
-	
-	html.documentElement.appendChild(body);
-	body.appendChild(stuff.body);
-	
-	return body;
+  var html = document.implementation.createDocument("http://www.w3.org/1999/xhtml",
+    "html", null);
+  var body = document.createElementNS("http://www.w3.org/1999/xhtml", "body");
+  var parser = new DOMParser();
+  var stuff = parser.parseFromString(htmlString, "text/html");
+
+  html.documentElement.appendChild(body);
+  body.appendChild(stuff.body);
+
+  return body;
 };
 
 rikaitan.convertIntegerToCircledNumStr = function(num) {
-	var circledNumStr = "(" + num + ")";
-	
-	if (num == 0) {
-		circledNumStr = "⓪";
-	} else if ((num >= 1) && (num <= 20)) {
-		circledNumStr = String.fromCharCode(("①".charCodeAt(0) - 1) + num);
-	} else if ((num >= 21) && (num <= 35)) {
-		circledNumStr = String.fromCharCode(("㉑".charCodeAt(0) - 1) + num);
-	} else if ((num >= 36) && (num <= 50)) {
-		circledNumStr = String.fromCharCode(("㊱".charCodeAt(0) - 1) + num);
-	}
-	
-	return circledNumStr;
+  var circledNumStr = "(" + num + ")";
+
+  if (num == 0) {
+    circledNumStr = "⓪";
+  } else if ((num >= 1) && (num <= 20)) {
+    circledNumStr = String.fromCharCode(("①".charCodeAt(0) - 1) + num);
+  } else if ((num >= 21) && (num <= 35)) {
+    circledNumStr = String.fromCharCode(("㉑".charCodeAt(0) - 1) + num);
+  } else if ((num >= 36) && (num <= 50)) {
+    circledNumStr = String.fromCharCode(("㊱".charCodeAt(0) - 1) + num);
+  }
+
+  return circledNumStr;
 };
 
 rikaitan.convertJpNumtoInt = function(jpNum) {
-	var numStr = "";
-	for (i = 0; i < jpNum.length; i++) {
-		if ((jpNum[i] >= "０") && (jpNum[i] <= "９")) {
-			var convertedNum = (jpNum.charCodeAt(0) - "０".charCodeAt(0));
-			numStr += convertedNum;
-		}
-	}
-	
-	return Number(numStr);
+  var numStr = "";
+  for (i = 0; i < jpNum.length; i++) {
+    if ((jpNum[i] >= "０") && (jpNum[i] <= "９")) {
+      var convertedNum = (jpNum[0].charCodeAt(0) - "０".charCodeAt(0));
+      numStr += convertedNum;
+    }
+  }
+
+  return Number(numStr);
 };
 
 rikaitan.trim = function(text) {
@@ -1137,11 +1128,11 @@ rikaitan.trimEnd = function(text) {
 };
 
 rikaitan.containsKanji = function(text) {
-	for (i = 0; i < text.length; i++) {
-		if ((text[i] >= '\u4E00') && (text[i] <= '\u9FBF')) {
-			return true;
-		}
-	}
+  for (i = 0; i < text.length; i++) {
+    if ((text[i] >= '\u4E00') && (text[i] <= '\u9FBF')) {
+      return true;
+    }
+  }
 }
 
 safari.self.addEventListener("message", rikaitan.getMessage, false);

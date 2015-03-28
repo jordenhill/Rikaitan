@@ -118,6 +118,7 @@ dictionary.performCommand = function(event) {
     if (dictionary.button === true) {
       dictionary.assignValues();
       dictionary.loadDictionary();
+      dictionary.changeIcon("activetoolbaricon.png");
       safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
         "enable", dictionary.config);
       if (dictionary.config.miniHelp == "true") {
@@ -125,6 +126,7 @@ dictionary.performCommand = function(event) {
         "showPopup", dictionary.miniHelp);
       }
     } else {
+      dictionary.changeIcon("toolbaricon.png");
       safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
         "disable", "");
     }
@@ -1197,6 +1199,11 @@ dictionary.searchRequest = function(searchTerm) {
   
     searchReq.send(null);
   }
+};
+
+dictionary.changeIcon = function(iconName) {
+  var iconUri = safari.extension.baseURI + iconName;
+  safari.extension.toolbarItems[0].image = iconUri;
 };
 
 safari.application.addEventListener("command", dictionary.performCommand, false);
