@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Rikaitan (v1.9.2)
+=======
+Rikaitan (v2.0)
+>>>>>>> sanseido-definitions
 ==========
 
 About
@@ -12,7 +16,11 @@ This is a version of the rikai (rikaichan, rikaisama, rikaikun) Japanese transla
 Download and Installation
 ----------
 
+<<<<<<< HEAD
 You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/v1.9.2/rikaitan.safariextz).
+=======
+You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/2.0/rikaitan.safariextz).
+>>>>>>> sanseido-definitions
 
 When clicking this the extension should be downloaded to the folder where you keep your safari downloads. From there click the extension and it should install.
 
@@ -20,6 +28,11 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
+<<<<<<< HEAD
+=======
+**Version 2.0 (4/1/2015):** The toolbar icon now changes when the extension is active, showing a small star above the Kanji in the icon. I've also added the ability to get J-J definitions, based on the Sanseido mode function in Rikaisama. Press the 's' key to change to J-J definitions, and the extension will pull in definitions from sanseido if possible. 
+
+>>>>>>> sanseido-definitions
 **Version 1.9.2 (1/18/2015):** Fixed errors causing extension to not start.
 
 **Version 1.9.1 (1/14/2014):** Added an option to disable contextual menu items.

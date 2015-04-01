@@ -6,7 +6,7 @@
 		<key>DefaultValue</key>
 		<string>translucent</string>
 		<key>Key</key>
-		<string>popupcolor</string>
+		<string>popupColor</string>
 		<key>Title</key>
 		<string>Popup Color</string>
 		<key>Titles</key>
@@ -44,7 +44,7 @@
 		<key>DefaultValue</key>
 		<false/>
 		<key>Key</key>
-		<string>onlyreading</string>
+		<string>onlyReading</string>
 		<key>Title</key>
 		<string>Show only reading</string>
 		<key>Type</key>
@@ -98,7 +98,7 @@
 		<key>DefaultValue</key>
 		<true/>
 		<key>Key</key>
-		<string>minihelp</string>
+		<string>miniHelp</string>
 		<key>Title</key>
 		<string>Display mini help on start</string>
 		<key>Type</key>
@@ -108,7 +108,7 @@
 		<key>DefaultValue</key>
 		<false/>
 		<key>Key</key>
-		<string>disablekeys</string>
+		<string>disableKeys</string>
 		<key>Title</key>
 		<string>Disable keys</string>
 		<key>Type</key>
@@ -118,7 +118,7 @@
 		<key>DefaultValue</key>
 		<true/>
 		<key>Key</key>
-		<string>kanjicomponents</string>
+		<string>kanjiComponents</string>
 		<key>Title</key>
 		<string>Display kanji components</string>
 		<key>Type</key>
@@ -152,7 +152,31 @@
 		<key>Key</key>
 		<string>contextMenu</string>
 		<key>Title</key>
+<<<<<<< HEAD
 		<string>Show Contextual Menu Items</string>
+=======
+		<string>Show Context Menu Options</string>
+		<key>Titles</key>
+		<array>
+			<string>Default</string>
+			<string>Sanseido (J-J)</string>
+		</array>
+		<key>Type</key>
+		<string>CheckBox</string>
+		<key>Values</key>
+		<array>
+			<string>default</string>
+			<string>sanseidoKoku</string>
+		</array>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>sanseidoDict</string>
+		<key>Title</key>
+		<string>J-J Dictionary (Sanseido)</string>
+>>>>>>> sanseido-definitions
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
