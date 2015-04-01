@@ -10,11 +10,11 @@
 			<key>Developer Identifier</key>
 			<string>773ZK9CN4J</string>
 			<key>CFBundleVersion</key>
-			<string>4.1.2</string>
+			<string>5.0</string>
 			<key>CFBundleShortVersionString</key>
 			<string>2.0</string>
 			<key>URL</key>
-			<string>https://github.com/jordenhill/Rikaitan/releases/download/v2.0/rikaitan.safariextz</string>
+			<string>https://github.com/jordenhill/Rikaitan/releases/download/2.0/rikaitan.safariextz</string>
 		</dict>
 	</array>
 </dict>
