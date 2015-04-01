@@ -5,15 +5,7 @@
 	<key>Author</key>
 	<string>Jorden Hill</string>
 	<key>Builder Version</key>
-<<<<<<< HEAD
-<<<<<<< HEAD
-	<string>10600.3.17</string>
-=======
 	<string>10600.5.9</string>
->>>>>>> sanseido-definitions
-=======
-	<string>10600.5.9</string>
->>>>>>> sanseido-definitions
 	<key>CFBundleDisplayName</key>
 	<string>Rikaitan</string>
 	<key>CFBundleIdentifier</key>
@@ -21,23 +13,22 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-<<<<<<< HEAD
-<<<<<<< HEAD
-	<string>1.9.2</string>
-	<key>CFBundleVersion</key>
-	<string>4.1.2</string>
-=======
 	<string>2.0</string>
 	<key>CFBundleVersion</key>
 	<string>4.1.1</string>
->>>>>>> sanseido-definitions
-=======
-	<string>2.0</string>
-	<key>CFBundleVersion</key>
-	<string>4.1.1</string>
->>>>>>> sanseido-definitions
 	<key>Chrome</key>
 	<dict>
+		<key>Context Menu Items</key>
+		<array>
+			<dict>
+				<key>Command</key>
+				<string>button</string>
+				<key>Identifier</key>
+				<string>Rikai</string>
+				<key>Title</key>
+				<string>Rikaitan</string>
+			</dict>
+		</array>
 		<key>Database Quota</key>
 		<real>1048576</real>
 		<key>Global Page</key>
@@ -51,8 +42,6 @@
 				<string>Button</string>
 				<key>Image</key>
 				<string>toolbaricon.png</string>
-				<key>Include By Default</key>
-				<true/>
 				<key>Label</key>
 				<string>Rikaitan</string>
 				<key>Tool Tip</key>
