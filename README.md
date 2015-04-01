@@ -1,4 +1,4 @@
-Rikaitan (v. 1.9.0)
+Rikaitan (v2.0)
 ==========
 
 About
@@ -12,7 +12,7 @@ This is a version of the rikai (rikaichan, rikaisama, rikaikun) Japanese transla
 Download and Installation
 ----------
 
-You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/v.1.9.0/rikaitan.safariextz).
+You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/2.0/rikaitan.safariextz).
 
 When clicking this the extension should be downloaded to the folder where you keep your safari downloads. From there click the extension and it should install.
 
@@ -20,6 +20,12 @@ When clicking this the extension should be downloaded to the folder where you ke
 
 Change Log
 ----------
+**Version 2.0 (4/1/2015):** The toolbar icon now changes when the extension is active, showing a small star above the Kanji in the icon. I've also added the ability to get J-J definitions, based on the Sanseido mode function in Rikaisama. Press the 's' key to change to J-J definitions, and the extension will pull in definitions from sanseido if possible. 
+
+**Version 1.9.2 (1/18/2015):** Fixed errors causing extension to not start.
+
+**Version 1.9.1 (1/14/2014):** Added an option to disable contextual menu items.
+
 **Version 1.9.0 (12/18/2014):** Added contextual menu option to enable or disable extension. To access menu simply ctrl+click or right click within the browser window. When the extension is enabled, there is also now an option within the contextual menu to enable or disable popups if you only want to disable popups for a temporary period of time without disabling the entire extension. Also added ability to hide a popup that shows up by pressing the h key. 
 
 **Version 1.8.3 (12/18/2014):** Fixed misspelled initialStickyPopup for 'b' key case, causing b key to not function properly.

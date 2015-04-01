@@ -112,40 +112,45 @@ var rikaitan = {
 
 // Gets the messages passed from global.html
 rikaitan.getMessage = function(event) {
-  "use strict";
-
-  switch(event.name) {
-    case 'enable':
-      rikaitan.enableTab();
-      window.rikaichan.config = event.message;
-      break;
-    case 'disable':
-      rikaitan.disableTab();
-      break;
-    case 'showPopup':
-      rikaitan.showPopup(event.message);
-      break;
-    case 'processEntry':
-      if (rikaitan.sanseido === 1) {
-        rikaitan.sanseidoProcess(event.message);
-      } else if (rikaitan.showPopups) {
-        rikaitan.processEntry(event.message);
-      }
-      break;
-    case 'processhtml':
-      rikaitan.processHtml(event.message);
-      break;
-    case 'processtitle':
-      rikaitan.processTitle(event.message);
-      break;
-    case 'noShow':
-      rikaitan.flipNoShow();
-      break;
-    case 'parse':
-      rikaitan.parse(event.message);
-      break;
-    case 'sanseido':
-      rikaitan.sanseido = 1;
+  if(window == window.top) {
+    switch(event.name) {
+      case 'enable':
+        rikaitan.enableTab();
+        window.rikaichan.config = event.message;
+        break;
+      case 'disable':
+        rikaitan.disableTab();
+        break;
+      case 'showPopup':
+        rikaitan.showPopup(event.message);
+        break;
+      case 'processEntry':
+        if (rikaitan.sanseido === 1) {
+          rikaitan.sanseidoProcess(event.message);
+        } else if (rikaitan.showPopups) {
+          rikaitan.processEntry(event.message);
+        }
+        break;
+      case 'processhtml':
+        rikaitan.processHtml(event.message);
+        break;
+      case 'processtitle':
+        rikaitan.processTitle(event.message);
+        break;
+      case 'noShow':
+        rikaitan.flipNoShow();
+        break;
+      case 'parse':
+        rikaitan.parse(event.message);
+        break;
+      case 'sanseido':
+        if (rikaitan.sanseido == 0) {
+          rikaitan.sanseido = 1;
+        } else {
+          rikaitan.sanseido--;
+        }
+        break;
+    }
   }
 };
 
@@ -369,12 +374,11 @@ rikaitan._onKeyDown = function(event) {
       this.initialStickyPopup();
       break;
     case 83:   // s - change dictionary between default and sanseido J-J/J-E
-      this.showPopup('Sanseido Mode');
       safari.self.tab.dispatchMessage("changeDictLanguage", "");
-      if (this.sanseido == 0) { 
-        this.sanseido = 1;
+      if (rikaitan.sanseido == 0) { 
+        this.showPopup('Japanese-Japanese mode');
       } else {
-        this.sanseido--;
+        this.showPopup('Japanese-English mode');
       }
       break;
     case 89:   // y - Move popup down
@@ -1007,11 +1011,17 @@ rikaitan.parse = function(entryPageText) {
       for (nodeIdx = 0; nodeIdx < childList.length && !defFinished; nodeIdx++) {
         if (childList[nodeIdx].nodeName === "b") {
           if (childList[nodeIdx].childNodes.length == 1) {
+            var defNum = childList[nodeIdx].childNodes[0].nodeValue.match(
+              /［([１２３４５６７８９０])］+/);
+            if (defNum !== null) {
+              defText += "<br/>" + RegExp.$1;
+            } else {
             var subDefNum = childList[nodeIdx].childNodes[0].nodeValue.match(
-                /[１２３４５６７８９０]/);
-            if (subDefNum) {
-              defText += this.convertIntegerToCircledNumStr(
-                rikaitan.convertJpNumtoInt(subDefNum));
+                /（[１２３４５６７８９０]）+/);
+              if (subDefNum) {
+                defText += this.convertIntegerToCircledNumStr(
+                  rikaitan.convertJpNumtoInt(subDefNum[0]));
+              }
             }
           } else {
             for (bIdx = 0; bIdx < childList[nodeIdx].childNodes.length; bIdx++) {
@@ -1056,7 +1066,7 @@ rikaitan.parse = function(entryPageText) {
         var selEndList = rikaitan.lastSelEnd;
         rikaitan.highlightMatch(doc, rp, ro, this.termLen, selEndList,
           this.lastTdata);
-        safari.self.tab.dispatchMessage("makehtml", rikaitan.lastFound[0]);
+        safari.self.tab.dispatchMessage("sanseidohtml", rikaitan.lastFound[0]);
 
         break;
       }
@@ -1111,11 +1121,10 @@ rikaitan.convertJpNumtoInt = function(jpNum) {
   var numStr = "";
   for (i = 0; i < jpNum.length; i++) {
     if ((jpNum[i] >= "０") && (jpNum[i] <= "９")) {
-      var convertedNum = (jpNum[0].charCodeAt(0) - "０".charCodeAt(0));
+      var convertedNum = (jpNum[i].charCodeAt(0) - "０".charCodeAt(0));
       numStr += convertedNum;
-    }
+    } 
   }
-
   return Number(numStr);
 };
 

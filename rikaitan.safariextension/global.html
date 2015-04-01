@@ -168,17 +168,13 @@ dictionary.getMessageFromJs = function(event) {
       safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
         "processtitle", translation);
       break;
+    case 'sanseidohtml':
+      var html = dictionary.sanseidoToHTML(event.message);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processhtml", html);
+        break;
     case 'makehtml':
-      var html;
-
-      if (dictionary.config.sanseidoDict === 'true') {
-        html = dictionary.sanseidoToHTML(event.message);
-        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
-          "sanseido", '');
-      } else {
-        html = dictionary.makeHtml(event.message);
-      }
-      
+      var html = dictionary.makeHtml(event.message);
       safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
         "processhtml", html);
       break;
@@ -190,11 +186,13 @@ dictionary.getMessageFromJs = function(event) {
       }
       break;
     case 'changeDictLanguage':
-      if (dictionary.config.sanseidoDict == 'true') {
+      if (dictionary.config.sanseidoDict === 'true') {
         dictionary.config.sanseidoDict = 'false';
       } else {
         dictionary.config.sanseidoDict = 'true';
       }
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "sanseido", '');
       break;
     case 'searchReq':
       dictionary.searchRequest(event.message);
@@ -817,24 +815,25 @@ dictionary.sanseidoToHTML = function(entry) {
     }
     
     s = e[3];
-    t = s.replace(/\//g, '; ');
     
-    if (/* !this.config.wpos */false) {
-      t = t.replace(/^\([^)]+\)\s*/, '');
-    }
-    if (/* !this.config.wpop */false) {
-      t = t.replace('; (P)', '');
-    }
-    if (dictionary.config.onlyReading == 'false') {
-      t = '<br/><span class="w-def">' + t + '</span><br/>';
-    } else {
-      t = '<br/>';
-    }
+    //t = s.replace(/\//g, '; ');
+    
+    //if (/* !this.config.wpos */false) {
+      //t = t.replace(/^\([^)]+\)\s*/, '');
+      //}
+    //if (/* !this.config.wpop */false) {
+      //t = t.replace('; (P)', '');
+      //}
+    //if (dictionary.config.onlyReading == 'false') {
+      //t = '<br/><span class="w-def">' + t + '</span><br/>';
+      //} else {
+      //t = '<br/>';
+      //}
   }
   
-  b.push(t);
-  
+  b.push(s);
   return b.join('');
+  
 }
 
 dictionary.makeHtml = function(entry) {
