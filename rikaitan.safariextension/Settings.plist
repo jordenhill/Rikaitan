@@ -153,8 +153,11 @@
 		<string>contextMenu</string>
 		<key>Title</key>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<string>Show Contextual Menu Items</string>
 =======
+=======
+>>>>>>> sanseido-definitions
 		<string>Show Context Menu Options</string>
 		<key>Titles</key>
 		<array>
@@ -176,6 +179,9 @@
 		<string>sanseidoDict</string>
 		<key>Title</key>
 		<string>J-J Dictionary (Sanseido)</string>
+<<<<<<< HEAD
+>>>>>>> sanseido-definitions
+=======
 >>>>>>> sanseido-definitions
 		<key>Type</key>
 		<string>CheckBox</string>

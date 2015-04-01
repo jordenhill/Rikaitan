@@ -80,6 +80,7 @@ var dictionary = {
 	namesN: 2,
 	nextDict: 3,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 var dictionary = {
@@ -92,6 +93,8 @@ var dictionary = {
 	cv:[0x30F4,0xFF74,0xFF75,0x304C,0x304E,0x3050,0x3052,0x3054,0x3056,0x3058,0x305A,0x305C,0x305E,0x3060,
 		0x3062,0x3065,0x3067,0x3069,0xFF85,0xFF86,0xFF87,0xFF88,0xFF89,0x3070,0x3073,0x3076,0x3079,0x307C],
 	cs:[0x3071,0x3074,0x3077,0x307A,0x307D],
+=======
+>>>>>>> sanseido-definitions
 =======
 >>>>>>> sanseido-definitions
 	numList: [
@@ -127,6 +130,7 @@ var dictionary = {
 };
 
 // performCommand - Gets messages from Safari
+<<<<<<< HEAD
 <<<<<<< HEAD
 rikaitan.performCommand = function(event) {
 	if(event.command === "button") {
@@ -397,6 +401,97 @@ dictionary.getMessageFromJs = function(event) {
 };
 >>>>>>> sanseido-definitions
 
+=======
+dictionary.performCommand = function(event) {
+  if(event.command === "button") {
+    dictionary.button = !dictionary.button;
+    if (dictionary.button === true) {
+      dictionary.assignValues();
+      dictionary.loadDictionary();
+      dictionary.changeIcon("activetoolbaricon.png");
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "enable", dictionary.config);
+      if (dictionary.config.miniHelp == "true") {
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "showPopup", dictionary.miniHelp);
+      }
+    } else {
+      dictionary.changeIcon("toolbaricon.png");
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "disable", "");
+    }
+  } else if (event.command === "switch") {
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+      "noShow", "");
+  }
+};
+
+// Tells extension to enable itself when changing tabs if already activated
+dictionary.shouldEnable = function(event) {
+  if (dictionary.button === true) {
+    dictionary.assignValues();
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+      "enable", dictionary.config);
+  }
+};
+
+dictionary.handlecontextMenu = function(event) {
+  if (dictionary.button === true) {
+    event.contextMenu.appendcontextMenuItem("switch", 
+      "Enable/disable dictionary popups", "switch");
+  }
+};
+
+dictionary.getMessageFromJs = function(event) {
+  if (window.top === window) {
+    switch(event.name) {
+    case 'xsearch':
+      var e = dictionary.search(event.message.text, event.message.dictOption);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processEntry", e);
+      break;
+    case 'resetDict':
+      dictionary.resetDict();
+      break;
+    case 'translate':
+      var translation = dictionary.translate(event.message);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processtitle", translation);
+      break;
+    case 'sanseidohtml':
+      var html = dictionary.sanseidoToHTML(event.message);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processhtml", html);
+        break;
+    case 'makehtml':
+      var html = dictionary.makeHtml(event.message);
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "processhtml", html);
+      break;
+    case 'switchOnlyReading':
+      if(dictionary.config.onlyReading == 'true') {
+        dictionary.config.onlyReading = 'false'; 
+      } else {
+        dictionary.config.onlyReading = 'true';
+      }
+      break;
+    case 'changeDictLanguage':
+      if (dictionary.config.sanseidoDict === 'true') {
+        dictionary.config.sanseidoDict = 'false';
+      } else {
+        dictionary.config.sanseidoDict = 'true';
+      }
+      safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(
+        "sanseido", '');
+      break;
+    case 'searchReq':
+      dictionary.searchRequest(event.message);
+      break;
+    }
+  }
+};
+
+>>>>>>> sanseido-definitions
 // Assigns initial values;
 dictionary.initStorage = function(key, initialValue) {
   var currentValue = localStorage[key];
@@ -1250,7 +1345,11 @@ dictionary.makeHtml = function(entry) {
 			if (/* !this.config.wpos */false) t = t.replace(/^\([^)]+\)\s*/, '');
 			if (/* !this.config.wpop */false) t = t.replace('; (P)', '');
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (dictionary.config.onlyreading == 'false') {
+=======
+			if (dictionary.config.onlyReading == 'false') {
+>>>>>>> sanseido-definitions
 =======
 			if (dictionary.config.onlyReading == 'false') {
 >>>>>>> sanseido-definitions

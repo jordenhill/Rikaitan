@@ -6,7 +6,11 @@
 	<string>Jorden Hill</string>
 	<key>Builder Version</key>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<string>10600.3.17</string>
+=======
+	<string>10600.5.9</string>
+>>>>>>> sanseido-definitions
 =======
 	<string>10600.5.9</string>
 >>>>>>> sanseido-definitions
@@ -18,9 +22,15 @@
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<string>1.9.2</string>
 	<key>CFBundleVersion</key>
 	<string>4.1.2</string>
+=======
+	<string>2.0</string>
+	<key>CFBundleVersion</key>
+	<string>4.1.1</string>
+>>>>>>> sanseido-definitions
 =======
 	<string>2.0</string>
 	<key>CFBundleVersion</key>

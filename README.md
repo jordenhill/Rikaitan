@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Rikaitan (v1.9.2)
+=======
+Rikaitan (v2.0)
+>>>>>>> sanseido-definitions
 =======
 Rikaitan (v2.0)
 >>>>>>> sanseido-definitions
@@ -17,7 +21,11 @@ Download and Installation
 ----------
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/v1.9.2/rikaitan.safariextz).
+=======
+You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/2.0/rikaitan.safariextz).
+>>>>>>> sanseido-definitions
 =======
 You can download and install the latest version of the extension from Apple's Safari extension page, or you can download the extension [here](https://github.com/jordenhill/Rikaitan/releases/download/2.0/rikaitan.safariextz).
 >>>>>>> sanseido-definitions
@@ -29,6 +37,11 @@ When clicking this the extension should be downloaded to the folder where you ke
 Change Log
 ----------
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+**Version 2.0 (4/1/2015):** The toolbar icon now changes when the extension is active, showing a small star above the Kanji in the icon. I've also added the ability to get J-J definitions, based on the Sanseido mode function in Rikaisama. Press the 's' key to change to J-J definitions, and the extension will pull in definitions from sanseido if possible. 
+
+>>>>>>> sanseido-definitions
 =======
 **Version 2.0 (4/1/2015):** The toolbar icon now changes when the extension is active, showing a small star above the Kanji in the icon. I've also added the ability to get J-J definitions, based on the Sanseido mode function in Rikaisama. Press the 's' key to change to J-J definitions, and the extension will pull in definitions from sanseido if possible. 
 
