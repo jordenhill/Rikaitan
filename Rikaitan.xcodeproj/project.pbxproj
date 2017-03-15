@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		573E7C771E78D10600CBFA75 /* global.html in Resources */ = {isa = PBXBuildFile; fileRef = 573E7C761E78D10600CBFA75 /* global.html */; };
+		573E7C791E78D15F00CBFA75 /* KeyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573E7C781E78D15F00CBFA75 /* KeyData.swift */; };
 		57B7AAE41E78CBB2000CF685 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AAE31E78CBB2000CF685 /* AppDelegate.swift */; };
 		57B7AAE71E78CBB2000CF685 /* Rikaitan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AAE51E78CBB2000CF685 /* Rikaitan.xcdatamodeld */; };
 		57B7AAE91E78CBB2000CF685 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AAE81E78CBB2000CF685 /* Assets.xcassets */; };
@@ -14,7 +16,7 @@
 		57B7AAF71E78CBB3000CF685 /* RikaitanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AAF61E78CBB3000CF685 /* RikaitanTests.swift */; };
 		57B7AB3D1E78CC43000CF685 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57B7AB071E78CBD6000CF685 /* Cocoa.framework */; };
 		57B7AB421E78CC43000CF685 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AB411E78CC43000CF685 /* SafariExtensionHandler.swift */; };
-		57B7AB441E78CC43000CF685 /* SafariExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AB431E78CC43000CF685 /* SafariExtensionViewController.swift */; };
+		57B7AB441E78CC43000CF685 /* RikaitanCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AB431E78CC43000CF685 /* RikaitanCore.swift */; };
 		57B7AB471E78CC43000CF685 /* SafariExtensionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AB451E78CC43000CF685 /* SafariExtensionViewController.xib */; };
 		57B7AB4A1E78CC43000CF685 /* script.js in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AB491E78CC43000CF685 /* script.js */; };
 		57B7AB4C1E78CC43000CF685 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AB4B1E78CC43000CF685 /* ToolbarItemIcon.pdf */; };
@@ -53,6 +55,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		573E7C761E78D10600CBFA75 /* global.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = global.html; sourceTree = "<group>"; };
+		573E7C781E78D15F00CBFA75 /* KeyData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyData.swift; sourceTree = "<group>"; };
 		57B7AAE01E78CBB2000CF685 /* Rikaitan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rikaitan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B7AAE31E78CBB2000CF685 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		57B7AAE61E78CBB2000CF685 /* Rikaitan.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Rikaitan.xcdatamodel; sourceTree = "<group>"; };
@@ -66,7 +70,7 @@
 		57B7AB3C1E78CC43000CF685 /* AppExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B7AB401E78CC43000CF685 /* AppExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppExtension.entitlements; sourceTree = "<group>"; };
 		57B7AB411E78CC43000CF685 /* SafariExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionHandler.swift; sourceTree = "<group>"; };
-		57B7AB431E78CC43000CF685 /* SafariExtensionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionViewController.swift; sourceTree = "<group>"; };
+		57B7AB431E78CC43000CF685 /* RikaitanCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RikaitanCore.swift; sourceTree = "<group>"; };
 		57B7AB461E78CC43000CF685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SafariExtensionViewController.xib; sourceTree = "<group>"; };
 		57B7AB481E78CC43000CF685 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57B7AB491E78CC43000CF685 /* script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = script.js; sourceTree = "<group>"; };
@@ -152,8 +156,10 @@
 		57B7AB3E1E78CC43000CF685 /* AppExtension */ = {
 			isa = PBXGroup;
 			children = (
+				573E7C761E78D10600CBFA75 /* global.html */,
 				57B7AB411E78CC43000CF685 /* SafariExtensionHandler.swift */,
-				57B7AB431E78CC43000CF685 /* SafariExtensionViewController.swift */,
+				57B7AB431E78CC43000CF685 /* RikaitanCore.swift */,
+				573E7C781E78D15F00CBFA75 /* KeyData.swift */,
 				57B7AB451E78CC43000CF685 /* SafariExtensionViewController.xib */,
 				57B7AB481E78CC43000CF685 /* Info.plist */,
 				57B7AB491E78CC43000CF685 /* script.js */,
@@ -299,6 +305,7 @@
 				57B7AB4C1E78CC43000CF685 /* ToolbarItemIcon.pdf in Resources */,
 				57B7AB471E78CC43000CF685 /* SafariExtensionViewController.xib in Resources */,
 				57B7AB4A1E78CC43000CF685 /* script.js in Resources */,
+				573E7C771E78D10600CBFA75 /* global.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,8 +333,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57B7AB441E78CC43000CF685 /* SafariExtensionViewController.swift in Sources */,
+				57B7AB441E78CC43000CF685 /* RikaitanCore.swift in Sources */,
 				57B7AB421E78CC43000CF685 /* SafariExtensionHandler.swift in Sources */,
+				573E7C791E78D15F00CBFA75 /* KeyData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,6 +575,7 @@
 				57B7AAFD1E78CBB3000CF685 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57B7AAFE1E78CBB3000CF685 /* Build configuration list for PBXNativeTarget "RikaitanTests" */ = {
 			isa = XCConfigurationList;
@@ -575,6 +584,7 @@
 				57B7AB001E78CBB3000CF685 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		57B7AB501E78CC43000CF685 /* Build configuration list for PBXNativeTarget "AppExtension" */ = {
 			isa = XCConfigurationList;
@@ -583,6 +593,7 @@
 				57B7AB521E78CC43000CF685 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
