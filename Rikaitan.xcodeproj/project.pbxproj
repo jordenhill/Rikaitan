@@ -1,0 +1,603 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		57B7AAE41E78CBB2000CF685 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AAE31E78CBB2000CF685 /* AppDelegate.swift */; };
+		57B7AAE71E78CBB2000CF685 /* Rikaitan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AAE51E78CBB2000CF685 /* Rikaitan.xcdatamodeld */; };
+		57B7AAE91E78CBB2000CF685 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AAE81E78CBB2000CF685 /* Assets.xcassets */; };
+		57B7AAEC1E78CBB2000CF685 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AAEA1E78CBB2000CF685 /* MainMenu.xib */; };
+		57B7AAF71E78CBB3000CF685 /* RikaitanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AAF61E78CBB3000CF685 /* RikaitanTests.swift */; };
+		57B7AB3D1E78CC43000CF685 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57B7AB071E78CBD6000CF685 /* Cocoa.framework */; };
+		57B7AB421E78CC43000CF685 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AB411E78CC43000CF685 /* SafariExtensionHandler.swift */; };
+		57B7AB441E78CC43000CF685 /* SafariExtensionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B7AB431E78CC43000CF685 /* SafariExtensionViewController.swift */; };
+		57B7AB471E78CC43000CF685 /* SafariExtensionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AB451E78CC43000CF685 /* SafariExtensionViewController.xib */; };
+		57B7AB4A1E78CC43000CF685 /* script.js in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AB491E78CC43000CF685 /* script.js */; };
+		57B7AB4C1E78CC43000CF685 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 57B7AB4B1E78CC43000CF685 /* ToolbarItemIcon.pdf */; };
+		57B7AB4F1E78CC43000CF685 /* AppExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 57B7AB3C1E78CC43000CF685 /* AppExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		57B7AAF31E78CBB3000CF685 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 57B7AAD81E78CBB2000CF685 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57B7AADF1E78CBB2000CF685;
+			remoteInfo = Rikaitan;
+		};
+		57B7AB4D1E78CC43000CF685 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 57B7AAD81E78CBB2000CF685 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57B7AB3B1E78CC43000CF685;
+			remoteInfo = AppExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		57B7AB1E1E78CBD6000CF685 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				57B7AB4F1E78CC43000CF685 /* AppExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		57B7AAE01E78CBB2000CF685 /* Rikaitan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rikaitan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		57B7AAE31E78CBB2000CF685 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		57B7AAE61E78CBB2000CF685 /* Rikaitan.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Rikaitan.xcdatamodel; sourceTree = "<group>"; };
+		57B7AAE81E78CBB2000CF685 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		57B7AAEB1E78CBB2000CF685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		57B7AAED1E78CBB2000CF685 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		57B7AAF21E78CBB3000CF685 /* RikaitanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RikaitanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		57B7AAF61E78CBB3000CF685 /* RikaitanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RikaitanTests.swift; sourceTree = "<group>"; };
+		57B7AAF81E78CBB3000CF685 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		57B7AB071E78CBD6000CF685 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		57B7AB3C1E78CC43000CF685 /* AppExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		57B7AB401E78CC43000CF685 /* AppExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppExtension.entitlements; sourceTree = "<group>"; };
+		57B7AB411E78CC43000CF685 /* SafariExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionHandler.swift; sourceTree = "<group>"; };
+		57B7AB431E78CC43000CF685 /* SafariExtensionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionViewController.swift; sourceTree = "<group>"; };
+		57B7AB461E78CC43000CF685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SafariExtensionViewController.xib; sourceTree = "<group>"; };
+		57B7AB481E78CC43000CF685 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		57B7AB491E78CC43000CF685 /* script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = script.js; sourceTree = "<group>"; };
+		57B7AB4B1E78CC43000CF685 /* ToolbarItemIcon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarItemIcon.pdf; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		57B7AADD1E78CBB2000CF685 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57B7AAEF1E78CBB3000CF685 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57B7AB391E78CC43000CF685 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57B7AB3D1E78CC43000CF685 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		57B7AAD71E78CBB2000CF685 = {
+			isa = PBXGroup;
+			children = (
+				57B7AAE21E78CBB2000CF685 /* Rikaitan */,
+				57B7AAF51E78CBB3000CF685 /* RikaitanTests */,
+				57B7AB3E1E78CC43000CF685 /* AppExtension */,
+				57B7AB061E78CBD6000CF685 /* Frameworks */,
+				57B7AAE11E78CBB2000CF685 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		57B7AAE11E78CBB2000CF685 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				57B7AAE01E78CBB2000CF685 /* Rikaitan.app */,
+				57B7AAF21E78CBB3000CF685 /* RikaitanTests.xctest */,
+				57B7AB3C1E78CC43000CF685 /* AppExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		57B7AAE21E78CBB2000CF685 /* Rikaitan */ = {
+			isa = PBXGroup;
+			children = (
+				57B7AAE31E78CBB2000CF685 /* AppDelegate.swift */,
+				57B7AAE81E78CBB2000CF685 /* Assets.xcassets */,
+				57B7AAEA1E78CBB2000CF685 /* MainMenu.xib */,
+				57B7AAED1E78CBB2000CF685 /* Info.plist */,
+				57B7AAE51E78CBB2000CF685 /* Rikaitan.xcdatamodeld */,
+			);
+			path = Rikaitan;
+			sourceTree = "<group>";
+		};
+		57B7AAF51E78CBB3000CF685 /* RikaitanTests */ = {
+			isa = PBXGroup;
+			children = (
+				57B7AAF61E78CBB3000CF685 /* RikaitanTests.swift */,
+				57B7AAF81E78CBB3000CF685 /* Info.plist */,
+			);
+			path = RikaitanTests;
+			sourceTree = "<group>";
+		};
+		57B7AB061E78CBD6000CF685 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				57B7AB071E78CBD6000CF685 /* Cocoa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		57B7AB3E1E78CC43000CF685 /* AppExtension */ = {
+			isa = PBXGroup;
+			children = (
+				57B7AB411E78CC43000CF685 /* SafariExtensionHandler.swift */,
+				57B7AB431E78CC43000CF685 /* SafariExtensionViewController.swift */,
+				57B7AB451E78CC43000CF685 /* SafariExtensionViewController.xib */,
+				57B7AB481E78CC43000CF685 /* Info.plist */,
+				57B7AB491E78CC43000CF685 /* script.js */,
+				57B7AB4B1E78CC43000CF685 /* ToolbarItemIcon.pdf */,
+				57B7AB3F1E78CC43000CF685 /* Supporting Files */,
+			);
+			path = AppExtension;
+			sourceTree = "<group>";
+		};
+		57B7AB3F1E78CC43000CF685 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				57B7AB401E78CC43000CF685 /* AppExtension.entitlements */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		57B7AADF1E78CBB2000CF685 /* Rikaitan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 57B7AAFB1E78CBB3000CF685 /* Build configuration list for PBXNativeTarget "Rikaitan" */;
+			buildPhases = (
+				57B7AADC1E78CBB2000CF685 /* Sources */,
+				57B7AADD1E78CBB2000CF685 /* Frameworks */,
+				57B7AADE1E78CBB2000CF685 /* Resources */,
+				57B7AB1E1E78CBD6000CF685 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				57B7AB4E1E78CC43000CF685 /* PBXTargetDependency */,
+			);
+			name = Rikaitan;
+			productName = Rikaitan;
+			productReference = 57B7AAE01E78CBB2000CF685 /* Rikaitan.app */;
+			productType = "com.apple.product-type.application";
+		};
+		57B7AAF11E78CBB3000CF685 /* RikaitanTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 57B7AAFE1E78CBB3000CF685 /* Build configuration list for PBXNativeTarget "RikaitanTests" */;
+			buildPhases = (
+				57B7AAEE1E78CBB3000CF685 /* Sources */,
+				57B7AAEF1E78CBB3000CF685 /* Frameworks */,
+				57B7AAF01E78CBB3000CF685 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				57B7AAF41E78CBB3000CF685 /* PBXTargetDependency */,
+			);
+			name = RikaitanTests;
+			productName = RikaitanTests;
+			productReference = 57B7AAF21E78CBB3000CF685 /* RikaitanTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		57B7AB3B1E78CC43000CF685 /* AppExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 57B7AB501E78CC43000CF685 /* Build configuration list for PBXNativeTarget "AppExtension" */;
+			buildPhases = (
+				57B7AB381E78CC43000CF685 /* Sources */,
+				57B7AB391E78CC43000CF685 /* Frameworks */,
+				57B7AB3A1E78CC43000CF685 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppExtension;
+			productName = AppExtension;
+			productReference = 57B7AB3C1E78CC43000CF685 /* AppExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		57B7AAD81E78CBB2000CF685 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Jorden Hill";
+				TargetAttributes = {
+					57B7AADF1E78CBB2000CF685 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 773ZK9CN4J;
+						ProvisioningStyle = Automatic;
+					};
+					57B7AAF11E78CBB3000CF685 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 57B7AADF1E78CBB2000CF685;
+					};
+					57B7AB3B1E78CC43000CF685 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 773ZK9CN4J;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 57B7AADB1E78CBB2000CF685 /* Build configuration list for PBXProject "Rikaitan" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 57B7AAD71E78CBB2000CF685;
+			productRefGroup = 57B7AAE11E78CBB2000CF685 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				57B7AADF1E78CBB2000CF685 /* Rikaitan */,
+				57B7AAF11E78CBB3000CF685 /* RikaitanTests */,
+				57B7AB3B1E78CC43000CF685 /* AppExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		57B7AADE1E78CBB2000CF685 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57B7AAE91E78CBB2000CF685 /* Assets.xcassets in Resources */,
+				57B7AAEC1E78CBB2000CF685 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57B7AAF01E78CBB3000CF685 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57B7AB3A1E78CC43000CF685 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57B7AB4C1E78CC43000CF685 /* ToolbarItemIcon.pdf in Resources */,
+				57B7AB471E78CC43000CF685 /* SafariExtensionViewController.xib in Resources */,
+				57B7AB4A1E78CC43000CF685 /* script.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		57B7AADC1E78CBB2000CF685 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57B7AAE71E78CBB2000CF685 /* Rikaitan.xcdatamodeld in Sources */,
+				57B7AAE41E78CBB2000CF685 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57B7AAEE1E78CBB3000CF685 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57B7AAF71E78CBB3000CF685 /* RikaitanTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57B7AB381E78CC43000CF685 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57B7AB441E78CC43000CF685 /* SafariExtensionViewController.swift in Sources */,
+				57B7AB421E78CC43000CF685 /* SafariExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		57B7AAF41E78CBB3000CF685 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57B7AADF1E78CBB2000CF685 /* Rikaitan */;
+			targetProxy = 57B7AAF31E78CBB3000CF685 /* PBXContainerItemProxy */;
+		};
+		57B7AB4E1E78CC43000CF685 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57B7AB3B1E78CC43000CF685 /* AppExtension */;
+			targetProxy = 57B7AB4D1E78CC43000CF685 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		57B7AAEA1E78CBB2000CF685 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				57B7AAEB1E78CBB2000CF685 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		57B7AB451E78CC43000CF685 /* SafariExtensionViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				57B7AB461E78CC43000CF685 /* Base */,
+			);
+			name = SafariExtensionViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		57B7AAF91E78CBB3000CF685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		57B7AAFA1E78CBB3000CF685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		57B7AAFC1E78CBB3000CF685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 773ZK9CN4J;
+				INFOPLIST_FILE = Rikaitan/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yerd.Rikaitan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		57B7AAFD1E78CBB3000CF685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 773ZK9CN4J;
+				INFOPLIST_FILE = Rikaitan/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yerd.Rikaitan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		57B7AAFF1E78CBB3000CF685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RikaitanTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yerd.RikaitanTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rikaitan.app/Contents/MacOS/Rikaitan";
+			};
+			name = Debug;
+		};
+		57B7AB001E78CBB3000CF685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RikaitanTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yerd.RikaitanTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rikaitan.app/Contents/MacOS/Rikaitan";
+			};
+			name = Release;
+		};
+		57B7AB511E78CC43000CF685 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AppExtension/AppExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				DEVELOPMENT_TEAM = 773ZK9CN4J;
+				INFOPLIST_FILE = AppExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yerd.Rikaitan.AppExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		57B7AB521E78CC43000CF685 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = AppExtension/AppExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				DEVELOPMENT_TEAM = 773ZK9CN4J;
+				INFOPLIST_FILE = AppExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yerd.Rikaitan.AppExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		57B7AADB1E78CBB2000CF685 /* Build configuration list for PBXProject "Rikaitan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57B7AAF91E78CBB3000CF685 /* Debug */,
+				57B7AAFA1E78CBB3000CF685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		57B7AAFB1E78CBB3000CF685 /* Build configuration list for PBXNativeTarget "Rikaitan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57B7AAFC1E78CBB3000CF685 /* Debug */,
+				57B7AAFD1E78CBB3000CF685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		57B7AAFE1E78CBB3000CF685 /* Build configuration list for PBXNativeTarget "RikaitanTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57B7AAFF1E78CBB3000CF685 /* Debug */,
+				57B7AB001E78CBB3000CF685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		57B7AB501E78CC43000CF685 /* Build configuration list for PBXNativeTarget "AppExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57B7AB511E78CC43000CF685 /* Debug */,
+				57B7AB521E78CC43000CF685 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		57B7AAE51E78CBB2000CF685 /* Rikaitan.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				57B7AAE61E78CBB2000CF685 /* Rikaitan.xcdatamodel */,
+			);
+			currentVersion = 57B7AAE61E78CBB2000CF685 /* Rikaitan.xcdatamodel */;
+			path = Rikaitan.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 57B7AAD81E78CBB2000CF685 /* Project object */;
+}
